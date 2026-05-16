@@ -2,449 +2,655 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import spaces from '../data/spaces.json';
 
-// Table de correspondance id → titre (injectée en JSON dans la page, lue par le script)
 const spacesMapJson = JSON.stringify(
   Object.fromEntries(spaces.map((s: any) => [s.id, s.title]))
 );
 ---
 
 <BaseLayout title="Mon espace — MOB'SS" description="Votre tableau de bord MOB'SS.">
-
-<!-- Données statiques lisibles par le script module sans define:vars -->
 <script type="application/json" id="spaces-map-data" set:html={spacesMapJson}></script>
 
-  <!-- ÉTAT DE CHARGEMENT -->
-  <div id="dash-loading" style="text-align:center;padding:120px 24px;color:var(--color-text-soft);">
-    <p style="font-size:1.05rem;">Chargement de votre espace…</p>
+<!-- CHARGEMENT -->
+<div id="dash-loading" style="text-align:center;padding:120px 24px;color:var(--color-text-soft);">
+  <div style="font-size:2rem;margin-bottom:12px;">⏳</div>
+  <p style="font-size:1.05rem;">Chargement de votre espace…</p>
+</div>
+
+<!-- NON CONNECTÉ -->
+<div id="dash-anonymous" style="display:none;text-align:center;padding:120px 24px;">
+  <div style="font-size:3rem;margin-bottom:16px;">🔐</div>
+  <h1>Connectez-vous pour accéder à votre espace</h1>
+  <p style="color:var(--color-text-soft);margin-bottom:24px;">Votre tableau de bord MOB'SS vous attend.</p>
+  <a href="/connexion" class="btn btn--primary btn--lg">Se connecter</a>
+</div>
+
+<!-- BANNIÈRE PROFIL INCOMPLET -->
+<div id="dash-incomplete-banner" style="display:none;background:#FFF8DC;border-bottom:2px solid #E8D87A;padding:14px 24px;">
+  <div class="container" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+    <span style="color:#6B5800;font-size:0.95rem;">
+      ✏️ <strong>Votre profil est incomplet.</strong> Complétez-le pour apparaître dans l'annuaire.
+    </span>
+    <a href="/completer-profil" class="btn btn--primary" style="white-space:nowrap;">Compléter mon profil →</a>
   </div>
+</div>
 
-  <!-- ÉTAT NON CONNECTÉ -->
-  <div id="dash-anonymous" style="display:none;text-align:center;padding:120px 24px;">
-    <div style="font-size:3rem;margin-bottom:16px;">🔐</div>
-    <h1>Connectez-vous pour accéder à votre espace</h1>
-    <p style="color:var(--color-text-soft);margin-bottom:24px;">Votre tableau de bord MOB'SS vous attend.</p>
-    <a href="/connexion" class="btn btn--primary btn--lg">Se connecter</a>
-  </div>
+<!-- ═══════════ DASHBOARD PRATICIEN ═══════════ -->
+<div id="dash-praticien" style="display:none;">
+  <div class="dash-layout">
 
-  <!-- BANNIÈRE PROFIL INCOMPLET -->
-  <div id="dash-incomplete-banner" style="display:none;background:#FFF8DC;border-bottom:2px solid #E8D87A;padding:14px 24px;">
-    <div class="container" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
-      <span style="color:#6B5800;font-size:0.95rem;">
-        ✏️ <strong>Votre profil est incomplet.</strong> Complétez-le pour apparaître dans l'annuaire et recevoir des demandes de remplacement.
-      </span>
-      <a href="/completer-profil" class="btn btn--primary" style="white-space:nowrap;">Compléter mon profil →</a>
-    </div>
-  </div>
+    <!-- Sidebar -->
+    <aside class="dash-side">
+      <div class="dash-side__user">
+        <div id="side-avatar" class="dash-side__avatar">?</div>
+        <div>
+          <strong id="side-nom" style="display:block;font-size:0.95rem;">—</strong>
+          <span id="side-role" style="font-size:0.78rem;color:var(--color-text-soft);">Praticien·ne</span>
+        </div>
+      </div>
 
-  <!-- ═══════════════════════════════════════════════════════════
-       DASHBOARD PRATICIEN
-       ═══════════════════════════════════════════════════════════ -->
-  <div id="dash-praticien" style="display:none;">
-    <div class="dash-layout">
+      <nav aria-label="Navigation du tableau de bord">
+        <button class="dash-nav-btn is-active" data-section="overview">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+          Vue d'ensemble
+        </button>
+        <button class="dash-nav-btn" data-section="demandes">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+          Mes demandes
+          <span id="badge-pending" style="display:none;background:var(--color-primary);color:#fff;border-radius:20px;padding:1px 7px;font-size:0.72rem;font-weight:700;margin-left:auto;">0</span>
+        </button>
+        <button class="dash-nav-btn" data-section="profil">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+          Mon profil
+        </button>
+        <button class="dash-nav-btn" data-section="remplacements">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+          Remplacements
+        </button>
+        <a href="/explorez" class="dash-nav-btn" style="text-decoration:none;">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 10c0 7-8 13-8 13S4 17 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+          Trouver un espace
+        </a>
+        <button class="dash-nav-btn" data-section="parametres">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          Paramètres
+        </button>
+      </nav>
+    </aside>
 
-      <!-- Sidebar -->
-      <aside class="dash-side">
-        <nav aria-label="Navigation du tableau de bord">
-          <button class="dash-nav-btn is-active" data-section="overview" aria-current="page">
-            <svg class="icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
-            Vue d'ensemble
-          </button>
-          <button class="dash-nav-btn" data-section="demandes">
-            <svg class="icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-            Mes demandes
-            <span id="badge-pending" style="display:none;background:var(--color-primary);color:#fff;border-radius:20px;padding:1px 7px;font-size:0.72rem;font-weight:700;margin-left:auto;">0</span>
-          </button>
-          <button class="dash-nav-btn" data-section="profil">
-            <svg class="icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
-            Mon profil
-          </button>
-          <button class="dash-nav-btn" data-section="remplacements">
-            <svg class="icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
-            Remplacements
-          </button>
-          <a href="/explorez" class="dash-nav-btn" style="text-decoration:none;">
-            <svg class="icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 7-8 13-8 13S4 17 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
-            Trouver un espace
-          </a>
-          <button class="dash-nav-btn" data-section="parametres">
-            <svg class="icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-            Paramètres
-          </button>
-        </nav>
-      </aside>
+    <!-- Contenu principal -->
+    <div class="dash-main">
 
-      <!-- Contenu principal -->
-      <div class="dash-main">
+      <div class="dash-head">
+        <div>
+          <h1 style="font-size:clamp(1.4rem,3vw,1.9rem);">Bonjour <span id="prat-prenom">—</span> 👋</h1>
+          <p style="margin:0;color:var(--color-text-soft);">Voici votre activité sur MOB'SS.</p>
+        </div>
+        <a href="/explorez" class="btn btn--primary">+ Réserver un espace</a>
+      </div>
 
-        <!-- En-tête -->
-        <div class="dash-head">
-          <div>
-            <h1>Bonjour <span id="prat-prenom">—</span> 👋</h1>
-            <p style="margin:0;color:var(--color-text-soft);" id="prat-subtitle">Voici votre activité sur MOB'SS.</p>
+      <!-- ── Vue d'ensemble ── -->
+      <div class="dash-section" id="overview">
+
+        <div class="stat-grid">
+          <div class="stat">
+            <div class="stat__icon" style="background:#FEE2E2;">📋</div>
+            <div class="stat__label">Demandes envoyées</div>
+            <p class="stat__value" id="stat-total">—</p>
           </div>
-          <a href="/explorez" class="btn btn--primary">+ Réserver un espace</a>
+          <div class="stat">
+            <div class="stat__icon" style="background:#D1FAE5;">✅</div>
+            <div class="stat__label">Acceptées</div>
+            <p class="stat__value" id="stat-acceptees" style="color:#2D6E3F;">—</p>
+          </div>
+          <div class="stat">
+            <div class="stat__icon" style="background:#FEF3C7;">⏳</div>
+            <div class="stat__label">En attente</div>
+            <p class="stat__value" id="stat-attente" style="color:#92400E;">—</p>
+          </div>
+          <div class="stat">
+            <div class="stat__icon" style="background:var(--color-cream-soft);">👁️</div>
+            <div class="stat__label">Visibilité annuaire</div>
+            <p class="stat__value" id="stat-visibilite" style="font-size:1rem;padding-top:4px;">—</p>
+          </div>
         </div>
 
-        <!-- ── SECTION : Vue d'ensemble ── -->
-        <div class="dash-section is-active" id="section-overview">
+        <!-- Dernières demandes -->
+        <div class="panel" style="margin-top:24px;">
+          <div class="panel__head">
+            <h3>Dernières demandes</h3>
+            <button class="btn btn--ghost" data-goto="demandes" style="font-size:0.88rem;">Tout voir →</button>
+          </div>
+          <div id="overview-demandes-list">
+            <p style="color:var(--color-text-soft);text-align:center;padding:32px;">Chargement…</p>
+          </div>
+        </div>
 
-          <div class="stat-grid">
-            <div class="stat">
-              <div class="stat__label">Demandes envoyées</div>
-              <p class="stat__value" id="stat-total">—</p>
-              <div class="stat__delta">Total depuis l'inscription</div>
-            </div>
-            <div class="stat">
-              <div class="stat__label">Demandes acceptées</div>
-              <p class="stat__value" id="stat-acceptees" style="color:#2D6E3F;">—</p>
-              <div class="stat__delta">Par les propriétaires d'espace</div>
-            </div>
-            <div class="stat">
-              <div class="stat__label">En attente de réponse</div>
-              <p class="stat__value" id="stat-attente" style="color:var(--color-primary);">—</p>
-              <div class="stat__delta">Demandes en cours de traitement</div>
-            </div>
-            <div class="stat">
-              <div class="stat__label">Visibilité annuaire</div>
-              <p class="stat__value" id="stat-visibilite" style="font-size:1.4rem;">—</p>
-              <div class="stat__delta">Profil public MOB'SS</div>
+        <!-- Actions rapides -->
+        <div class="grid grid--3" style="margin-top:20px;gap:16px;">
+          <div class="quick-action" data-goto="profil">
+            <span style="font-size:1.6rem;">👤</span>
+            <div>
+              <strong>Mon profil</strong>
+              <p>Complétez votre fiche pour être visible dans l'annuaire</p>
             </div>
           </div>
-
-          <!-- Dernières demandes -->
-          <div class="panel" style="margin-top:28px;">
-            <div class="panel__head">
-              <h3>Dernières demandes</h3>
-              <button class="btn btn--ghost" data-section="demandes" style="font-size:0.9rem;">Tout voir →</button>
-            </div>
-            <div id="overview-demandes-list">
-              <p style="color:var(--color-text-soft);text-align:center;padding:32px 24px;">Chargement…</p>
-            </div>
-          </div>
-
-          <!-- Actions rapides -->
-          <div class="grid grid--3" style="margin-top:24px;gap:16px;">
-            <div class="card" style="padding:20px;cursor:pointer;" onclick="document.querySelector('[data-section=profil]').click()">
-              <div style="font-size:1.8rem;margin-bottom:8px;">👤</div>
-              <strong>Compléter mon profil</strong>
-              <p style="margin:4px 0 0;font-size:0.88rem;color:var(--color-text-soft);">Augmentez votre visibilité dans l'annuaire</p>
-            </div>
-            <a href="/explorez" class="card" style="padding:20px;text-decoration:none;color:inherit;display:block;">
-              <div style="font-size:1.8rem;margin-bottom:8px;">🗺️</div>
+          <a href="/explorez" class="quick-action" style="text-decoration:none;color:inherit;">
+            <span style="font-size:1.6rem;">🗺️</span>
+            <div>
               <strong>Trouver un espace</strong>
-              <p style="margin:4px 0 0;font-size:0.88rem;color:var(--color-text-soft);">Consultez les espaces disponibles près de chez vous</p>
-            </a>
-            <div class="card" style="padding:20px;cursor:pointer;" onclick="document.querySelector('[data-section=remplacements]').click()">
-              <div style="font-size:1.8rem;margin-bottom:8px;">🔄</div>
+              <p>Parcourez les espaces disponibles près de chez vous</p>
+            </div>
+          </a>
+          <div class="quick-action" data-goto="remplacements">
+            <span style="font-size:1.6rem;">🔄</span>
+            <div>
               <strong>Remplacements</strong>
-              <p style="margin:4px 0 0;font-size:0.88rem;color:var(--color-text-soft);">Gérez votre disponibilité pour des remplacements</p>
+              <p>Indiquez vos disponibilités pour remplacer des confrères</p>
             </div>
           </div>
         </div>
+      </div>
 
-        <!-- ── SECTION : Mes demandes ── -->
-        <div class="dash-section" id="section-demandes" style="display:none;">
+      <!-- ── Mes demandes ── -->
+      <div class="dash-section" id="demandes" style="display:none;">
+        <div class="panel">
+          <div class="panel__head">
+            <h3>Mes demandes d'espace</h3>
+            <a href="/explorez" class="btn btn--primary" style="font-size:0.88rem;">+ Nouvelle demande</a>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;">
+            <button class="dem-filter btn btn--primary" data-filter="all" style="font-size:0.85rem;padding:7px 16px;">Toutes</button>
+            <button class="dem-filter btn btn--outline" data-filter="en_attente" style="font-size:0.85rem;padding:7px 16px;">⏳ En attente</button>
+            <button class="dem-filter btn btn--outline" data-filter="acceptee" style="font-size:0.85rem;padding:7px 16px;">✅ Acceptées</button>
+            <button class="dem-filter btn btn--outline" data-filter="refusee" style="font-size:0.85rem;padding:7px 16px;">❌ Refusées</button>
+          </div>
+          <div id="demandes-list">
+            <p style="color:var(--color-text-soft);text-align:center;padding:48px;">Chargement…</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Mon profil ── -->
+      <div class="dash-section" id="profil" style="display:none;">
+
+        <!-- Barre de complétude -->
+        <div class="panel" style="margin-bottom:20px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+            <h3 style="margin:0;">Complétude du profil</h3>
+            <span id="pct-label" style="font-weight:700;color:var(--color-primary);">0%</span>
+          </div>
+          <div style="height:8px;background:var(--color-border);border-radius:8px;overflow:hidden;">
+            <div id="pct-bar" style="height:100%;background:var(--color-primary);border-radius:8px;transition:width 0.4s ease;width:0%;"></div>
+          </div>
+          <p id="pct-hint" style="margin:8px 0 0;font-size:0.85rem;color:var(--color-text-soft);"></p>
+        </div>
+
+        <div class="profil-grid">
+          <!-- Aperçu public -->
           <div class="panel">
             <div class="panel__head">
-              <h3>Mes demandes d'espace</h3>
-              <a href="/explorez" class="btn btn--primary" style="font-size:0.9rem;">+ Nouvelle demande</a>
+              <h3>Aperçu public</h3>
+              <a href="/completer-profil" class="btn btn--ghost" style="font-size:0.88rem;">✏️ Modifier</a>
             </div>
-
-            <!-- Filtres statut -->
-            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;">
-              <button class="btn btn--primary dem-filter" data-filter="all" style="font-size:0.85rem;padding:6px 16px;">Toutes</button>
-              <button class="btn btn--outline dem-filter" data-filter="en_attente" style="font-size:0.85rem;padding:6px 16px;">En attente</button>
-              <button class="btn btn--outline dem-filter" data-filter="acceptee" style="font-size:0.85rem;padding:6px 16px;">Acceptées</button>
-              <button class="btn btn--outline dem-filter" data-filter="refusee" style="font-size:0.85rem;padding:6px 16px;">Refusées</button>
-            </div>
-
-            <div id="demandes-list">
-              <p style="color:var(--color-text-soft);text-align:center;padding:48px 24px;">Chargement…</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- ── SECTION : Mon profil ── -->
-        <div class="dash-section" id="section-profil" style="display:none;">
-
-          <!-- Carte profil -->
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start;" class="profil-grid">
-
-            <!-- Aperçu -->
-            <div class="panel">
-              <div class="panel__head">
-                <h3>Aperçu public</h3>
-                <a href="/completer-profil" class="btn btn--ghost" style="font-size:0.88rem;">✏️ Modifier</a>
+            <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;">
+              <div id="profil-avatar" style="width:64px;height:64px;border-radius:14px;background:var(--color-primary);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.5rem;flex-shrink:0;">?</div>
+              <div>
+                <strong id="profil-nom" style="font-size:1.1rem;display:block;">—</strong>
+                <span id="profil-specialite" style="color:var(--color-primary);font-size:0.9rem;font-weight:600;">—</span>
               </div>
-              <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;">
-                <div id="profil-avatar" style="width:60px;height:60px;border-radius:14px;background:var(--color-primary);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.4rem;flex-shrink:0;">?</div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:10px;font-size:0.9rem;">
+              <div style="display:flex;gap:8px;align-items:flex-start;">
+                <span style="color:var(--color-text-soft);width:18px;flex-shrink:0;">📍</span>
+                <span id="profil-ville" style="color:var(--color-text-soft);">Non renseignée</span>
+              </div>
+              <div style="display:flex;gap:8px;align-items:flex-start;">
+                <span style="color:var(--color-text-soft);width:18px;flex-shrink:0;">📧</span>
+                <span id="profil-email" style="color:var(--color-text-soft);">—</span>
+              </div>
+              <div style="display:flex;gap:8px;align-items:flex-start;">
+                <span style="color:var(--color-text-soft);width:18px;flex-shrink:0;">📱</span>
+                <span id="profil-tel" style="color:var(--color-text-soft);">Non renseigné</span>
+              </div>
+            </div>
+            <div id="profil-bio" style="margin-top:14px;padding:12px;background:var(--color-cream-soft);border-radius:var(--radius-sm);font-size:0.88rem;color:var(--color-text-soft);display:none;font-style:italic;"></div>
+            <a href="/completer-profil" class="btn btn--primary btn--block" style="margin-top:20px;">✏️ Modifier mon profil</a>
+          </div>
+
+          <!-- Visibilité & disponibilités -->
+          <div class="panel">
+            <div class="panel__head"><h3>Visibilité &amp; disponibilités</h3></div>
+            <div style="display:flex;flex-direction:column;gap:20px;">
+
+              <div class="toggle-row">
                 <div>
-                  <strong id="profil-nom" style="font-size:1.1rem;display:block;">—</strong>
-                  <span id="profil-specialite" style="color:var(--color-primary);font-size:0.9rem;font-weight:600;">—</span>
+                  <strong>Visible dans l'annuaire</strong>
+                  <p>Votre profil apparaît dans la page Annuaire et peut être trouvé par les collectivités et entreprises.</p>
                 </div>
-              </div>
-              <div style="display:flex;flex-direction:column;gap:8px;font-size:0.9rem;color:var(--color-text-soft);">
-                <div>📍 <span id="profil-ville">Non renseignée</span></div>
-                <div>📧 <span id="profil-email">—</span></div>
-              </div>
-              <div id="profil-bio" style="margin-top:12px;font-size:0.88rem;color:var(--color-text-soft);font-style:italic;display:none;"></div>
-              <div style="margin-top:16px;">
-                <span id="profil-completude" style="font-size:0.85rem;"></span>
-              </div>
-            </div>
-
-            <!-- Paramètres de visibilité -->
-            <div class="panel">
-              <div class="panel__head"><h3>Visibilité & disponibilités</h3></div>
-
-              <div style="display:flex;flex-direction:column;gap:20px;">
-
-                <!-- Toggle annuaire -->
-                <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;">
-                  <div>
-                    <strong style="display:block;font-size:0.95rem;">Visible dans l'annuaire</strong>
-                    <p style="margin:2px 0 0;font-size:0.85rem;color:var(--color-text-soft);">Votre profil apparaît dans la page /annuaire et peut être trouvé par les collectivités.</p>
-                  </div>
-                  <label class="toggle-switch" aria-label="Visibilité dans l'annuaire">
-                    <input type="checkbox" id="toggle-annuaire" />
-                    <span class="toggle-slider"></span>
-                  </label>
-                </div>
-
-                <hr style="border:none;border-top:1px solid var(--color-border);margin:0;" />
-
-                <!-- Toggle remplacements -->
-                <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;">
-                  <div>
-                    <strong style="display:block;font-size:0.95rem;">Disponible pour remplacements</strong>
-                    <p style="margin:2px 0 0;font-size:0.85rem;color:var(--color-text-soft);">Vous apparaissez dans la page /remplacements et pouvez être contacté par des confrères.</p>
-                  </div>
-                  <label class="toggle-switch" aria-label="Disponible pour remplacements">
-                    <input type="checkbox" id="toggle-rempl" />
-                    <span class="toggle-slider"></span>
-                  </label>
-                </div>
-
-              </div>
-
-              <div id="toggle-msg" style="display:none;margin-top:16px;padding:10px 14px;border-radius:var(--radius-md);font-size:0.88rem;"></div>
-            </div>
-          </div>
-
-          <div style="margin-top:20px;text-align:center;">
-            <a href="/completer-profil" class="btn btn--primary btn--lg">✏️ Modifier mon profil complet</a>
-          </div>
-        </div>
-
-        <!-- ── SECTION : Remplacements ── -->
-        <div class="dash-section" id="section-remplacements" style="display:none;">
-          <div class="grid grid--2" style="gap:24px;align-items:start;">
-
-            <div class="panel">
-              <div class="panel__head"><h3>Ma disponibilité</h3></div>
-              <div style="text-align:center;padding:24px 16px;">
-                <div id="remp-status-icon" style="font-size:3rem;margin-bottom:12px;">⏸️</div>
-                <p id="remp-status-text" style="font-size:1.05rem;font-weight:600;margin-bottom:8px;">Chargement…</p>
-                <p style="color:var(--color-text-soft);font-size:0.9rem;margin-bottom:24px;">
-                  Activez votre disponibilité pour apparaître dans la page Remplacements et être contacté par des confrères.
-                </p>
-                <label class="toggle-switch" aria-label="Disponible pour remplacements" style="margin:0 auto 20px;display:block;width:fit-content;">
-                  <input type="checkbox" id="toggle-rempl-2" />
+                <label class="toggle-switch" aria-label="Visibilité dans l'annuaire">
+                  <input type="checkbox" id="toggle-annuaire" />
                   <span class="toggle-slider"></span>
                 </label>
-                <p style="font-size:0.82rem;color:var(--color-text-soft);">Modifie également le paramètre dans "Mon profil"</p>
               </div>
-            </div>
 
+              <hr style="border:none;border-top:1px solid var(--color-border);margin:0;" />
+
+              <div class="toggle-row">
+                <div>
+                  <strong>Disponible pour remplacements</strong>
+                  <p>Vous apparaissez dans la page Remplacements et pouvez être contacté par des confrères.</p>
+                </div>
+                <label class="toggle-switch" aria-label="Disponible pour remplacements">
+                  <input type="checkbox" id="toggle-rempl" />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+
+            </div>
+            <div id="toggle-msg" style="display:none;margin-top:16px;padding:10px 14px;border-radius:var(--radius-md);font-size:0.88rem;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Remplacements ── -->
+      <div class="dash-section" id="remplacements" style="display:none;">
+        <div class="grid grid--2" style="gap:24px;align-items:start;">
+
+          <div class="panel">
+            <div class="panel__head"><h3>Ma disponibilité</h3></div>
+            <div style="text-align:center;padding:20px 16px 28px;">
+              <div id="remp-icon" style="font-size:3rem;margin-bottom:12px;">⏸️</div>
+              <p id="remp-text" style="font-size:1rem;font-weight:600;margin-bottom:6px;color:var(--color-text);">Chargement…</p>
+              <p style="color:var(--color-text-soft);font-size:0.88rem;margin-bottom:24px;max-width:280px;margin-left:auto;margin-right:auto;">
+                Activez pour apparaître dans la page Remplacements et être contacté par des confrères.
+              </p>
+              <label class="toggle-switch" style="margin:0 auto 16px;display:block;width:fit-content;">
+                <input type="checkbox" id="toggle-rempl-2" />
+                <span class="toggle-slider"></span>
+              </label>
+              <p style="font-size:0.78rem;color:var(--color-text-soft);">Synchronisé avec le paramètre dans "Mon profil"</p>
+            </div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:20px;">
             <div class="panel">
               <div class="panel__head"><h3>Trouver un remplaçant</h3></div>
-              <p style="color:var(--color-text-soft);font-size:0.9rem;margin-bottom:20px;">
-                Vous cherchez un confrère disponible pour vous remplacer ? Consultez l'annuaire des praticiens disponibles.
+              <p style="color:var(--color-text-soft);font-size:0.9rem;margin-bottom:16px;">
+                Cherchez un confrère disponible dans votre spécialité pour vous remplacer ponctuellement.
               </p>
-              <a href="/remplacements" class="btn btn--primary" style="width:100%;text-align:center;display:block;">Voir les remplaçants disponibles →</a>
-              <div class="card" style="margin-top:16px;padding:16px;background:var(--color-cream-soft);">
-                <strong style="font-size:0.9rem;">💡 Comment ça marche</strong>
-                <p style="margin:6px 0 0;font-size:0.85rem;color:var(--color-text-soft);">
-                  MOB'SS vous met en relation directement. Échangez vos coordonnées et organisez le remplacement entre vous. Gratuit, sans intermédiaire.
-                </p>
-              </div>
+              <a href="/remplacements" class="btn btn--primary btn--block">Voir les remplaçants disponibles →</a>
+            </div>
+
+            <div class="panel" style="background:var(--color-cream-soft);border-color:transparent;">
+              <strong style="display:block;margin-bottom:8px;font-size:0.92rem;">💡 Comment ça marche</strong>
+              <p style="margin:0;font-size:0.85rem;color:var(--color-text-soft);">
+                MOB'SS vous met en relation directement. Échangez vos coordonnées et organisez le remplacement entre vous — gratuitement, sans intermédiaire.
+              </p>
             </div>
           </div>
         </div>
-
-        <!-- ── SECTION : Paramètres ── -->
-        <div class="dash-section" id="section-parametres" style="display:none;">
-          <div class="panel" style="max-width:520px;">
-            <div class="panel__head"><h3>Paramètres du compte</h3></div>
-            <div style="display:flex;flex-direction:column;gap:16px;">
-              <div>
-                <label style="font-size:0.88rem;color:var(--color-text-soft);display:block;margin-bottom:4px;">Adresse email</label>
-                <div id="param-email" style="font-weight:600;">—</div>
-              </div>
-              <hr style="border:none;border-top:1px solid var(--color-border);" />
-              <div>
-                <label style="font-size:0.88rem;color:var(--color-text-soft);display:block;margin-bottom:4px;">Rôle sur la plateforme</label>
-                <div id="param-role" style="font-weight:600;text-transform:capitalize;">—</div>
-              </div>
-              <hr style="border:none;border-top:1px solid var(--color-border);" />
-              <div>
-                <p style="font-size:0.9rem;color:var(--color-text-soft);margin-bottom:12px;">
-                  Vous souhaitez modifier votre email ou supprimer votre compte ? Contactez-nous.
-                </p>
-                <a href="/contact" class="btn btn--outline">Contacter MOB'SS</a>
-              </div>
-            </div>
-          </div>
-        </div>
-
-      </div><!-- /dash-main -->
-    </div><!-- /dash-layout -->
-  </div><!-- /dash-praticien -->
-
-
-  <!-- ═══════════════════════════════════════════════════════════
-       DASHBOARD HÔTE (collectivité / entreprise)
-       ═══════════════════════════════════════════════════════════ -->
-  <div id="dash-hote" style="display:none;">
-    <div class="dash-layout">
-      <aside class="dash-side">
-        <nav aria-label="Navigation du tableau de bord">
-          <button class="dash-nav-btn is-active" data-section="hote-overview">
-            <svg class="icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
-            Vue d'ensemble
-          </button>
-          <button class="dash-nav-btn" data-section="hote-espaces">
-            <svg class="icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18"/><path d="M5 21V8l7-5 7 5v13"/></svg>
-            Mes espaces
-          </button>
-          <a href="/annuaire" class="dash-nav-btn" style="text-decoration:none;">
-            <svg class="icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
-            Trouver un praticien
-          </button>
-          <button class="dash-nav-btn" data-section="hote-impact">
-            <svg class="icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
-            Impact territorial
-          </button>
-        </nav>
-      </aside>
-
-      <div class="dash-main">
-        <div class="dash-head">
-          <div>
-            <h1>Bonjour <span id="hote-prenom">—</span> 👋</h1>
-            <p style="margin:0;color:var(--color-text-soft);">Voici l'activité de votre structure sur MOB'SS.</p>
-          </div>
-          <a href="/deposer-annonce" class="btn btn--primary">+ Déposer un espace</a>
-        </div>
-
-        <!-- Vue d'ensemble hôte -->
-        <div class="dash-section is-active" id="hote-overview">
-          <div class="stat-grid">
-            <div class="stat">
-              <div class="stat__label">Espaces référencés</div>
-              <p class="stat__value">—</p>
-              <div class="stat__delta">Publiés sur la plateforme</div>
-            </div>
-            <div class="stat">
-              <div class="stat__label">Demandes reçues</div>
-              <p class="stat__value">—</p>
-              <div class="stat__delta">Depuis votre inscription</div>
-            </div>
-            <div class="stat">
-              <div class="stat__label">Praticiens accueillis</div>
-              <p class="stat__value">—</p>
-              <div class="stat__delta">Estimation</div>
-            </div>
-            <div class="stat">
-              <div class="stat__label">Heures mises à dispo</div>
-              <p class="stat__value">—</p>
-              <div class="stat__delta">Depuis votre inscription</div>
-            </div>
-          </div>
-
-          <div class="grid grid--2" style="gap:20px;margin-top:24px;">
-            <div class="panel">
-              <div class="panel__head"><h3>Prochaine étape</h3></div>
-              <div style="text-align:center;padding:24px 16px;">
-                <div style="font-size:2.5rem;margin-bottom:12px;">🏢</div>
-                <h3 style="margin-bottom:8px;">Déposez votre premier espace</h3>
-                <p style="color:var(--color-text-soft);font-size:0.9rem;margin-bottom:20px;">
-                  Mettez à disposition une salle, un gymnase ou tout espace adapté pour permettre à des praticiens du sport et de la santé d'exercer près de chez vous.
-                </p>
-                <a href="/deposer-annonce" class="btn btn--primary">Déposer un espace →</a>
-              </div>
-            </div>
-            <div class="panel">
-              <div class="panel__head"><h3>Trouver un praticien</h3></div>
-              <div style="text-align:center;padding:24px 16px;">
-                <div style="font-size:2.5rem;margin-bottom:12px;">🩺</div>
-                <h3 style="margin-bottom:8px;">Parcourez l'annuaire</h3>
-                <p style="color:var(--color-text-soft);font-size:0.9rem;margin-bottom:20px;">
-                  Découvrez les praticiens du sport et de la santé inscrits sur MOB'SS et disponibles pour intervenir dans votre structure.
-                </p>
-                <a href="/annuaire" class="btn btn--outline">Voir l'annuaire →</a>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Mes espaces hôte -->
-        <div class="dash-section" id="hote-espaces" style="display:none;">
-          <div class="panel">
-            <div class="panel__head">
-              <h3>Vos espaces</h3>
-              <a href="/deposer-annonce" class="btn btn--primary" style="font-size:0.9rem;">+ Nouvel espace</a>
-            </div>
-            <p style="color:var(--color-text-soft);text-align:center;padding:48px 24px;">
-              La gestion des espaces sera disponible prochainement depuis ce tableau de bord.<br />
-              En attendant, <a href="/deposer-annonce">référencez votre espace</a> et consultez les <a href="/annuaire">praticiens disponibles</a>.
-            </p>
-          </div>
-        </div>
-
-        <!-- Impact territorial hôte -->
-        <div class="dash-section" id="hote-impact" style="display:none;">
-          <div class="grid grid--3" style="gap:20px;">
-            <div class="card" style="padding:24px;text-align:center;">
-              <div style="font-size:2.5rem;margin-bottom:12px;">👥</div>
-              <h3 style="margin-bottom:6px;">Accès aux soins</h3>
-              <p style="color:var(--color-text-soft);font-size:0.88rem;">En mettant vos espaces à disposition, vous favorisez l'accès aux soins et au sport pour vos administrés.</p>
-            </div>
-            <div class="card" style="padding:24px;text-align:center;">
-              <div style="font-size:2.5rem;margin-bottom:12px;">🌱</div>
-              <h3 style="margin-bottom:6px;">Territoire attractif</h3>
-              <p style="color:var(--color-text-soft);font-size:0.88rem;">Attirer des praticiens de santé renforce l'attractivité de votre territoire et valorise vos espaces sous-utilisés.</p>
-            </div>
-            <div class="card" style="padding:24px;text-align:center;">
-              <div style="font-size:2.5rem;margin-bottom:12px;">🤝</div>
-              <h3 style="margin-bottom:6px;">Collaboration gagnant-gagnant</h3>
-              <p style="color:var(--color-text-soft);font-size:0.88rem;">Les praticiens bénéficient d'espaces gratuits, votre structure valorise son patrimoine immobilier.</p>
-            </div>
-          </div>
-        </div>
-
       </div>
+
+      <!-- ── Paramètres ── -->
+      <div class="dash-section" id="parametres" style="display:none;">
+        <div style="max-width:600px;display:flex;flex-direction:column;gap:20px;">
+
+          <!-- Informations du compte -->
+          <div class="panel">
+            <div class="panel__head"><h3>Informations du compte</h3></div>
+            <div style="display:flex;flex-direction:column;gap:0;">
+
+              <div class="param-row">
+                <div class="param-row__label">Adresse email</div>
+                <div id="param-email" class="param-row__value">—</div>
+              </div>
+
+              <div class="param-row">
+                <div class="param-row__label">Rôle</div>
+                <div id="param-role" class="param-row__value">—</div>
+              </div>
+
+              <div class="param-row">
+                <div class="param-row__label">Membre depuis</div>
+                <div id="param-date" class="param-row__value">—</div>
+              </div>
+
+              <div class="param-row">
+                <div class="param-row__label">Identifiant</div>
+                <div id="param-id" class="param-row__value" style="font-size:0.78rem;color:var(--color-text-soft);font-family:monospace;">—</div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Sécurité -->
+          <div class="panel">
+            <div class="panel__head"><h3>Sécurité</h3></div>
+            <div style="display:flex;flex-direction:column;gap:14px;">
+              <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+                <div>
+                  <strong style="display:block;font-size:0.92rem;">Mot de passe</strong>
+                  <span style="font-size:0.85rem;color:var(--color-text-soft);">Modifiez votre mot de passe de connexion</span>
+                </div>
+                <button id="btn-reset-pwd" class="btn btn--outline" style="font-size:0.88rem;">Changer le mot de passe</button>
+              </div>
+              <div id="pwd-msg" style="display:none;padding:10px 14px;border-radius:var(--radius-md);font-size:0.88rem;"></div>
+            </div>
+          </div>
+
+          <!-- Notifications -->
+          <div class="panel">
+            <div class="panel__head"><h3>Notifications</h3></div>
+            <div style="display:flex;flex-direction:column;gap:16px;">
+              <div class="toggle-row">
+                <div>
+                  <strong>Emails de confirmation</strong>
+                  <p>Recevoir un email à chaque changement de statut sur vos demandes</p>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="notif-email" checked disabled />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+              <p style="font-size:0.8rem;color:var(--color-text-soft);margin:0;">
+                Les préférences de notification avancées seront disponibles prochainement.
+              </p>
+            </div>
+          </div>
+
+          <!-- Zone danger -->
+          <div class="panel" style="border-color:#FCA5A5;">
+            <div class="panel__head"><h3 style="color:#B91C1C;">Zone de danger</h3></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:14px;">
+              <div>
+                <strong style="display:block;font-size:0.92rem;">Supprimer mon compte</strong>
+                <span style="font-size:0.85rem;color:var(--color-text-soft);">Cette action est irréversible. Toutes vos données seront effacées.</span>
+              </div>
+              <a href="/contact?sujet=suppression-compte" class="btn" style="background:#FEE2E2;color:#B91C1C;font-size:0.88rem;border:1px solid #FCA5A5;">Demander la suppression</a>
+            </div>
+            <hr style="border:none;border-top:1px solid #FCA5A5;margin:0 0 14px;" />
+            <button id="btn-logout-param" class="btn btn--outline" style="color:var(--color-primary);font-size:0.9rem;">
+              Se déconnecter
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+    </div><!-- /dash-main -->
+  </div><!-- /dash-layout -->
+</div><!-- /dash-praticien -->
+
+
+<!-- ═══════════ DASHBOARD HÔTE ═══════════ -->
+<div id="dash-hote" style="display:none;">
+  <div class="dash-layout">
+    <aside class="dash-side">
+      <div class="dash-side__user">
+        <div id="hote-side-avatar" class="dash-side__avatar">?</div>
+        <div>
+          <strong id="hote-side-nom" style="display:block;font-size:0.95rem;">—</strong>
+          <span id="hote-side-role" style="font-size:0.78rem;color:var(--color-text-soft);">Hôte</span>
+        </div>
+      </div>
+
+      <nav aria-label="Navigation tableau de bord hôte">
+        <button class="dash-nav-btn is-active" data-section="hote-overview">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+          Vue d'ensemble
+        </button>
+        <button class="dash-nav-btn" data-section="hote-espaces">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 21h18"/><path d="M5 21V8l7-5 7 5v13"/></svg>
+          Mes espaces
+        </button>
+        <a href="/annuaire" class="dash-nav-btn" style="text-decoration:none;">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+          Trouver un praticien
+        </a>
+        <button class="dash-nav-btn" data-section="hote-impact">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+          Impact territorial
+        </button>
+        <button class="dash-nav-btn" data-section="hote-parametres">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          Paramètres
+        </button>
+      </nav>
+    </aside>
+
+    <div class="dash-main">
+      <div class="dash-head">
+        <div>
+          <h1 style="font-size:clamp(1.4rem,3vw,1.9rem);">Bonjour <span id="hote-prenom">—</span> 👋</h1>
+          <p style="margin:0;color:var(--color-text-soft);">Activité de votre structure sur MOB'SS.</p>
+        </div>
+        <a href="/deposer-annonce" class="btn btn--primary">+ Déposer un espace</a>
+      </div>
+
+      <!-- Vue d'ensemble hôte -->
+      <div class="dash-section" id="hote-overview">
+        <div class="stat-grid">
+          <div class="stat">
+            <div class="stat__icon" style="background:#DBEAFE;">🏢</div>
+            <div class="stat__label">Espaces référencés</div>
+            <p class="stat__value">—</p>
+          </div>
+          <div class="stat">
+            <div class="stat__icon" style="background:#D1FAE5;">📨</div>
+            <div class="stat__label">Demandes reçues</div>
+            <p class="stat__value">—</p>
+          </div>
+          <div class="stat">
+            <div class="stat__icon" style="background:#FEE2E2;">🩺</div>
+            <div class="stat__label">Praticiens accueillis</div>
+            <p class="stat__value">—</p>
+          </div>
+          <div class="stat">
+            <div class="stat__icon" style="background:var(--color-cream-soft);">⏱️</div>
+            <div class="stat__label">Heures mises à dispo</div>
+            <p class="stat__value">—</p>
+          </div>
+        </div>
+
+        <div class="grid grid--2" style="gap:20px;margin-top:24px;">
+          <div class="panel">
+            <div class="panel__head"><h3>Prochaine étape</h3></div>
+            <div style="text-align:center;padding:20px 16px 24px;">
+              <div style="font-size:2.5rem;margin-bottom:12px;">🏢</div>
+              <h3 style="margin-bottom:8px;">Déposez votre premier espace</h3>
+              <p style="color:var(--color-text-soft);font-size:0.9rem;margin-bottom:20px;">
+                Référencez une salle, un gymnase ou tout local pour permettre à des praticiens d'exercer près de chez vous.
+              </p>
+              <a href="/deposer-annonce" class="btn btn--primary">Déposer un espace →</a>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel__head"><h3>Parcourir l'annuaire</h3></div>
+            <div style="text-align:center;padding:20px 16px 24px;">
+              <div style="font-size:2.5rem;margin-bottom:12px;">🩺</div>
+              <h3 style="margin-bottom:8px;">Trouvez un praticien</h3>
+              <p style="color:var(--color-text-soft);font-size:0.9rem;margin-bottom:20px;">
+                Découvrez les professionnels du sport et de la santé inscrits et disponibles pour intervenir dans votre structure.
+              </p>
+              <a href="/annuaire" class="btn btn--outline">Voir l'annuaire →</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mes espaces hôte -->
+      <div class="dash-section" id="hote-espaces" style="display:none;">
+        <div class="panel">
+          <div class="panel__head">
+            <h3>Vos espaces</h3>
+            <a href="/deposer-annonce" class="btn btn--primary" style="font-size:0.88rem;">+ Nouvel espace</a>
+          </div>
+          <div style="text-align:center;padding:48px 24px;">
+            <div style="font-size:3rem;margin-bottom:12px;">🏢</div>
+            <h3 style="margin-bottom:8px;">Aucun espace référencé</h3>
+            <p style="color:var(--color-text-soft);font-size:0.9rem;margin-bottom:24px;max-width:400px;margin-left:auto;margin-right:auto;">
+              Déposez votre premier espace pour le rendre visible aux praticiens inscrits sur MOB'SS.
+            </p>
+            <a href="/deposer-annonce" class="btn btn--primary">Déposer un espace →</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Impact territorial hôte -->
+      <div class="dash-section" id="hote-impact" style="display:none;">
+        <div class="panel" style="margin-bottom:24px;">
+          <div class="panel__head"><h3>Votre impact territorial</h3></div>
+          <p style="color:var(--color-text-soft);font-size:0.9rem;margin-bottom:20px;">
+            En mettant vos espaces à disposition, vous contribuez directement à l'accès aux soins et au sport sur votre territoire.
+          </p>
+          <div class="grid grid--3" style="gap:16px;">
+            <div style="text-align:center;padding:20px;background:var(--color-cream-soft);border-radius:var(--radius-md);">
+              <div style="font-size:2rem;margin-bottom:8px;">👥</div>
+              <strong style="display:block;margin-bottom:6px;">Accès aux soins</strong>
+              <p style="color:var(--color-text-soft);font-size:0.85rem;margin:0;">Plus de praticiens près de vos habitants, déserts médicaux réduits.</p>
+            </div>
+            <div style="text-align:center;padding:20px;background:var(--color-cream-soft);border-radius:var(--radius-md);">
+              <div style="font-size:2rem;margin-bottom:8px;">🌱</div>
+              <strong style="display:block;margin-bottom:6px;">Territoire attractif</strong>
+              <p style="color:var(--color-text-soft);font-size:0.85rem;margin:0;">Valorisez vos espaces sous-utilisés et renforcez votre attractivité.</p>
+            </div>
+            <div style="text-align:center;padding:20px;background:var(--color-cream-soft);border-radius:var(--radius-md);">
+              <div style="font-size:2rem;margin-bottom:8px;">💰</div>
+              <strong style="display:block;margin-bottom:6px;">Avantage fiscal</strong>
+              <p style="color:var(--color-text-soft);font-size:0.85rem;margin:0;">Entreprises : 60 % de réduction d'impôt mécénat (art. 238 bis CGI).</p>
+            </div>
+          </div>
+        </div>
+        <div class="panel" style="background:var(--color-primary);color:#fff;border:none;">
+          <h3 style="color:#fff;margin-bottom:8px;">Générez votre rapport d'impact</h3>
+          <p style="color:rgba(255,255,255,0.85);font-size:0.9rem;margin-bottom:16px;">
+            Un rapport complet sera disponible depuis ce tableau de bord une fois votre premier espace référencé.
+          </p>
+          <a href="/deposer-annonce" class="btn btn--cream">Déposer un espace →</a>
+        </div>
+      </div>
+
+      <!-- Paramètres hôte -->
+      <div class="dash-section" id="hote-parametres" style="display:none;">
+        <div style="max-width:600px;display:flex;flex-direction:column;gap:20px;">
+
+          <div class="panel">
+            <div class="panel__head"><h3>Informations du compte</h3></div>
+            <div style="display:flex;flex-direction:column;gap:0;">
+              <div class="param-row">
+                <div class="param-row__label">Adresse email</div>
+                <div id="hote-param-email" class="param-row__value">—</div>
+              </div>
+              <div class="param-row">
+                <div class="param-row__label">Type de structure</div>
+                <div id="hote-param-role" class="param-row__value">—</div>
+              </div>
+              <div class="param-row">
+                <div class="param-row__label">Membre depuis</div>
+                <div id="hote-param-date" class="param-row__value">—</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel__head"><h3>Sécurité</h3></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+              <div>
+                <strong style="display:block;font-size:0.92rem;">Mot de passe</strong>
+                <span style="font-size:0.85rem;color:var(--color-text-soft);">Modifiez votre mot de passe de connexion</span>
+              </div>
+              <button id="hote-btn-reset-pwd" class="btn btn--outline" style="font-size:0.88rem;">Changer le mot de passe</button>
+            </div>
+            <div id="hote-pwd-msg" style="display:none;margin-top:12px;padding:10px 14px;border-radius:var(--radius-md);font-size:0.88rem;"></div>
+          </div>
+
+          <div class="panel" style="border-color:#FCA5A5;">
+            <div class="panel__head"><h3 style="color:#B91C1C;">Zone de danger</h3></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:14px;">
+              <div>
+                <strong style="display:block;font-size:0.92rem;">Supprimer mon compte</strong>
+                <span style="font-size:0.85rem;color:var(--color-text-soft);">Action irréversible. Toutes vos données seront effacées.</span>
+              </div>
+              <a href="/contact?sujet=suppression-compte" class="btn" style="background:#FEE2E2;color:#B91C1C;font-size:0.88rem;border:1px solid #FCA5A5;">Demander la suppression</a>
+            </div>
+            <hr style="border:none;border-top:1px solid #FCA5A5;margin:0 0 14px;" />
+            <button id="hote-btn-logout" class="btn btn--outline" style="font-size:0.9rem;">Se déconnecter</button>
+          </div>
+        </div>
+      </div>
+
     </div>
-  </div><!-- /dash-hote -->
+  </div>
+</div><!-- /dash-hote -->
 
 </BaseLayout>
 
-<!-- ─────────────────────────────────────────────────────────────────────
-     Styles spécifiques au dashboard
-     ───────────────────────────────────────────────────────────────────── -->
 <style>
-  /* Navigation sidebar — boutons */
+  /* ── Layout ──────────────────────────────────────────────────────────────────── */
+  .dash-layout {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    min-height: calc(100vh - var(--header-h, 88px));
+    align-items: start;
+  }
+  .dash-side {
+    position: sticky;
+    top: var(--header-h, 88px);
+    height: calc(100vh - var(--header-h, 88px));
+    overflow-y: auto;
+    background: #fff;
+    border-right: 1px solid var(--color-border);
+    padding: 20px 12px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .dash-side__user {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 4px 8px 16px;
+    border-bottom: 1px solid var(--color-border);
+    margin-bottom: 8px;
+  }
+  .dash-side__avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    background: var(--color-primary);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.05rem;
+    flex-shrink: 0;
+  }
+  .dash-main {
+    padding: 32px 36px;
+    max-width: 900px;
+  }
+  .dash-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 28px;
+  }
+
+  /* ── Sidebar nav ─────────────────────────────────────────────────────────────── */
   .dash-nav-btn {
     display: flex;
     align-items: center;
     gap: 10px;
     width: 100%;
-    padding: 10px 14px;
+    padding: 10px 12px;
     border: none;
     background: transparent;
     border-radius: var(--radius-md);
-    font-family: var(--font);
-    font-size: 0.92rem;
+    font-family: inherit;
+    font-size: 0.9rem;
     font-weight: 500;
     color: var(--color-text-soft);
     cursor: pointer;
@@ -452,17 +658,81 @@ const spacesMapJson = JSON.stringify(
     transition: background 0.15s, color 0.15s;
     text-decoration: none;
   }
-  .dash-nav-btn:hover {
-    background: var(--color-cream-soft);
-    color: var(--color-text);
-  }
-  .dash-nav-btn.is-active {
-    background: var(--color-primary);
-    color: #fff;
-  }
+  .dash-nav-btn:hover { background: var(--color-cream-soft); color: var(--color-text); }
+  .dash-nav-btn.is-active { background: var(--color-primary); color: #fff; }
   .dash-nav-btn.is-active .icon { stroke: #fff; }
+  .dash-nav-btn .icon { width: 17px; height: 17px; flex-shrink: 0; }
 
-  /* Toggle switch */
+  /* ── Stats ───────────────────────────────────────────────────────────────────── */
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+  .stat {
+    background: #fff;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 20px;
+  }
+  .stat__icon {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    margin-bottom: 12px;
+  }
+  .stat__label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--color-text-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 6px;
+  }
+  .stat__value {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--color-text);
+    margin: 0;
+    line-height: 1;
+  }
+
+  /* ── Panels ──────────────────────────────────────────────────────────────────── */
+  .panel {
+    background: #fff;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 22px 24px;
+  }
+  .panel__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+    gap: 12px;
+  }
+  .panel__head h3 { margin: 0; font-size: 1rem; }
+
+  /* ── Quick actions ───────────────────────────────────────────────────────────── */
+  .quick-action {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 18px;
+    background: #fff;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .quick-action:hover { border-color: var(--color-primary); box-shadow: var(--shadow-sm); }
+  .quick-action strong { display: block; font-size: 0.92rem; margin-bottom: 3px; }
+  .quick-action p { margin: 0; font-size: 0.82rem; color: var(--color-text-soft); }
+
+  /* ── Toggle switch ───────────────────────────────────────────────────────────── */
   .toggle-switch {
     position: relative;
     display: inline-block;
@@ -475,7 +745,7 @@ const spacesMapJson = JSON.stringify(
   .toggle-slider {
     position: absolute;
     inset: 0;
-    background: #ccc;
+    background: #D1D5DB;
     border-radius: 24px;
     transition: background 0.2s;
   }
@@ -487,11 +757,23 @@ const spacesMapJson = JSON.stringify(
     background: #fff;
     border-radius: 50%;
     transition: transform 0.2s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
   }
   .toggle-switch input:checked + .toggle-slider { background: var(--color-primary); }
   .toggle-switch input:checked + .toggle-slider::before { transform: translateX(20px); }
+  .toggle-switch input:disabled + .toggle-slider { opacity: 0.5; }
 
-  /* Demande row */
+  /* ── Toggle row ──────────────────────────────────────────────────────────────── */
+  .toggle-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .toggle-row strong { display: block; font-size: 0.92rem; margin-bottom: 3px; }
+  .toggle-row p { margin: 0; font-size: 0.82rem; color: var(--color-text-soft); }
+
+  /* ── Demandes ────────────────────────────────────────────────────────────────── */
   .dem-row {
     display: flex;
     align-items: center;
@@ -502,279 +784,354 @@ const spacesMapJson = JSON.stringify(
   }
   .dem-row:last-child { border-bottom: none; }
   .dem-statut {
-    display: inline-block;
-    padding: 3px 10px;
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
     border-radius: 20px;
     font-size: 0.78rem;
     font-weight: 700;
     white-space: nowrap;
   }
-  .dem-statut--attente { background: #FFF3CD; color: #856404; }
-  .dem-statut--acceptee { background: #D4EDDA; color: #155724; }
-  .dem-statut--refusee { background: #F8D7DA; color: #721C24; }
+  .dem-statut--attente  { background: #FEF3C7; color: #92400E; }
+  .dem-statut--acceptee { background: #D1FAE5; color: #065F46; }
+  .dem-statut--refusee  { background: #FEE2E2; color: #991B1B; }
 
-  /* Grid responsive profil */
-  @media (max-width: 768px) {
-    .profil-grid { grid-template-columns: 1fr !important; }
+  /* ── Paramètres rows ─────────────────────────────────────────────────────────── */
+  .param-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .param-row:last-child { border-bottom: none; }
+  .param-row__label { font-size: 0.85rem; color: var(--color-text-soft); font-weight: 500; }
+  .param-row__value { font-weight: 600; font-size: 0.92rem; text-align: right; }
+
+  /* ── Profil grid ─────────────────────────────────────────────────────────────── */
+  .profil-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    align-items: start;
+  }
+
+  /* ── Responsive ──────────────────────────────────────────────────────────────── */
+  @media (max-width: 900px) {
+    .dash-layout { grid-template-columns: 1fr; }
+    .dash-side { position: static; height: auto; flex-direction: row; flex-wrap: wrap; border-right: none; border-bottom: 1px solid var(--color-border); padding: 12px; gap: 4px; }
+    .dash-side__user { display: none; }
+    .dash-main { padding: 24px 16px; }
+    .stat-grid { grid-template-columns: 1fr 1fr; }
+    .profil-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 540px) {
+    .stat-grid { grid-template-columns: 1fr; }
   }
 </style>
 
-<!-- ─────────────────────────────────────────────────────────────────────
-     Script principal
-     ───────────────────────────────────────────────────────────────────── -->
 <script>
   import { supabase } from '../lib/supabase';
 
-  // Récupère la table espaces injectée en JSON dans la page
   const spacesMap: Record<string, string> = JSON.parse(
     document.getElementById('spaces-map-data')?.textContent || '{}'
   );
 
-  // ── Éléments DOM ──────────────────────────────────────────────────────────────
-  const loadingEl  = document.getElementById('dash-loading');
-  const anonEl     = document.getElementById('dash-anonymous');
-  const pratEl     = document.getElementById('dash-praticien');
-  const hoteEl     = document.getElementById('dash-hote');
-  const bannerEl   = document.getElementById('dash-incomplete-banner');
+  const loadingEl = document.getElementById('dash-loading') as HTMLElement;
+  const anonEl    = document.getElementById('dash-anonymous') as HTMLElement;
+  const pratEl    = document.getElementById('dash-praticien') as HTMLElement;
+  const hoteEl    = document.getElementById('dash-hote') as HTMLElement;
+  const bannerEl  = document.getElementById('dash-incomplete-banner') as HTMLElement;
 
-  // ── Navigation sidebar ────────────────────────────────────────────────────────
-  function initNav(dashEl) {
-    const navBtns  = dashEl.querySelectorAll('.dash-nav-btn[data-section]');
-    const sections = dashEl.querySelectorAll('.dash-section');
+  // ── Navigation sidebar — VERSION CORRIGÉE ─────────────────────────────────────
+  // Les IDs des sections correspondent EXACTEMENT aux data-section des boutons
+  function initNav(dashEl: HTMLElement) {
+    const navBtns  = Array.from(dashEl.querySelectorAll<HTMLElement>('.dash-nav-btn[data-section]'));
+    const sections = Array.from(dashEl.querySelectorAll<HTMLElement>('.dash-section'));
 
-    function activate(targetId) {
+    function activate(targetId: string) {
+      // Boutons sidebar
       navBtns.forEach(b => {
-        b.classList.toggle('is-active', b.dataset.section === targetId);
-        b.setAttribute('aria-current', b.dataset.section === targetId ? 'page' : 'false');
+        const active = b.dataset.section === targetId;
+        b.classList.toggle('is-active', active);
+        b.setAttribute('aria-current', active ? 'page' : 'false');
       });
+      // Sections contenu
       sections.forEach(s => {
         const show = s.id === targetId;
         s.style.display = show ? '' : 'none';
-        s.classList.toggle('is-active', show);
       });
     }
 
     navBtns.forEach(btn => {
-      btn.addEventListener('click', () => activate(btn.dataset.section));
+      btn.addEventListener('click', () => activate(btn.dataset.section!));
     });
 
-    // Liens "Tout voir" dans l'overview
-    dashEl.querySelectorAll('button[data-section]').forEach(btn => {
-      if (!btn.classList.contains('dash-nav-btn')) {
-        btn.addEventListener('click', () => {
-          activate(btn.dataset.section);
-          const navBtn = dashEl.querySelector(`.dash-nav-btn[data-section="${btn.dataset.section}"]`);
-          if (navBtn) navBtn.classList.add('is-active');
-        });
-      }
+    // Boutons "Tout voir →" et quick actions dans l'overview
+    dashEl.querySelectorAll<HTMLElement>('[data-goto]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const target = btn.dataset.goto!;
+        activate(target);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
     });
   }
 
   // ── Formatage date ────────────────────────────────────────────────────────────
-  function fmtDate(str) {
+  function fmtDate(str: string | null): string {
     if (!str) return '—';
-    try {
-      return new Date(str).toLocaleDateString('fr-FR', { day:'numeric', month:'short', year:'numeric' });
-    } catch { return str; }
+    try { return new Date(str).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }); }
+    catch { return str; }
   }
 
-  // ── Badge statut ──────────────────────────────────────────────────────────────
-  function statutBadge(s) {
-    const map = { en_attente: ['attente','⏳ En attente'], acceptee: ['acceptee','✅ Acceptée'], refusee: ['refusee','❌ Refusée'] };
+  // ── Badge statut demande ──────────────────────────────────────────────────────
+  function statutBadge(s: string): string {
+    const map: Record<string, [string, string]> = {
+      en_attente: ['attente',  '⏳ En attente'],
+      acceptee:   ['acceptee', '✅ Acceptée'],
+      refusee:    ['refusee',  '❌ Refusée'],
+    };
     const [cls, label] = map[s] || ['attente', s];
     return `<span class="dem-statut dem-statut--${cls}">${label}</span>`;
   }
 
-  // ── Rendu d'une ligne de demande ──────────────────────────────────────────────
-  function renderDemRow(d) {
-    const espaceName = spacesMap[d.space_id] || d.space_id;
-    const horaires = d.heure_debut && d.heure_fin ? `${d.heure_debut}–${d.heure_fin}` : '';
+  // ── Ligne demande ─────────────────────────────────────────────────────────────
+  function renderDemRow(d: any): string {
+    const nom    = spacesMap[d.space_id] || d.space_id || 'Espace';
+    const horaire = d.heure_debut && d.heure_fin ? ` · ${d.heure_debut}–${d.heure_fin}` : '';
+    const recur  = d.recurrence && d.recurrence !== 'Une seule fois' ? ` · ${d.recurrence}` : '';
     return `
       <div class="dem-row" data-statut="${d.statut}">
         <div style="flex:1;min-width:0;">
-          <strong style="display:block;font-size:0.92rem;">${espaceName}</strong>
-          <span style="font-size:0.82rem;color:var(--color-text-soft);">${fmtDate(d.date)}${horaires ? ' · ' + horaires : ''}${d.recurrence && d.recurrence !== 'Une seule fois' ? ' · ' + d.recurrence : ''}</span>
+          <strong style="display:block;font-size:0.9rem;">${nom}</strong>
+          <span style="font-size:0.8rem;color:var(--color-text-soft);">${fmtDate(d.date)}${horaire}${recur}</span>
         </div>
         ${statutBadge(d.statut)}
       </div>`;
   }
 
   // ── Dashboard Praticien ───────────────────────────────────────────────────────
-  async function loadPraticien(session, profile) {
+  async function loadPraticien(session: any, profile: any) {
     pratEl.style.display = 'block';
     initNav(pratEl);
 
     const prenom = profile?.prenom || session.user.email?.split('@')[0] || 'vous';
-    document.getElementById('prat-prenom').textContent = prenom;
-    document.getElementById('param-email').textContent = session.user.email || '—';
-    document.getElementById('param-role').textContent = profile?.role || 'praticien';
-
-    // Profil section
+    const nom    = profile?.nom    || '';
     const initiales = ((profile?.prenom?.[0] || '') + (profile?.nom?.[0] || '')).toUpperCase() || '?';
-    document.getElementById('profil-avatar').textContent = initiales;
-    document.getElementById('profil-nom').textContent = `${profile?.prenom || '—'} ${profile?.nom || ''}`.trim();
-    document.getElementById('profil-specialite').textContent = profile?.specialite || 'Spécialité non renseignée';
-    document.getElementById('profil-ville').textContent = profile?.ville || 'Non renseignée';
-    document.getElementById('profil-email').textContent = session.user.email || '—';
+
+    // Sidebar user
+    (document.getElementById('side-avatar') as HTMLElement).textContent = initiales;
+    (document.getElementById('side-nom')    as HTMLElement).textContent = `${prenom} ${nom}`.trim();
+    (document.getElementById('side-role')   as HTMLElement).textContent = 'Praticien·ne';
+
+    // En-tête
+    (document.getElementById('prat-prenom') as HTMLElement).textContent = prenom;
+
+    // Section profil
+    (document.getElementById('profil-avatar')    as HTMLElement).textContent = initiales;
+    (document.getElementById('profil-nom')       as HTMLElement).textContent = `${prenom} ${nom}`.trim();
+    (document.getElementById('profil-specialite')as HTMLElement).textContent = profile?.specialite || 'Spécialité non renseignée';
+    (document.getElementById('profil-ville')     as HTMLElement).textContent = profile?.ville      || 'Non renseignée';
+    (document.getElementById('profil-email')     as HTMLElement).textContent = session.user.email  || '—';
+    (document.getElementById('profil-tel')       as HTMLElement).textContent = profile?.telephone  || 'Non renseigné';
     if (profile?.bio) {
-      const bioEl = document.getElementById('profil-bio');
+      const bioEl = document.getElementById('profil-bio') as HTMLElement;
       bioEl.textContent = profile.bio;
       bioEl.style.display = 'block';
     }
 
     // Complétude profil
-    const fields = [profile?.prenom, profile?.nom, profile?.specialite, profile?.ville, profile?.bio];
+    const fields = [profile?.prenom, profile?.nom, profile?.specialite, profile?.ville, profile?.bio, profile?.telephone];
     const filled = fields.filter(Boolean).length;
-    const pct = Math.round((filled / fields.length) * 100);
-    const completudeEl = document.getElementById('profil-completude');
-    const color = pct === 100 ? '#2D6E3F' : pct >= 60 ? '#856404' : 'var(--color-primary)';
-    completudeEl.innerHTML = `<span style="color:${color};font-weight:600;">Profil complété à ${pct}%</span>`;
+    const pct    = Math.round((filled / fields.length) * 100);
+    const color  = pct === 100 ? '#065F46' : pct >= 60 ? '#92400E' : 'var(--color-primary)';
+    (document.getElementById('pct-label') as HTMLElement).style.color = color;
+    (document.getElementById('pct-label') as HTMLElement).textContent = `${pct}%`;
+    (document.getElementById('pct-bar')   as HTMLElement).style.width = `${pct}%`;
+    (document.getElementById('pct-bar')   as HTMLElement).style.background = color;
+    const missing = ['Prénom','Nom','Spécialité','Ville','Bio','Téléphone'].filter((_,i) => !fields[i]);
+    (document.getElementById('pct-hint')  as HTMLElement).textContent =
+      missing.length ? `Manquant : ${missing.join(', ')}` : '✅ Profil complet !';
 
     // Bannière si incomplet
-    if (!profile?.prenom || !profile?.specialite) {
-      bannerEl.style.display = 'block';
-    }
+    if (!profile?.prenom || !profile?.specialite) bannerEl.style.display = 'block';
 
-    // Toggles visibilité
-    const toggleAnnuaire = document.getElementById('toggle-annuaire');
-    const toggleRempl    = document.getElementById('toggle-rempl');
-    const toggleRempl2   = document.getElementById('toggle-rempl-2');
-    toggleAnnuaire.checked = profile?.visible_annuaire ?? true;
-    toggleRempl.checked    = profile?.disponible_remplacement ?? false;
-    toggleRempl2.checked   = profile?.disponible_remplacement ?? false;
+    // Paramètres
+    (document.getElementById('param-email') as HTMLElement).textContent = session.user.email || '—';
+    (document.getElementById('param-role')  as HTMLElement).textContent = profile?.role || 'praticien';
+    (document.getElementById('param-date')  as HTMLElement).textContent = fmtDate(session.user.created_at);
+    (document.getElementById('param-id')    as HTMLElement).textContent = session.user.id;
 
-    // Statut remplacement
-    const updateRemplStatus = (checked) => {
-      document.getElementById('remp-status-icon').textContent = checked ? '✅' : '⏸️';
-      document.getElementById('remp-status-text').textContent = checked
+    // Toggles
+    const tA  = document.getElementById('toggle-annuaire') as HTMLInputElement;
+    const tR  = document.getElementById('toggle-rempl')    as HTMLInputElement;
+    const tR2 = document.getElementById('toggle-rempl-2')  as HTMLInputElement;
+    tA.checked  = profile?.visible_annuaire       ?? true;
+    tR.checked  = profile?.disponible_remplacement ?? false;
+    tR2.checked = profile?.disponible_remplacement ?? false;
+
+    const updateRemplStatus = (on: boolean) => {
+      (document.getElementById('remp-icon') as HTMLElement).textContent = on ? '✅' : '⏸️';
+      (document.getElementById('remp-text') as HTMLElement).textContent = on
         ? 'Vous êtes disponible pour des remplacements'
         : 'Vous n\'êtes pas disponible pour des remplacements';
     };
-    updateRemplStatus(toggleRempl2.checked);
+    updateRemplStatus(tR2.checked);
+    (document.getElementById('stat-visibilite') as HTMLElement).textContent =
+      (profile?.visible_annuaire ?? true) ? '✅ Visible' : '❌ Masqué';
 
-    // Stat visibilité
-    document.getElementById('stat-visibilite').textContent = (profile?.visible_annuaire ?? true) ? '✅ Visible' : '❌ Masqué';
-
-    // Fonction de sauvegarde toggle
-    async function saveToggle(field, value, el) {
-      const msgEl = document.getElementById('toggle-msg');
+    async function saveToggle(field: string, value: boolean, el: HTMLInputElement) {
+      const msgEl = document.getElementById('toggle-msg') as HTMLElement;
       try {
         const { error } = await supabase.from('profiles').update({ [field]: value }).eq('id', session.user.id);
         if (error) throw error;
-        if (msgEl) {
-          msgEl.style.display = 'block';
-          msgEl.style.background = '#D4EDDA';
-          msgEl.style.color = '#155724';
-          msgEl.textContent = '✓ Sauvegardé';
-          setTimeout(() => { msgEl.style.display = 'none'; }, 2000);
-        }
-        if (field === 'visible_annuaire') {
-          document.getElementById('stat-visibilite').textContent = value ? '✅ Visible' : '❌ Masqué';
-        }
-      } catch (e) {
-        if (msgEl) {
-          msgEl.style.display = 'block';
-          msgEl.style.background = '#F8D7DA';
-          msgEl.style.color = '#721C24';
-          msgEl.textContent = '⚠️ Erreur de sauvegarde';
-        }
-        if (el) el.checked = !value; // revert
+        msgEl.style.display = 'block';
+        msgEl.style.background = '#D1FAE5'; msgEl.style.color = '#065F46';
+        msgEl.textContent = '✓ Sauvegardé';
+        setTimeout(() => { msgEl.style.display = 'none'; }, 2500);
+        if (field === 'visible_annuaire')
+          (document.getElementById('stat-visibilite') as HTMLElement).textContent = value ? '✅ Visible' : '❌ Masqué';
+      } catch {
+        msgEl.style.display = 'block';
+        msgEl.style.background = '#FEE2E2'; msgEl.style.color = '#991B1B';
+        msgEl.textContent = '⚠️ Erreur de sauvegarde';
+        el.checked = !value;
       }
     }
 
-    toggleAnnuaire.addEventListener('change', () => saveToggle('visible_annuaire', toggleAnnuaire.checked, toggleAnnuaire));
-    toggleRempl.addEventListener('change', () => {
-      toggleRempl2.checked = toggleRempl.checked;
-      updateRemplStatus(toggleRempl.checked);
-      saveToggle('disponible_remplacement', toggleRempl.checked, toggleRempl);
+    tA.addEventListener('change', () => saveToggle('visible_annuaire', tA.checked, tA));
+    tR.addEventListener('change', () => {
+      tR2.checked = tR.checked; updateRemplStatus(tR.checked);
+      saveToggle('disponible_remplacement', tR.checked, tR);
     });
-    toggleRempl2.addEventListener('change', () => {
-      toggleRempl.checked = toggleRempl2.checked;
-      updateRemplStatus(toggleRempl2.checked);
-      saveToggle('disponible_remplacement', toggleRempl2.checked, toggleRempl2);
+    tR2.addEventListener('change', () => {
+      tR.checked = tR2.checked; updateRemplStatus(tR2.checked);
+      saveToggle('disponible_remplacement', tR2.checked, tR2);
     });
 
-    // ── Chargement des demandes ───────────────────────────────────────────────
-    let allDemandes = [];
+    // Réinitialisation mot de passe
+    (document.getElementById('btn-reset-pwd') as HTMLButtonElement)?.addEventListener('click', async () => {
+      const msgEl = document.getElementById('pwd-msg') as HTMLElement;
+      msgEl.style.display = 'block';
+      msgEl.style.background = '#FEF3C7'; msgEl.style.color = '#92400E';
+      msgEl.textContent = 'Envoi en cours…';
+      try {
+        const { error } = await supabase.auth.resetPasswordForEmail(session.user.email, {
+          redirectTo: window.location.origin + '/connexion'
+        });
+        if (error) throw error;
+        msgEl.style.background = '#D1FAE5'; msgEl.style.color = '#065F46';
+        msgEl.textContent = `✅ Email envoyé à ${session.user.email}. Vérifiez votre boîte mail.`;
+      } catch {
+        msgEl.style.background = '#FEE2E2'; msgEl.style.color = '#991B1B';
+        msgEl.textContent = '⚠️ Erreur lors de l\'envoi. Réessayez ou contactez le support.';
+      }
+    });
 
+    // Déconnexion
+    document.getElementById('btn-logout-param')?.addEventListener('click', async () => {
+      await supabase.auth.signOut();
+      window.location.href = '/';
+    });
+
+    // ── Demandes ──────────────────────────────────────────────────────────────
+    let allDemandes: any[] = [];
     try {
       const { data, error } = await supabase
-        .from('demandes')
-        .select('*')
-        .eq('user_id', session.user.id)
+        .from('demandes').select('*').eq('user_id', session.user.id)
         .order('created_at', { ascending: false });
 
       if (!error && data) {
         allDemandes = data;
-
-        // Stats
         const total    = data.length;
         const acceptee = data.filter(d => d.statut === 'acceptee').length;
         const attente  = data.filter(d => d.statut === 'en_attente').length;
 
-        document.getElementById('stat-total').textContent    = total;
-        document.getElementById('stat-acceptees').textContent = acceptee;
-        document.getElementById('stat-attente').textContent   = attente;
+        (document.getElementById('stat-total')    as HTMLElement).textContent = String(total);
+        (document.getElementById('stat-acceptees')as HTMLElement).textContent = String(acceptee);
+        (document.getElementById('stat-attente')  as HTMLElement).textContent = String(attente);
 
-        // Badge sidebar
         if (attente > 0) {
-          const badge = document.getElementById('badge-pending');
-          badge.textContent = attente;
+          const badge = document.getElementById('badge-pending') as HTMLElement;
+          badge.textContent = String(attente);
           badge.style.display = 'inline';
         }
 
-        // Dernières demandes (vue d'ensemble — 5 max)
-        const overviewEl = document.getElementById('overview-demandes-list');
-        if (total === 0) {
-          overviewEl.innerHTML = `<p style="color:var(--color-text-soft);text-align:center;padding:32px 24px;">
-            Vous n'avez pas encore envoyé de demande.<br/>
-            <a href="/explorez">Explorez les espaces disponibles →</a>
-          </p>`;
-        } else {
-          overviewEl.innerHTML = data.slice(0, 5).map(renderDemRow).join('');
-        }
+        const overviewEl = document.getElementById('overview-demandes-list') as HTMLElement;
+        overviewEl.innerHTML = total === 0
+          ? `<p style="color:var(--color-text-soft);text-align:center;padding:32px;">Aucune demande pour l'instant. <a href="/explorez">Trouver un espace →</a></p>`
+          : data.slice(0, 5).map(renderDemRow).join('');
 
-        // Liste complète des demandes
         renderDemandesList(data, 'all');
       }
-    } catch (e) {
-      console.warn('Demandes non chargées', e);
-      document.getElementById('stat-total').textContent = '—';
-      document.getElementById('stat-acceptees').textContent = '—';
-      document.getElementById('stat-attente').textContent = '—';
+    } catch {
+      ['stat-total','stat-acceptees','stat-attente'].forEach(id =>
+        ((document.getElementById(id) as HTMLElement).textContent = '—')
+      );
     }
 
-    // Filtres demandes
-    function renderDemandesList(data, filter) {
-      const listEl = document.getElementById('demandes-list');
+    function renderDemandesList(data: any[], filter: string) {
+      const listEl   = document.getElementById('demandes-list') as HTMLElement;
       const filtered = filter === 'all' ? data : data.filter(d => d.statut === filter);
-      if (filtered.length === 0) {
-        listEl.innerHTML = `<p style="color:var(--color-text-soft);text-align:center;padding:48px 24px;">
-          ${filter === 'all' ? 'Aucune demande pour l\'instant. <a href="/explorez">Trouver un espace →</a>' : 'Aucune demande dans cette catégorie.'}
-        </p>`;
-      } else {
-        listEl.innerHTML = filtered.map(renderDemRow).join('');
-      }
+      listEl.innerHTML = filtered.length === 0
+        ? `<p style="color:var(--color-text-soft);text-align:center;padding:48px;">${filter === 'all' ? 'Aucune demande. <a href="/explorez">Trouver un espace →</a>' : 'Aucune demande dans cette catégorie.'}</p>`
+        : filtered.map(renderDemRow).join('');
     }
 
-    pratEl.querySelectorAll('.dem-filter').forEach(btn => {
+    pratEl.querySelectorAll<HTMLElement>('.dem-filter').forEach(btn => {
       btn.addEventListener('click', () => {
         pratEl.querySelectorAll('.dem-filter').forEach(b => {
-          b.classList.remove('btn--primary');
-          b.classList.add('btn--outline');
+          b.classList.remove('btn--primary'); b.classList.add('btn--outline');
         });
-        btn.classList.add('btn--primary');
-        btn.classList.remove('btn--outline');
-        renderDemandesList(allDemandes, btn.dataset.filter);
+        btn.classList.add('btn--primary'); btn.classList.remove('btn--outline');
+        renderDemandesList(allDemandes, btn.dataset.filter!);
       });
     });
   }
 
   // ── Dashboard Hôte ────────────────────────────────────────────────────────────
-  function loadHote(profile, fallback) {
+  async function loadHote(session: any, profile: any) {
     hoteEl.style.display = 'block';
     initNav(hoteEl);
-    document.getElementById('hote-prenom').textContent = profile?.prenom || fallback;
+
+    const prenom    = profile?.prenom || session.user.email?.split('@')[0] || 'vous';
+    const initiales = ((profile?.prenom?.[0] || '') + (profile?.nom?.[0] || '')).toUpperCase() || '?';
+    const roleLabel = profile?.role === 'entreprise' ? 'Entreprise' : 'Collectivité';
+
+    (document.getElementById('hote-side-avatar') as HTMLElement).textContent = initiales;
+    (document.getElementById('hote-side-nom')    as HTMLElement).textContent = prenom;
+    (document.getElementById('hote-side-role')   as HTMLElement).textContent = roleLabel;
+    (document.getElementById('hote-prenom')      as HTMLElement).textContent = prenom;
+
+    (document.getElementById('hote-param-email') as HTMLElement).textContent = session.user.email || '—';
+    (document.getElementById('hote-param-role')  as HTMLElement).textContent = roleLabel;
+    (document.getElementById('hote-param-date')  as HTMLElement).textContent = fmtDate(session.user.created_at);
+
+    // Reset password
+    document.getElementById('hote-btn-reset-pwd')?.addEventListener('click', async () => {
+      const msgEl = document.getElementById('hote-pwd-msg') as HTMLElement;
+      msgEl.style.display = 'block';
+      msgEl.style.background = '#FEF3C7'; msgEl.style.color = '#92400E';
+      msgEl.textContent = 'Envoi en cours…';
+      try {
+        const { error } = await supabase.auth.resetPasswordForEmail(session.user.email, {
+          redirectTo: window.location.origin + '/connexion'
+        });
+        if (error) throw error;
+        msgEl.style.background = '#D1FAE5'; msgEl.style.color = '#065F46';
+        msgEl.textContent = `✅ Email envoyé à ${session.user.email}.`;
+      } catch {
+        msgEl.style.background = '#FEE2E2'; msgEl.style.color = '#991B1B';
+        msgEl.textContent = '⚠️ Erreur lors de l\'envoi.';
+      }
+    });
+
+    // Déconnexion
+    document.getElementById('hote-btn-logout')?.addEventListener('click', async () => {
+      await supabase.auth.signOut();
+      window.location.href = '/';
+    });
   }
 
   // ── Point d'entrée ────────────────────────────────────────────────────────────
@@ -784,22 +1141,21 @@ const spacesMapJson = JSON.stringify(
       anonEl.style.display = 'block';
       return;
     }
-
     try {
       const { data: profile } = await supabase
         .from('profiles')
-        .select('role, prenom, nom, specialite, ville, bio, visible_annuaire, disponible_remplacement, telephone')
+        .select('role, prenom, nom, specialite, ville, bio, telephone, visible_annuaire, disponible_remplacement')
         .eq('id', session.user.id)
         .single();
 
       loadingEl.style.display = 'none';
 
       if (profile?.role === 'collectivite' || profile?.role === 'entreprise') {
-        loadHote(profile, session.user.email?.split('@')[0] || 'vous');
+        loadHote(session, profile);
       } else {
         loadPraticien(session, profile);
       }
-    } catch (e) {
+    } catch {
       loadingEl.style.display = 'none';
       loadPraticien(session, null);
     }
