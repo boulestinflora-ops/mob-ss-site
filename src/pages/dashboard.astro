@@ -1,0 +1,364 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+// Ce dashboard contient DEUX versions :
+//  - Dashboard PRATICIEN (sport/santé) : ses interventions, ses lieux, ses revenus
+//  - Dashboard HÔTE (collectivité/entreprise) : ses espaces, demandes reçues, occupation
+// Le script en bas récupère le rôle de l'utilisateur connecté et affiche le bon.
+---
+
+<BaseLayout title="Mon espace — MOB'SS" description="Tableau de bord MOB'SS.">
+
+  <!-- ÉTAT DE CHARGEMENT (visible par défaut) -->
+  <div id="dash-loading" style="text-align:center;padding:120px 24px;color:var(--color-text-soft);">
+    <p style="font-size:1.05rem;">Chargement de votre espace…</p>
+  </div>
+
+  <!-- BANNIÈRE PROFIL INCOMPLET (masquée par défaut, affichée par JS si nécessaire) -->
+  <div id="dash-incomplete-banner" style="display:none;background:#FFF8DC;border-bottom:1px solid #E8D87A;padding:14px 24px;">
+    <div class="container" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+      <span style="color:#6B5800;font-size:0.95rem;">
+        ✏️ <strong>Votre profil est incomplet.</strong> Complétez-le pour apparaître dans l'annuaire et recevoir des offres de remplacement.
+      </span>
+      <a href="/completer-profil" class="btn btn--primary" style="white-space:nowrap;">Compléter mon profil →</a>
+    </div>
+  </div>
+
+  <!-- ÉTAT NON CONNECTÉ -->
+  <div id="dash-anonymous" style="display:none;text-align:center;padding:120px 24px;">
+    <h1>Connectez-vous pour accéder à votre espace</h1>
+    <p style="color:var(--color-text-soft);margin-bottom:24px;">Vous devez être connecté·e pour voir votre tableau de bord.</p>
+    <a href="/connexion" class="btn btn--primary btn--lg">Se connecter</a>
+  </div>
+
+  <!-- ============================================================
+       DASHBOARD PRATICIEN (sport / santé)
+       ============================================================ -->
+  <div id="dash-praticien" style="display:none;">
+    <div class="dash-layout">
+      <aside class="dash-side">
+        <a href="#" class="is-active">
+          <svg class="icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          Vue d'ensemble
+        </a>
+        <a href="#"><svg class="icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Mes interventions</a>
+        <a href="/explorez"><svg class="icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 7-8 13-8 13s-8-6-8-13a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg> Trouver un lieu</a>
+        <a href="#"><svg class="icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18"/><path d="M5 21V8l7-5 7 5v13"/></svg> Mes lieux d'exercice</a>
+        <a href="#"><svg class="icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> Messagerie</a>
+        <a href="#"><svg class="icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/></svg> Paramètres</a>
+      </aside>
+
+      <div class="dash-main">
+        <div class="dash-head">
+          <div>
+            <h1>Bonjour <span data-user-prenom>—</span> 👋</h1>
+            <p style="margin:0;color:var(--color-text-soft);">Voici votre activité de la semaine.</p>
+          </div>
+          <div class="flex gap-12">
+            <a href="/explorez" class="btn btn--primary">+ Réserver un lieu</a>
+          </div>
+        </div>
+
+        <div class="stat-grid">
+          <div class="stat">
+            <div class="stat__label">Interventions cette semaine</div>
+            <p class="stat__value">0</p>
+            <div class="stat__delta">Données réelles dès Phase 4</div>
+          </div>
+          <div class="stat">
+            <div class="stat__label">Heures réservées</div>
+            <p class="stat__value">0h</p>
+            <div class="stat__delta">À venir</div>
+          </div>
+          <div class="stat">
+            <div class="stat__label">Lieux différents fréquentés</div>
+            <p class="stat__value">0</p>
+            <div class="stat__delta">Depuis votre inscription</div>
+          </div>
+          <div class="stat">
+            <div class="stat__label">Patients accueillis</div>
+            <p class="stat__value">0</p>
+            <div class="stat__delta">Total cumulé</div>
+          </div>
+        </div>
+
+        <div class="tabs" role="tablist">
+          <button class="is-active" data-panel="prat-bookings">Prochaines interventions</button>
+          <button data-panel="prat-lieux">Mes lieux favoris</button>
+          <button data-panel="prat-impact">Mon impact solidaire</button>
+        </div>
+
+        <div class="tab-panel is-active" id="prat-bookings">
+          <div class="panel">
+            <div class="panel__head">
+              <h3>Vos prochaines interventions</h3>
+              <a href="/explorez" class="btn btn--ghost">Réserver un nouveau lieu →</a>
+            </div>
+            <p style="color:var(--color-text-soft);text-align:center;padding:40px 24px;">
+              Vous n'avez pas encore réservé de créneau. <br />
+              <a href="/explorez">Explorez les espaces disponibles</a> pour commencer.
+            </p>
+          </div>
+        </div>
+
+        <div class="tab-panel" id="prat-lieux">
+          <div class="panel">
+            <div class="panel__head">
+              <h3>Vos lieux d'exercice</h3>
+            </div>
+            <p style="color:var(--color-text-soft);text-align:center;padding:40px 24px;">
+              Les lieux où vous exercez régulièrement apparaîtront ici.
+            </p>
+          </div>
+        </div>
+
+        <div class="tab-panel" id="prat-impact">
+          <div class="grid grid--3">
+            <div class="card">
+              <div class="card__icon">🤝</div>
+              <h3>0 créneau solidaire</h3>
+              <p>Engagez-vous à offrir au moins 10 % de vos créneaux à des publics prioritaires (sport sur ordonnance, seniors, précarité).</p>
+            </div>
+            <div class="card">
+              <div class="card__icon">🏥</div>
+              <h3>0 patient APA</h3>
+              <p>Activité Physique Adaptée : accueillez des patients orientés par leur médecin.</p>
+            </div>
+            <div class="card">
+              <div class="card__icon">📊</div>
+              <h3>Suivi d'impact</h3>
+              <p>Votre impact territorial sera mesuré et valorisé dès vos premières interventions.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       DASHBOARD HÔTE (collectivité / entreprise)
+       ============================================================ -->
+  <div id="dash-hote" style="display:none;">
+    <div class="dash-layout">
+      <aside class="dash-side">
+        <a href="#" class="is-active">
+          <svg class="icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          Vue d'ensemble
+        </a>
+        <a href="#"><svg class="icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Demandes reçues</a>
+        <a href="#"><svg class="icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18"/><path d="M5 21V8l7-5 7 5v13"/></svg> Mes espaces</a>
+        <a href="#"><svg class="icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> Messagerie</a>
+        <a href="#"><svg class="icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M5 9l7-7 7 7"/></svg> Statistiques d'impact</a>
+        <a href="#"><svg class="icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/></svg> Paramètres</a>
+      </aside>
+
+      <div class="dash-main">
+        <div class="dash-head">
+          <div>
+            <h1>Bonjour <span data-user-prenom>—</span> 👋</h1>
+            <p style="margin:0;color:var(--color-text-soft);">Voici l'activité de votre structure cette semaine.</p>
+          </div>
+          <div class="flex gap-12">
+            <a href="/deposer-annonce" class="btn btn--primary">+ Nouvelle annonce</a>
+          </div>
+        </div>
+
+        <div class="stat-grid">
+          <div class="stat">
+            <div class="stat__label">Demandes en attente</div>
+            <p class="stat__value">0</p>
+            <div class="stat__delta">Données réelles dès Phase 4</div>
+          </div>
+          <div class="stat">
+            <div class="stat__label">Heures réservées (mois)</div>
+            <p class="stat__value">0h</p>
+            <div class="stat__delta">À venir</div>
+          </div>
+          <div class="stat">
+            <div class="stat__label">Espaces référencés</div>
+            <p class="stat__value">0</p>
+            <div class="stat__delta">Publiés sur la plateforme</div>
+          </div>
+          <div class="stat">
+            <div class="stat__label">Praticiens accueillis</div>
+            <p class="stat__value">0</p>
+            <div class="stat__delta">Depuis votre inscription</div>
+          </div>
+        </div>
+
+        <div class="tabs" role="tablist">
+          <button class="is-active" data-panel="hote-bookings">Demandes & réservations</button>
+          <button data-panel="hote-spaces">Mes espaces</button>
+          <button data-panel="hote-impact">Impact territorial</button>
+        </div>
+
+        <div class="tab-panel is-active" id="hote-bookings">
+          <div class="panel">
+            <div class="panel__head">
+              <h3>Demandes et réservations</h3>
+              <a href="#" class="btn btn--ghost">Tout voir →</a>
+            </div>
+            <p style="color:var(--color-text-soft);text-align:center;padding:40px 24px;">
+              Aucune demande pour l'instant. <br />
+              <a href="/deposer-annonce">Publiez votre premier espace</a> pour recevoir des demandes de praticiens.
+            </p>
+          </div>
+        </div>
+
+        <div class="tab-panel" id="hote-spaces">
+          <div class="panel">
+            <div class="panel__head">
+              <h3>Vos espaces</h3>
+              <a href="/deposer-annonce" class="btn btn--primary">+ Nouvel espace</a>
+            </div>
+            <p style="color:var(--color-text-soft);text-align:center;padding:40px 24px;">
+              Vous n'avez pas encore publié d'espace. <br />
+              <a href="/deposer-annonce">Référencez votre premier lieu</a> en 5 minutes.
+            </p>
+          </div>
+        </div>
+
+        <div class="tab-panel" id="hote-impact">
+          <div class="grid grid--3">
+            <div class="card">
+              <div class="card__icon">👥</div>
+              <h3>0 patient accueilli</h3>
+              <p>Comptez les patients qui auront bénéficié de soins dans vos espaces.</p>
+            </div>
+            <div class="card">
+              <div class="card__icon">📍</div>
+              <h3>0 km évités</h3>
+              <p>Estimez les déplacements évités pour vos administrés grâce à la proximité des soins.</p>
+            </div>
+            <div class="card">
+              <div class="card__icon">🏥</div>
+              <h3>0 nouveau praticien</h3>
+              <p>Praticiens installés sur votre territoire grâce au dispositif.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       Script : choisit le bon dashboard selon le rôle de l'utilisateur
+       Version simplifiée : getSession() (synchrone) pour aller vite,
+       pas de listener persistant qui pourrait causer une boucle.
+       ============================================================ -->
+  <script>
+    import { supabase } from '../lib/supabase';
+
+    const loadingEl = document.getElementById('dash-loading');
+    const anonEl = document.getElementById('dash-anonymous');
+    const praticienEl = document.getElementById('dash-praticien');
+    const hoteEl = document.getElementById('dash-hote');
+
+    function showAnonymous() {
+      if (loadingEl) loadingEl.style.display = 'none';
+      if (anonEl) anonEl.style.display = 'block';
+    }
+
+    function showPraticien(prenom: string) {
+      document.querySelectorAll('[data-user-prenom]').forEach((el) => {
+        (el as HTMLElement).textContent = prenom;
+      });
+      if (loadingEl) loadingEl.style.display = 'none';
+      if (praticienEl) praticienEl.style.display = 'block';
+    }
+
+    function showHote(prenom: string) {
+      document.querySelectorAll('[data-user-prenom]').forEach((el) => {
+        (el as HTMLElement).textContent = prenom;
+      });
+      if (loadingEl) loadingEl.style.display = 'none';
+      if (hoteEl) hoteEl.style.display = 'block';
+    }
+
+    // Étape 1 : lecture immédiate de la session locale (cookie/localStorage).
+    // Ne fait PAS d'appel HTTP — instantané et fiable.
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      if (!session?.user) {
+        showAnonymous();
+        return;
+      }
+
+      // Affiche immédiatement avec un fallback (avant la requête profil)
+      const fallback = session.user.email?.split('@')[0] || 'à toi';
+      showPraticien(fallback);
+
+      // Étape 2 : récupère le vrai profil pour basculer si nécessaire
+      try {
+        const { data: profile, error } = await supabase
+          .from('profiles')
+          .select('role, prenom, nom, specialite, ville')
+          .eq('id', session.user.id)
+          .single();
+
+        if (error) {
+          console.warn('Profil non chargé :', error.message);
+          // Profil inexistant → bannière de complétion
+          const banner = document.getElementById('dash-incomplete-banner');
+          if (banner) banner.style.display = 'block';
+          return;
+        }
+
+        const prenom = profile?.prenom || fallback;
+
+        // Bannière si profil incomplet (pas de prénom OU pas de spécialité)
+        const banner = document.getElementById('dash-incomplete-banner');
+        if (banner && (!profile?.prenom || !profile?.specialite)) {
+          banner.style.display = 'block';
+        }
+
+        // Si le rôle réel n'est pas "praticien", on bascule sur l'autre vue
+        if (profile?.role === 'collectivite' || profile?.role === 'entreprise') {
+          if (praticienEl) praticienEl.style.display = 'none';
+          showHote(prenom);
+        } else {
+          // Met juste à jour le prénom dans la vue praticien déjà affichée
+          document.querySelectorAll('[data-user-prenom]').forEach((el) => {
+            (el as HTMLElement).textContent = prenom;
+          });
+        }
+      } catch (e) {
+        console.warn('Erreur réseau profil', e);
+      }
+    });
+
+    // Note : on n'utilise PAS supabase.auth.onAuthStateChange ici.
+    // Il maintenait une connexion ouverte qui faisait clignoter l'UI.
+    // Les changements de session sont déjà gérés par :
+    //  - le bouton "Se déconnecter" du Header (qui fait un reload manuel)
+    //  - la redirection après connexion réussie (page connexion.astro)
+  </script>
+
+<script>
+  // ─── Onglets dashboard ────────────────────────────────────────────────────────
+  // Gère les deux groupes d'onglets indépendamment (praticien + hôte).
+  document.querySelectorAll('.tabs').forEach(tabsEl => {
+    const btns = tabsEl.querySelectorAll<HTMLButtonElement>('button[data-panel]');
+
+    btns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const targetId = btn.dataset.panel;
+        if (!targetId) return;
+
+        // Désactive tous les boutons du groupe
+        btns.forEach(b => b.classList.remove('is-active'));
+        btn.classList.add('is-active');
+
+        // Cache/affiche les panneaux dans le même .dash-main
+        const dashMain = btn.closest('.dash-main');
+        if (!dashMain) return;
+
+        dashMain.querySelectorAll<HTMLElement>('.tab-panel').forEach(panel => {
+          const isTarget = panel.id === targetId;
+          panel.classList.toggle('is-active', isTarget);
+          panel.style.display = isTarget ? '' : 'none';
+        });
+      });
+    });
+  });
+</script>
+</BaseLayout>

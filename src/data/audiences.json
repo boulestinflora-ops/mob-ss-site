@@ -1,0 +1,26 @@
+[
+  {
+    "tag": "Praticiens",
+    "variant": "is-pro",
+    "title": "Trouvez un lieu pour exercer",
+    "description": "Coachs, kinés, ostéopathes, diététiciens, APA, infirmiers, sophrologues… réservez ponctuellement des espaces équipés près de votre patientèle, sans louer un cabinet fixe.",
+    "ctaLabel": "En savoir plus →",
+    "ctaHref": "/inscription?role=praticien"
+  },
+  {
+    "tag": "Collectivités",
+    "variant": "is-collec",
+    "title": "Dynamisez votre territoire",
+    "description": "Mettez gracieusement vos salles à disposition de praticiens locaux pour lutter contre les déserts médicaux et améliorer l'accès aux soins.",
+    "ctaLabel": "En savoir plus →",
+    "ctaHref": "/inscription?role=collectivite"
+  },
+  {
+    "tag": "Entreprises",
+    "variant": "is-corp",
+    "title": "Soutenez vos collaborateurs",
+    "description": "Proposez gracieusement vos espaces inoccupés à des praticiens du sport et de la santé. Bénéficiez d'une réduction d'impôt mécénat et améliorez la QVCT.",
+    "ctaLabel": "En savoir plus →",
+    "ctaHref": "/inscription?role=entreprise"
+  }
+]

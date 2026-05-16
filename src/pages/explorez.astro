@@ -1,0 +1,332 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SpaceCard from '../components/SpaceCard.astro';
+import Icon from '../components/Icon.astro';
+import spaces from '../data/spaces.json';
+
+// Listes pour les filtres
+const regions = [...new Set(spaces.map(s => s.region))].sort();
+const types   = [...new Set(spaces.map(s => s.type))].sort();
+---
+
+<BaseLayout
+  title="Explorez les espaces — MOB'SS"
+  description="Trouvez un espace gratuit pour exercer votre activité de sport ou de santé près de chez vous — mis à disposition par des collectivités et entreprises partout en France."
+  currentPage="explorez"
+>
+
+  <!-- Hero -->
+  <section class="explore-hero">
+    <div class="container">
+      <span class="section__eyebrow">Espaces disponibles</span>
+      <h1>Où souhaitez-vous exercer ?</h1>
+      <p>Des espaces mis à disposition gracieusement par des collectivités et des entreprises partout en France.</p>
+    </div>
+  </section>
+
+  <!-- Barre de recherche rapide -->
+  <div class="container" style="position:relative;">
+    <div class="search-card" style="margin-top:-40px;">
+      <form class="search-form" id="search-form">
+        <div class="search-field">
+          <Icon name="map-pin" width={20} height={20} />
+          <input type="text" placeholder="Ville, code postal, région…" id="filter-loc" />
+        </div>
+        <div class="search-field">
+          <Icon name="search" width={20} height={20} />
+          <select id="filter-type">
+            <option value="">Tous les types d'espace</option>
+            {types.map(t => <option value={t}>{t}</option>)}
+          </select>
+        </div>
+        <button type="button" class="btn btn--cream" id="search-btn">Rechercher</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Layout principal -->
+  <section class="section" style="padding-top:32px;">
+    <div class="container explore-container">
+
+      <!-- ===== COLONNE GAUCHE : filtres + résultats ===== -->
+      <div class="explore-left">
+
+        <!-- Filtres rétractables -->
+        <div class="filters-panel" id="filters-panel">
+          <button class="filters-toggle" id="filters-toggle" aria-expanded="true" aria-controls="filters-body">
+            <span class="filters-toggle__icon">⚙️</span>
+            <span>Affiner la recherche</span>
+            <svg class="filters-toggle__chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </button>
+
+          <div class="filters-body" id="filters-body">
+
+            <div class="filter-group">
+              <span class="filter-group__label">Région</span>
+              <select id="filter-region" class="filter-select">
+                <option value="">Toutes les régions</option>
+                {regions.map(r => <option value={r}>{r}</option>)}
+              </select>
+            </div>
+
+            <div class="filter-group">
+              <span class="filter-group__label">Type d'espace</span>
+              {types.map(t => (
+                <label class="option">
+                  <input type="checkbox" class="filter-space-type" value={t} /> {t}
+                </label>
+              ))}
+            </div>
+
+            <!-- Filtre "Type de praticien" à activer quand le champ sera dans les données -->
+
+            <div class="filter-group">
+              <span class="filter-group__label">Équipements</span>
+              <label class="option"><input type="checkbox" class="filter-equip" value="Table de massage" /> Table de massage</label>
+              <label class="option"><input type="checkbox" class="filter-equip" value="Tapis" /> Tapis et matériel</label>
+              <label class="option"><input type="checkbox" class="filter-equip" value="Vestiaires" /> Vestiaires / douches</label>
+              <label class="option"><input type="checkbox" class="filter-equip" value="Wi-Fi" /> Wi-Fi</label>
+              <label class="option"><input type="checkbox" class="filter-equip" value="Parking" /> Parking</label>
+              <label class="option"><input type="checkbox" class="filter-equip" value="PMR" /> Accès PMR</label>
+            </div>
+
+            <div class="filter-group">
+              <span class="filter-group__label">Mis à disposition par</span>
+              <label class="option"><input type="radio" name="filter-host" value="" checked /> Tous</label>
+              <label class="option"><input type="radio" name="filter-host" value="collectivite" /> Collectivité</label>
+              <label class="option"><input type="radio" name="filter-host" value="entreprise" /> Entreprise</label>
+            </div>
+
+            <div class="filter-group">
+              <span class="filter-group__label">Disponibilité</span>
+              <label class="option"><input type="radio" name="filter-dispo" value="" checked /> Toutes</label>
+              <label class="option"><input type="radio" name="filter-dispo" value="semaine" /> Cette semaine</label>
+              <label class="option"><input type="radio" name="filter-dispo" value="mois" /> Ce mois-ci</label>
+              <label class="option"><input type="radio" name="filter-dispo" value="recurrent" /> Récurrent</label>
+            </div>
+
+            <button class="btn btn--outline btn--block" id="reset-filters">Réinitialiser les filtres</button>
+          </div>
+        </div>
+
+        <!-- Résultats -->
+        <div class="listing-results">
+          <div class="listing-results__head">
+            <p style="margin:0;color:var(--color-text-soft);">
+              <strong id="results-count" style="color:var(--color-text);">{spaces.length} espaces</strong> correspondent à votre recherche
+            </p>
+            <select id="sort-select" style="padding:8px 12px;border-radius:var(--radius-pill);border:1px solid var(--color-border);font-family:inherit;font-size:0.9rem;">
+              <option value="pertinence">Trier par : pertinence</option>
+              <option value="region">Région A → Z</option>
+              <option value="type">Type d'espace</option>
+              <option value="host-collec">Collectivités en premier</option>
+              <option value="host-entrep">Entreprises en premier</option>
+            </select>
+          </div>
+
+          <div class="listing-grid" id="listing-grid">
+            {spaces.map(space => <SpaceCard {...space} />)}
+          </div>
+
+          <p id="no-results" style="display:none;text-align:center;color:var(--color-text-soft);padding:40px 0;">
+            Aucun espace ne correspond à ces critères. Essayez d'élargir votre recherche.
+          </p>
+        </div>
+      </div>
+
+      <!-- ===== COLONNE DROITE : carte ===== -->
+      <div class="explore-map-col">
+        <div class="explore-map-sticky">
+          <div id="map"></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</BaseLayout>
+
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+<script>
+// ─── Données des espaces (injectées depuis Astro) ─────────────────────────────
+const SPACES = [
+  { id: "salle-mairie-saint-pierre",  title: "Salle multi-sport — Mairie",              city: "Saint-Pierre-en-Vallée", department: "45", region: "Centre-Val de Loire",         type: "Salle communale",     host: "collectivite", lat: 47.9,  lng: 1.9,   tags: ["35 m²","PMR","Vestiaires"] },
+  { id: "studio-lumiere-lyon",        title: "Studio Lumière — Yoga & soins",            city: "Lyon 7e",                department: "69", region: "Auvergne-Rhône-Alpes",         type: "Studio bien-être",    host: "entreprise",   lat: 45.74, lng: 4.84,  tags: ["20 m²","Tapis fournis","Wi-Fi"] },
+  { id: "cabinet-bordeaux",           title: "Cabinet partagé Caudéran",                 city: "Bordeaux",               department: "33", region: "Nouvelle-Aquitaine",            type: "Cabinet paramédical", host: "entreprise",   lat: 44.85, lng: -0.6,  tags: ["18 m²","Table de massage","PMR"] },
+  { id: "salle-bercy-paris",          title: "Salle Bercy — Tour Atrium",                city: "Paris 12e",              department: "75", region: "Île-de-France",                 type: "Salle d'entreprise",  host: "entreprise",   lat: 48.84, lng: 2.38,  tags: ["45 m²","Wi-Fi","Parking"] },
+  { id: "box-crossfit-nantes",        title: "Box Crossfit — partagé hors heures",       city: "Nantes",                 department: "44", region: "Pays de la Loire",              type: "Salle de sport",      host: "entreprise",   lat: 47.22, lng: -1.55, tags: ["120 m²","Matériel inclus","Vestiaires"] },
+  { id: "plateforme-annecy",          title: "Plateforme bord du lac",                   city: "Annecy",                 department: "74", region: "Auvergne-Rhône-Alpes",         type: "Espace extérieur",    host: "collectivite", lat: 45.9,  lng: 6.13,  tags: ["Plein air","Avril → octobre","Parking"] },
+  { id: "espace-saint-brieuc",        title: "Espace polyvalent — Centre culturel",      city: "Saint-Brieuc",           department: "22", region: "Bretagne",                      type: "Salle communale",     host: "collectivite", lat: 48.51, lng: -2.76, tags: ["60 m²","PMR","Sonorisation"] },
+  { id: "cabinet-marseille",          title: "Cabinet sophrologie & coaching",           city: "Marseille 8e",           department: "13", region: "Provence-Alpes-Côte d'Azur", type: "Studio bien-être",    host: "entreprise",   lat: 43.27, lng: 5.39,  tags: ["22 m²","Climatisation","Métro"] },
+];
+
+// ─── Leaflet ──────────────────────────────────────────────────────────────────
+import('https://unpkg.com/leaflet@1.9.4/dist/leaflet-src.esm.js').then(({ default: L }) => {
+
+  // Initialisation de la carte
+  const map = L.map('map', { zoomControl: true, scrollWheelZoom: false }).setView([46.6, 2.3], 5);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    maxZoom: 18,
+  }).addTo(map);
+
+  // Icône personnalisée
+  const defaultIcon = L.divIcon({
+    className: '',
+    html: `<div class="map-marker"></div>`,
+    iconSize: [28, 28],
+    iconAnchor: [14, 28],
+    popupAnchor: [0, -30],
+  });
+  const activeIcon = L.divIcon({
+    className: '',
+    html: `<div class="map-marker map-marker--active"></div>`,
+    iconSize: [32, 32],
+    iconAnchor: [16, 32],
+    popupAnchor: [0, -34],
+  });
+
+  // Création des marqueurs
+  const markers = {};
+  SPACES.forEach(space => {
+    const marker = L.marker([space.lat, space.lng], { icon: defaultIcon })
+      .addTo(map)
+      .bindPopup(`
+        <div class="map-popup">
+          <strong>${space.title}</strong>
+          <span>${space.city} · ${space.department}</span>
+          <a href="/annonce/${space.id}">Voir l'espace →</a>
+        </div>
+      `, { maxWidth: 200 });
+    markers[space.id] = marker;
+  });
+
+  // ─── Filtres ────────────────────────────────────────────────────────────────
+  const grid         = document.getElementById('listing-grid');
+  const noResults    = document.getElementById('no-results');
+  const resultsCount = document.getElementById('results-count');
+  const cards        = Array.from(grid.querySelectorAll('article.space-card'));
+
+  function getActiveFilters() {
+    return {
+      loc:    document.getElementById('filter-loc')?.value.toLowerCase().trim()   || '',
+      type:   document.getElementById('filter-type')?.value                        || '',
+      region: document.getElementById('filter-region')?.value                      || '',
+      host:   document.querySelector('input[name="filter-host"]:checked')?.value  || '',
+      types:  Array.from(document.querySelectorAll('.filter-space-type:checked')).map((cb: any) => cb.value),
+      equip:  Array.from(document.querySelectorAll('.filter-equip:checked')).map((cb: any) => cb.value),
+    };
+  }
+
+  function applyFilters() {
+    const f = getActiveFilters();
+    let visible = 0;
+
+    SPACES.forEach((space, i) => {
+      const card = cards[i];
+      if (!card) return;
+
+      const locMatch    = !f.loc    || space.city.toLowerCase().includes(f.loc) || space.region.toLowerCase().includes(f.loc) || space.department.includes(f.loc);
+      const typeMatch   = !f.type   || space.type === f.type;
+      const regionMatch = !f.region || space.region === f.region;
+      const hostMatch   = !f.host   || space.host === f.host;
+      const typesMatch  = f.types.length === 0 || f.types.includes(space.type);
+      // Équipements : l'espace doit avoir TOUS les équipements cochés (substring sur les tags)
+      const equipMatch  = f.equip.length === 0 || f.equip.every((eq: string) =>
+        space.tags.some((tag: string) => tag.toLowerCase().includes(eq.toLowerCase()))
+      );
+
+      const show = locMatch && typeMatch && regionMatch && hostMatch && typesMatch && equipMatch;
+      card.style.display = show ? '' : 'none';
+
+      const marker = markers[space.id];
+      if (marker) {
+        if (show) { marker.addTo(map); } else { marker.remove(); }
+      }
+      if (show) visible++;
+    });
+
+    resultsCount.textContent = `${visible} espace${visible > 1 ? 's' : ''}`;
+    noResults.style.display = visible === 0 ? 'block' : 'none';
+    grid.style.display      = visible === 0 ? 'none'  : '';
+  }
+
+  // Listeners filtres
+  ['filter-loc', 'filter-type', 'filter-region'].forEach(id => {
+    document.getElementById(id)?.addEventListener('input', applyFilters);
+  });
+  document.querySelectorAll('.filter-space-type, .filter-equip, .filter-pro, input[name="filter-host"], input[name="filter-dispo"]')
+    .forEach(el => el.addEventListener('change', applyFilters));
+
+  document.getElementById('search-btn')?.addEventListener('click', applyFilters);
+
+  document.getElementById('reset-filters')?.addEventListener('click', () => {
+    document.getElementById('filter-loc').value = '';
+    document.getElementById('filter-type').value = '';
+    document.getElementById('filter-region').value = '';
+    document.querySelectorAll('.filter-space-type, .filter-equip, .filter-pro').forEach(cb => cb.checked = false);
+    document.querySelector('input[name="filter-host"][value=""]').checked = true;
+    document.querySelector('input[name="filter-dispo"][value=""]').checked = true;
+    applyFilters();
+  });
+
+  // ─── Hover carte <-> marqueur ────────────────────────────────────────────────
+  cards.forEach((card, i) => {
+    const space = SPACES[i];
+    if (!space) return;
+    card.addEventListener('mouseenter', () => {
+      markers[space.id]?.setIcon(activeIcon);
+      markers[space.id]?.openPopup();
+    });
+    card.addEventListener('mouseleave', () => {
+      markers[space.id]?.setIcon(defaultIcon);
+      markers[space.id]?.closePopup();
+    });
+  });
+
+  // ─── Pré-remplissage depuis les query params de l'accueil ──────────────────
+  // L'accueil envoie ?metier=...&loc=... quand on utilise la search card.
+  // Ce bloc est ICI (dans le .then() Leaflet) pour garantir qu'applyFilters()
+  // est déjà défini quand on l'appelle.
+  (function preloadFromUrl() {
+    const params = new URLSearchParams(window.location.search);
+    const metier = params.get('metier')?.trim() || '';
+    const loc    = params.get('loc')?.trim()    || '';
+    const type   = params.get('type')?.trim()   || '';
+    let changed = false;
+
+    const locInput    = document.getElementById('filter-loc')  as HTMLInputElement  | null;
+    const typeSelect  = document.getElementById('filter-type') as HTMLSelectElement | null;
+
+    if (loc && locInput)    { locInput.value = loc;     changed = true; }
+    if (metier && locInput && !locInput.value) { locInput.value = metier; changed = true; }
+
+    if (type && typeSelect) {
+      const match = Array.from(typeSelect.options).find(o =>
+        o.value.toLowerCase().includes(type.toLowerCase()) ||
+        o.text.toLowerCase().includes(type.toLowerCase())
+      );
+      if (match) { typeSelect.value = match.value; changed = true; }
+    }
+
+    if (changed) applyFilters();
+  })();
+
+}).catch(err => console.warn('Leaflet non chargé :', err));
+
+// ─── Toggle filtres ────────────────────────────────────────────────────────────
+const toggleBtn   = document.getElementById('filters-toggle');
+const filtersBody = document.getElementById('filters-body');
+
+toggleBtn?.addEventListener('click', () => {
+  const isOpen = toggleBtn.getAttribute('aria-expanded') === 'true';
+  toggleBtn.setAttribute('aria-expanded', String(!isOpen));
+  filtersBody.classList.toggle('filters-body--closed', isOpen);
+  toggleBtn.classList.toggle('filters-toggle--closed', isOpen);
+});
+</script>

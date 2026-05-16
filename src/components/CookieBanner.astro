@@ -1,0 +1,16 @@
+---
+// CookieBanner — Bandeau RGPD qui apparaît à la première visite
+// Le JavaScript gère son affichage et la mémorisation du choix dans localStorage.
+---
+
+<div id="cookie-banner" class="cookie-banner" hidden role="dialog" aria-labelledby="cookie-title">
+  <p>
+    <strong id="cookie-title">🍪 Vos préférences cookies</strong>
+    Nous utilisons uniquement les cookies nécessaires au bon fonctionnement du site.
+    Aucun cookie publicitaire ni traceur tiers. <a href="/confidentialite">En savoir plus</a>.
+  </p>
+  <div class="cookie-actions">
+    <button class="btn btn--outline" data-cookie-action="essentiels">Cookies essentiels</button>
+    <button class="btn btn--primary" data-cookie-action="all">Tout accepter</button>
+  </div>
+</div>

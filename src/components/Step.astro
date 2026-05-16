@@ -1,0 +1,10 @@
+---
+// Step — Une étape numérotée du parcours "Comment ça marche"
+const { num, title, description } = Astro.props;
+---
+
+<div class="step">
+  <div class="step__num">{num}</div>
+  <h3>{title}</h3>
+  <p>{description}</p>
+</div>

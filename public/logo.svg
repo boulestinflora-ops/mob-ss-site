@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 64" role="img" aria-label="MOB'SS">
+
+  <!-- Badge icône -->
+  <rect x="0" y="5" width="54" height="54" rx="12" fill="#9C2E3A"/>
+  <rect x="0" y="0" width="54" height="54" rx="12" fill="#C8424F"/>
+  <text x="27" y="37"
+    font-family="'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif"
+    font-size="28" font-weight="800" fill="#ffffff"
+    text-anchor="middle" letter-spacing="0.5">M</text>
+
+  <!-- Wordmark MOB'SS -->
+  <text x="68" y="35"
+    font-family="'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif"
+    font-size="26" font-weight="800" font-style="italic" fill="#C8424F"
+    letter-spacing="1">MOB'SS</text>
+
+  <!-- Tagline -->
+  <text x="69" y="50"
+    font-family="'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif"
+    font-size="10.5" font-weight="400" fill="#6B7280"
+    letter-spacing="1.5">mobile · sport · santé</text>
+
+</svg>

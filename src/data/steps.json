@@ -1,0 +1,17 @@
+[
+  {
+    "num": 1,
+    "title": "Créez votre profil",
+    "description": "Inscrivez-vous en quelques minutes selon votre profil : praticien, collectivité ou entreprise."
+  },
+  {
+    "num": 2,
+    "title": "Trouvez ou proposez",
+    "description": "Recherchez un espace selon votre activité et localisation, ou publiez votre annonce avec photos et créneaux."
+  },
+  {
+    "num": 3,
+    "title": "Réservez en sécurité",
+    "description": "Échangez via la messagerie et planifiez vos créneaux. Les espaces sont mis à disposition gracieusement — sans transaction financière."
+  }
+]

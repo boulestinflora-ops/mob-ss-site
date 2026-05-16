@@ -1,0 +1,12 @@
+---
+// AudienceCard — Une carte "public cible" (Praticien, Collectivité, etc.)
+// Reçoit ses données depuis audiences.json
+const { tag, variant, title, description, ctaLabel, ctaHref } = Astro.props;
+---
+
+<div class={`audience-card ${variant}`}>
+  <span class="audience-card__tag">{tag}</span>
+  <h3>{title}</h3>
+  <p>{description}</p>
+  <a href={ctaHref} class="btn btn--ghost">{ctaLabel}</a>
+</div>

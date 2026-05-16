@@ -1,0 +1,250 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Rejoindre MOB'SS — Accès anticipé pour les praticiens"
+  description="Inscrivez-vous en avant-première sur MOB'SS. Espaces gratuits, remplacements, annuaire professionnel pour les praticiens du sport et de la santé."
+>
+
+  <!-- HERO PRATICIEN -->
+  <section style="background:var(--color-primary);color:#fff;padding:72px 0 80px;">
+    <div class="container hero__content" style="max-width:700px;">
+      <span style="display:inline-block;background:rgba(255,255,255,0.15);border-radius:var(--radius-pill);padding:6px 16px;font-size:0.85rem;font-weight:600;margin-bottom:24px;letter-spacing:0.04em;">
+        🚀 Accès anticipé — places limitées
+      </span>
+      <h1 style="color:#fff;font-size:clamp(2rem,4.5vw,3.2rem);margin-bottom:20px;">
+        La plateforme faite pour vous,<br/>praticiens du sport et de la santé.
+      </h1>
+      <p style="font-size:1.1rem;color:rgba(255,255,255,0.9);max-width:580px;margin:0 auto 16px;line-height:1.65;">
+        Exercez sans loyer, trouvez ou proposez des remplacements,
+        et rejoignez un annuaire professionnel dédié.
+        <strong style="color:#fff;">Inscription en 30 secondes.</strong>
+      </p>
+
+      <!-- Compteur -->
+      <p style="font-size:0.95rem;color:rgba(255,255,255,0.75);margin-bottom:40px;">
+        <span id="counter" style="font-weight:700;color:#fff;">…</span> praticiens nous ont déjà rejoints
+      </p>
+
+      <!-- 3 bénéfices -->
+      <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:12px 24px;margin-bottom:48px;">
+        <span style="display:flex;align-items:center;gap:8px;font-size:0.95rem;color:rgba(255,255,255,0.9);">
+          <span style="font-size:1.2rem;">🏛️</span> Espaces gratuits pour exercer
+        </span>
+        <span style="display:flex;align-items:center;gap:8px;font-size:0.95rem;color:rgba(255,255,255,0.9);">
+          <span style="font-size:1.2rem;">🔄</span> Remplacements entre confrères
+        </span>
+        <span style="display:flex;align-items:center;gap:8px;font-size:0.95rem;color:rgba(255,255,255,0.9);">
+          <span style="font-size:1.2rem;">👥</span> Annuaire professionnel
+        </span>
+      </div>
+
+      <!-- FORMULAIRE -->
+      <div class="form-card" style="max-width:480px;margin:0 auto;text-align:left;">
+        <div id="join-msg" style="display:none;padding:14px 16px;border-radius:var(--radius-md);margin-bottom:16px;font-size:0.95rem;"></div>
+
+        <form id="join-form" novalidate>
+          <div class="field">
+            <label for="join-email">Votre email professionnel *</label>
+            <input id="join-email" type="email" required autocomplete="email" placeholder="vous@exemple.fr" />
+          </div>
+
+          <div class="field">
+            <label for="join-specialite">Votre spécialité *</label>
+            <select id="join-specialite" required>
+              <option value="">Sélectionner</option>
+              <option>Kinésithérapeute</option>
+              <option>Ostéopathe</option>
+              <option>Coach sportif</option>
+              <option>Diététicien / nutritionniste</option>
+              <option>Professeur de yoga / Pilates</option>
+              <option>Sophrologue</option>
+              <option>Professionnel APA</option>
+              <option>Infirmier libéral</option>
+              <option>Médecin</option>
+              <option>Psychomotricien</option>
+              <option>Ergothérapeute</option>
+              <option>Autre</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="join-ville">Votre ville *</label>
+            <input id="join-ville" type="text" required autocomplete="address-level2" placeholder="Lyon, Paris, Bordeaux…" />
+          </div>
+
+          <button type="submit" id="join-btn" class="btn btn--primary btn--block btn--lg" style="margin-top:8px;">
+            Rejoindre MOB'SS →
+          </button>
+
+          <p style="text-align:center;font-size:0.82rem;color:var(--color-text-soft);margin:12px 0 0;">
+            Gratuit, sans engagement. Vous recevrez un email pour activer votre accès.
+          </p>
+        </form>
+
+        <!-- Après soumission réussie -->
+        <div id="join-success" style="display:none;text-align:center;padding:8px 0;">
+          <div style="font-size:3rem;margin-bottom:12px;">📬</div>
+          <h3 style="margin-bottom:8px;">Vérifiez vos emails !</h3>
+          <p style="color:var(--color-text-soft);font-size:0.95rem;">
+            Un lien d'accès vous a été envoyé à <strong id="join-email-confirm"></strong>.<br/>
+            Cliquez dessus pour activer votre compte et compléter votre profil.
+          </p>
+          <p style="font-size:0.85rem;color:var(--color-text-soft);margin-top:12px;">
+            Pas reçu ? Vérifiez vos spams ou <button type="button" id="resend-btn" style="background:none;border:none;color:var(--color-primary);cursor:pointer;font-size:0.85rem;padding:0;text-decoration:underline;">renvoyez le lien</button>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PREUVE SOCIALE -->
+  <section class="section section--cream" style="padding:48px 0;">
+    <div class="container" style="max-width:760px;">
+      <div class="grid grid--3" style="gap:24px;text-align:center;">
+        <div>
+          <div style="font-size:2rem;margin-bottom:8px;">🤝</div>
+          <strong>0 € de loyer</strong>
+          <p style="color:var(--color-text-soft);font-size:0.9rem;margin:4px 0 0;">Les espaces sont mis à disposition gracieusement par des collectivités et entreprises.</p>
+        </div>
+        <div>
+          <div style="font-size:2rem;margin-bottom:8px;">🔄</div>
+          <strong>Remplacements simplifiés</strong>
+          <p style="color:var(--color-text-soft);font-size:0.9rem;margin:4px 0 0;">Trouvez ou proposez des remplacements directement entre confrères.</p>
+        </div>
+        <div>
+          <div style="font-size:2rem;margin-bottom:8px;">📍</div>
+          <strong>Annuaire professionnel</strong>
+          <p style="color:var(--color-text-soft);font-size:0.9rem;margin:4px 0 0;">Soyez visible auprès des autres praticiens de votre territoire.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ RAPIDE -->
+  <section class="section section--white" style="padding:48px 0 64px;">
+    <div class="container" style="max-width:600px;">
+      <h2 style="text-align:center;margin-bottom:32px;">Questions fréquentes</h2>
+      <div class="stack-24">
+        <div class="card" style="padding:20px 24px;">
+          <strong>C'est vraiment gratuit ?</strong>
+          <p style="color:var(--color-text-soft);margin:8px 0 0;font-size:0.95rem;">Oui. Les espaces sont mis à disposition sans contrepartie financière par des collectivités et entreprises partenaires. L'inscription est gratuite.</p>
+        </div>
+        <div class="card" style="padding:20px 24px;">
+          <strong>Quand la plateforme sera-t-elle disponible ?</strong>
+          <p style="color:var(--color-text-soft);margin:8px 0 0;font-size:0.95rem;">MOB'SS est en cours de lancement. En vous inscrivant maintenant, vous faites partie des premiers utilisateurs et vous serez prévenus en priorité dès l'ouverture dans votre ville.</p>
+        </div>
+        <div class="card" style="padding:20px 24px;">
+          <strong>Quelles spécialités sont concernées ?</strong>
+          <p style="color:var(--color-text-soft);margin:8px 0 0;font-size:0.95rem;">Tous les professionnels du sport et de la santé : kinés, ostéos, coachs sportifs, sophrologists, diététiciens, infirmiers libéraux, médecins, professeurs de yoga, professionnels APA…</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</BaseLayout>
+
+<script>
+  import { supabase } from '../lib/supabase';
+
+  // ─── Compteur d'inscrits ──────────────────────────────────────────────────────
+  supabase.from('profiles').select('id', { count: 'exact', head: true })
+    .then(({ count }) => {
+      const el = document.getElementById('counter');
+      if (el) el.textContent = String(count ?? 0);
+    })
+    .catch(() => {
+      const el = document.getElementById('counter');
+      if (el) el.textContent = '0';
+    });
+
+  // ─── Formulaire d'inscription rapide ─────────────────────────────────────────
+  const form        = document.getElementById('join-form') as HTMLFormElement;
+  const msgBox      = document.getElementById('join-msg') as HTMLDivElement;
+  const successBox  = document.getElementById('join-success') as HTMLDivElement;
+  const emailConfEl = document.getElementById('join-email-confirm') as HTMLElement;
+  const resendBtn   = document.getElementById('resend-btn') as HTMLButtonElement;
+
+  let lastEmail = '';
+
+  function showError(text: string) {
+    msgBox.style.display  = 'block';
+    msgBox.textContent    = text;
+    msgBox.style.background = '#FBE5E5';
+    msgBox.style.color      = '#A02323';
+    msgBox.style.border     = '1px solid #F0B8B8';
+  }
+
+  async function sendMagicLink(email: string, specialite: string, ville: string) {
+    // Envoie un magic link (OTP) — pas besoin de mot de passe
+    const { error } = await supabase.auth.signInWithOtp({
+      email,
+      options: {
+        // Redirige vers la page de complétion de profil après clic
+        emailRedirectTo: `${window.location.origin}/completer-profil`,
+        data: {
+          role: 'praticien',
+          specialite,
+          ville,
+        },
+      },
+    });
+    return error;
+  }
+
+  if (form) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      msgBox.style.display = 'none';
+
+      const email      = (document.getElementById('join-email')      as HTMLInputElement).value.trim();
+      const specialite = (document.getElementById('join-specialite') as HTMLSelectElement).value;
+      const ville      = (document.getElementById('join-ville')      as HTMLInputElement).value.trim();
+
+      if (!email || !specialite || !ville) {
+        showError('Veuillez remplir les trois champs.');
+        return;
+      }
+
+      const btn = document.getElementById('join-btn') as HTMLButtonElement;
+      btn.disabled    = true;
+      btn.textContent = 'Envoi en cours…';
+
+      const error = await sendMagicLink(email, specialite, ville);
+
+      btn.disabled    = false;
+      btn.textContent = 'Rejoindre MOB\'SS →';
+
+      if (error) {
+        showError(`Une erreur est survenue : ${error.message}`);
+        return;
+      }
+
+      // Succès
+      lastEmail = email;
+      form.style.display          = 'none';
+      successBox.style.display    = 'block';
+      if (emailConfEl) emailConfEl.textContent = email;
+    });
+  }
+
+  // Renvoi du lien
+  if (resendBtn) {
+    resendBtn.addEventListener('click', async () => {
+      if (!lastEmail) return;
+      resendBtn.textContent = 'Envoi…';
+      resendBtn.disabled    = true;
+
+      const specialite = (document.getElementById('join-specialite') as HTMLSelectElement)?.value || '';
+      const ville      = (document.getElementById('join-ville')      as HTMLInputElement)?.value  || '';
+
+      await sendMagicLink(lastEmail, specialite, ville);
+      resendBtn.textContent = 'Renvoyé ✓';
+      setTimeout(() => {
+        resendBtn.textContent = 'renvoyez le lien';
+        resendBtn.disabled    = false;
+      }, 3000);
+    });
+  }
+</script>

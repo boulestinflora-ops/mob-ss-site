@@ -1,0 +1,338 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Complétez votre profil — MOB'SS"
+  description="Finalisez votre profil MOB'SS pour apparaître dans l'annuaire et accéder à toutes les fonctionnalités."
+>
+  <!-- État : chargement -->
+  <div id="cp-loading" style="text-align:center;padding:120px 24px;color:var(--color-text-soft);">
+    <p>Vérification de votre accès…</p>
+  </div>
+
+  <!-- État : non connecté -->
+  <div id="cp-anon" style="display:none;text-align:center;padding:120px 24px;">
+    <div style="font-size:3rem;margin-bottom:16px;">🔒</div>
+    <h1>Lien expiré ou invalide</h1>
+    <p style="color:var(--color-text-soft);margin-bottom:24px;">
+      Le lien de connexion a expiré (valable 1 heure).<br/>
+      Entrez votre email pour recevoir un nouveau lien.
+    </p>
+    <div style="max-width:360px;margin:0 auto;">
+      <div class="field">
+        <input id="relink-email" type="email" placeholder="votre@email.fr" autocomplete="email" />
+      </div>
+      <button id="relink-btn" class="btn btn--primary btn--block">Recevoir un nouveau lien</button>
+      <div id="relink-msg" style="margin-top:12px;font-size:0.9rem;color:var(--color-text-soft);"></div>
+    </div>
+  </div>
+
+  <!-- État : formulaire de complétion -->
+  <div id="cp-form-wrap" style="display:none;">
+    <section class="section" style="padding-top:32px;">
+      <div class="container" style="max-width:640px;">
+
+        <!-- En-tête -->
+        <div style="text-align:center;margin-bottom:32px;">
+          <div style="font-size:3rem;margin-bottom:12px;">👋</div>
+          <span class="section__eyebrow">Bienvenue sur MOB'SS</span>
+          <h1 style="margin-top:12px;">Complétez votre profil</h1>
+          <p style="color:var(--color-text-soft);">
+            Ces informations vous permettront d'apparaître dans l'annuaire
+            et de recevoir les offres de remplacement dans votre ville.
+          </p>
+        </div>
+
+        <!-- Message de retour -->
+        <div id="cp-msg" style="display:none;padding:14px 18px;border-radius:var(--radius-md);margin-bottom:20px;font-size:0.95rem;"></div>
+
+        <div class="form-card">
+
+          <!-- Barre de progression -->
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:28px;">
+            <div style="flex:1;height:6px;border-radius:3px;background:var(--color-primary);"></div>
+            <div style="flex:1;height:6px;border-radius:3px;background:var(--color-border);"></div>
+            <div style="flex:1;height:6px;border-radius:3px;background:var(--color-border);"></div>
+            <span style="font-size:0.82rem;color:var(--color-text-soft);white-space:nowrap;">Étape 1/3</span>
+          </div>
+
+          <form id="cp-form" novalidate>
+
+            <!-- Identité -->
+            <h2 style="font-size:1.1rem;font-family:var(--font-body);margin-bottom:16px;">Votre identité</h2>
+            <div class="field-row">
+              <div class="field">
+                <label for="cp-prenom">Prénom *</label>
+                <input id="cp-prenom" type="text" required autocomplete="given-name" />
+              </div>
+              <div class="field">
+                <label for="cp-nom">Nom *</label>
+                <input id="cp-nom" type="text" required autocomplete="family-name" />
+              </div>
+            </div>
+            <div class="field">
+              <label for="cp-tel">Téléphone professionnel</label>
+              <input id="cp-tel" type="tel" autocomplete="tel" placeholder="06 12 34 56 78" />
+              <p class="form-help">Visible uniquement par les hôtes qui confirment vos demandes.</p>
+            </div>
+
+            <!-- Activité (pré-remplie depuis l'inscription rapide) -->
+            <h2 style="font-size:1.1rem;font-family:var(--font-body);margin:28px 0 16px;">Votre activité</h2>
+            <div class="field-row">
+              <div class="field">
+                <label for="cp-specialite">Spécialité *</label>
+                <select id="cp-specialite" required>
+                  <option value="">Sélectionner</option>
+                  <option>Kinésithérapeute</option>
+                  <option>Ostéopathe</option>
+                  <option>Coach sportif</option>
+                  <option>Diététicien / nutritionniste</option>
+                  <option>Professeur de yoga / Pilates</option>
+                  <option>Sophrologue</option>
+                  <option>Professionnel APA</option>
+                  <option>Infirmier libéral</option>
+                  <option>Médecin</option>
+                  <option>Psychomotricien</option>
+                  <option>Ergothérapeute</option>
+                  <option>Autre</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="cp-ville">Ville principale *</label>
+                <input id="cp-ville" type="text" required autocomplete="address-level2" placeholder="Lyon" />
+              </div>
+            </div>
+            <div class="field">
+              <label for="cp-bio">Présentation courte</label>
+              <textarea id="cp-bio" placeholder="Ex : Kinésithérapeute libéral spécialisé en sport, je cherche des espaces pour recevoir mes patients en dehors de mon cabinet principal…" style="min-height:90px;"></textarea>
+              <p class="form-help">Apparaît sur votre fiche dans l'annuaire. Facultatif mais recommandé.</p>
+            </div>
+
+            <!-- Remplacements -->
+            <h2 style="font-size:1.1rem;font-family:var(--font-body);margin:28px 0 16px;">Remplacements</h2>
+            <div style="background:var(--color-cream-soft);border-radius:var(--radius-md);padding:20px;display:flex;align-items:flex-start;gap:14px;">
+              <input type="checkbox" id="cp-remplacement" style="margin-top:3px;width:18px;height:18px;flex-shrink:0;accent-color:var(--color-primary);" />
+              <label for="cp-remplacement" style="cursor:pointer;">
+                <strong style="display:block;margin-bottom:4px;">Je suis disponible pour des remplacements</strong>
+                <span style="font-size:0.9rem;color:var(--color-text-soft);">
+                  Vous apparaîtrez dans les résultats quand un confrère cherche un remplaçant dans votre spécialité et votre région.
+                </span>
+              </label>
+            </div>
+
+            <!-- Mot de passe (pour sécuriser le compte créé via magic link) -->
+            <h2 style="font-size:1.1rem;font-family:var(--font-body);margin:28px 0 16px;">Sécurisez votre compte</h2>
+            <div class="field-row">
+              <div class="field">
+                <label for="cp-mdp">Choisissez un mot de passe</label>
+                <input id="cp-mdp" type="password" autocomplete="new-password" minlength="8" placeholder="8 caractères minimum" />
+              </div>
+              <div class="field">
+                <label for="cp-mdp2">Confirmer</label>
+                <input id="cp-mdp2" type="password" autocomplete="new-password" minlength="8" />
+              </div>
+            </div>
+            <p class="form-help" style="margin-top:-8px;">Optionnel — vous pouvez toujours vous connecter par magic link si vous préférez ne pas en définir.</p>
+
+            <button type="submit" id="cp-btn" class="btn btn--primary btn--block btn--lg" style="margin-top:28px;">
+              Enregistrer mon profil →
+            </button>
+          </form>
+        </div>
+
+        <p style="text-align:center;margin-top:16px;font-size:0.85rem;color:var(--color-text-soft);">
+          Vous pourrez modifier ces informations à tout moment depuis votre tableau de bord.
+        </p>
+      </div>
+    </section>
+  </div>
+
+</BaseLayout>
+
+<script>
+  import { supabase } from '../lib/supabase';
+
+  const loadingEl  = document.getElementById('cp-loading')  as HTMLElement;
+  const anonEl     = document.getElementById('cp-anon')     as HTMLElement;
+  const formWrapEl = document.getElementById('cp-form-wrap') as HTMLElement;
+  const msgBox     = document.getElementById('cp-msg')      as HTMLDivElement;
+
+  function showMsg(type: 'success' | 'error', text: string) {
+    msgBox.style.display = 'block';
+    msgBox.textContent   = text;
+    if (type === 'success') {
+      msgBox.style.background = '#E8F4EA';
+      msgBox.style.color      = '#2D6E3F';
+      msgBox.style.border     = '1px solid #B8DBC0';
+    } else {
+      msgBox.style.background = '#FBE5E5';
+      msgBox.style.color      = '#A02323';
+      msgBox.style.border     = '1px solid #F0B8B8';
+    }
+    msgBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  // ─── Vérification de session ──────────────────────────────────────────────────
+  supabase.auth.getSession().then(async ({ data: { session } }) => {
+    loadingEl.style.display = 'none';
+
+    if (!session?.user) {
+      anonEl.style.display = 'block';
+      return;
+    }
+
+    // Utilisateur connecté → afficher le formulaire
+    formWrapEl.style.display = 'block';
+
+    // Pré-remplir depuis les metadata de l'inscription rapide
+    const meta = session.user.user_metadata || {};
+    const specialiteEl = document.getElementById('cp-specialite') as HTMLSelectElement;
+    const villeEl      = document.getElementById('cp-ville')      as HTMLInputElement;
+
+    if (meta.specialite && specialiteEl) {
+      // Cherche l'option correspondante
+      Array.from(specialiteEl.options).forEach(opt => {
+        if (opt.value === meta.specialite || opt.text === meta.specialite) {
+          opt.selected = true;
+        }
+      });
+    }
+    if (meta.ville && villeEl) villeEl.value = meta.ville;
+
+    // Charger le profil existant s'il y en a un
+    try {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('prenom, nom, telephone, specialite, ville, bio, disponible_remplacement')
+        .eq('id', session.user.id)
+        .single();
+
+      if (profile) {
+        const set = (id: string, val: string | null | undefined) => {
+          const el = document.getElementById(id) as HTMLInputElement | null;
+          if (el && val) el.value = val;
+        };
+        set('cp-prenom', profile.prenom);
+        set('cp-nom', profile.nom);
+        set('cp-tel', profile.telephone);
+        set('cp-bio', profile.bio);
+        if (profile.ville) villeEl.value = profile.ville;
+        if (profile.specialite && specialiteEl) {
+          Array.from(specialiteEl.options).forEach(opt => {
+            if (opt.text === profile.specialite) opt.selected = true;
+          });
+        }
+        const rempl = document.getElementById('cp-remplacement') as HTMLInputElement;
+        if (rempl) rempl.checked = !!profile.disponible_remplacement;
+      }
+    } catch (e) {
+      // Pas de profil existant — normal pour un nouvel inscrit
+    }
+  });
+
+  // ─── Soumission du formulaire ─────────────────────────────────────────────────
+  const cpForm = document.getElementById('cp-form') as HTMLFormElement;
+  if (cpForm) {
+    cpForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      msgBox.style.display = 'none';
+
+      const prenom      = (document.getElementById('cp-prenom')      as HTMLInputElement).value.trim();
+      const nom         = (document.getElementById('cp-nom')         as HTMLInputElement).value.trim();
+      const tel         = (document.getElementById('cp-tel')         as HTMLInputElement).value.trim();
+      const specialite  = (document.getElementById('cp-specialite')  as HTMLSelectElement).value;
+      const ville       = (document.getElementById('cp-ville')       as HTMLInputElement).value.trim();
+      const bio         = (document.getElementById('cp-bio')         as HTMLTextAreaElement).value.trim();
+      const remplacement= (document.getElementById('cp-remplacement') as HTMLInputElement).checked;
+      const mdp         = (document.getElementById('cp-mdp')         as HTMLInputElement).value;
+      const mdp2        = (document.getElementById('cp-mdp2')        as HTMLInputElement).value;
+
+      if (!prenom || !nom || !specialite || !ville) {
+        showMsg('error', 'Veuillez remplir les champs obligatoires (*).');
+        return;
+      }
+      if (mdp && mdp !== mdp2) {
+        showMsg('error', 'Les deux mots de passe ne correspondent pas.');
+        return;
+      }
+      if (mdp && mdp.length < 8) {
+        showMsg('error', 'Le mot de passe doit faire au moins 8 caractères.');
+        return;
+      }
+
+      const btn = document.getElementById('cp-btn') as HTMLButtonElement;
+      btn.disabled    = true;
+      btn.textContent = 'Enregistrement…';
+
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.user) {
+        showMsg('error', 'Session expirée. Veuillez vous reconnecter.');
+        btn.disabled = false;
+        btn.textContent = 'Enregistrer mon profil →';
+        return;
+      }
+
+      // Mise à jour du mot de passe si fourni
+      if (mdp) {
+        const { error: pwError } = await supabase.auth.updateUser({ password: mdp });
+        if (pwError) {
+          showMsg('error', `Erreur mot de passe : ${pwError.message}`);
+          btn.disabled = false;
+          btn.textContent = 'Enregistrer mon profil →';
+          return;
+        }
+      }
+
+      // Upsert du profil
+      const { error: profileError } = await supabase.from('profiles').upsert({
+        id: session.user.id,
+        prenom,
+        nom,
+        telephone: tel || null,
+        specialite,
+        ville,
+        bio: bio || null,
+        disponible_remplacement: remplacement,
+        role: 'praticien',
+        updated_at: new Date().toISOString(),
+      });
+
+      btn.disabled    = false;
+      btn.textContent = 'Enregistrer mon profil →';
+
+      if (profileError) {
+        showMsg('error', `Erreur : ${profileError.message}`);
+        return;
+      }
+
+      showMsg('success', '✓ Profil enregistré ! Redirection vers votre tableau de bord…');
+      setTimeout(() => { window.location.href = '/dashboard'; }, 1800);
+    });
+  }
+
+  // ─── Renvoi du magic link (si session expirée) ────────────────────────────────
+  const relinkBtn = document.getElementById('relink-btn') as HTMLButtonElement;
+  if (relinkBtn) {
+    relinkBtn.addEventListener('click', async () => {
+      const email = (document.getElementById('relink-email') as HTMLInputElement).value.trim();
+      const msgEl = document.getElementById('relink-msg') as HTMLElement;
+      if (!email) { msgEl.textContent = 'Entrez votre email.'; return; }
+
+      relinkBtn.disabled    = true;
+      relinkBtn.textContent = 'Envoi…';
+
+      const { error } = await supabase.auth.signInWithOtp({
+        email,
+        options: { emailRedirectTo: `${window.location.origin}/completer-profil` },
+      });
+
+      relinkBtn.disabled    = false;
+      relinkBtn.textContent = 'Recevoir un nouveau lien';
+
+      msgEl.textContent = error
+        ? `Erreur : ${error.message}`
+        : `✓ Lien envoyé à ${email} — vérifiez vos emails.`;
+    });
+  }
+</script>

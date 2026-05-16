@@ -1,0 +1,276 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Remplacements entre praticiens — MOB'SS"
+  description="Trouvez ou proposez un remplacement entre professionnels du sport et de la santé. Kinésithérapeutes, ostéopathes, coachs sportifs et plus — directement entre confrères, gratuitement."
+  currentPage="remplacements"
+>
+
+  <!-- Hero -->
+  <section style="background:var(--color-primary);color:#fff;padding:72px 0 90px;">
+    <div class="container" style="max-width:720px;text-align:center;">
+      <span style="display:inline-block;background:rgba(255,255,255,0.15);border-radius:var(--radius-pill);padding:6px 16px;font-size:0.85rem;font-weight:600;letter-spacing:0.04em;margin-bottom:20px;">
+        🔄 Remplacements entre confrères
+      </span>
+      <h1 style="color:#fff;font-size:clamp(1.8rem,4vw,3rem);margin-bottom:20px;">
+        Trouvez un remplaçant,<br/>ou proposez vos disponibilités.
+      </h1>
+      <p style="font-size:1.05rem;color:rgba(255,255,255,0.9);max-width:580px;margin:0 auto 36px;line-height:1.65;">
+        Congé, maladie, déménagement, ou simplement besoin d'un coup de main ponctuel —
+        MOB'SS vous met en contact avec des confrères disponibles dans votre spécialité.
+        <strong style="color:#fff;">Gratuit, direct, entre professionnels.</strong>
+      </p>
+      <div style="display:flex;flex-wrap:wrap;gap:12px;justify-content:center;">
+        <a href="#chercher" class="btn btn--cream btn--lg">Je cherche un remplaçant</a>
+        <a href="/dashboard" class="btn btn--outline btn--lg" style="background:transparent;color:#fff;border-color:rgba(255,255,255,0.6);">Indiquer mes disponibilités</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Comment ça marche -->
+  <section class="section section--cream">
+    <div class="container" style="max-width:900px;">
+      <header class="section__header">
+        <h2>Comment fonctionnent les remplacements ?</h2>
+        <p class="section__lead">
+          Un processus simple en trois étapes, pensé pour les professionnels indépendants.
+        </p>
+      </header>
+      <div class="steps">
+        <div class="step">
+          <div class="step__num">1</div>
+          <h3>Indiquez vos disponibilités</h3>
+          <p style="color:var(--color-text-soft);">
+            Depuis votre tableau de bord, activez la case "Disponible pour des remplacements".
+            Vous apparaissez aussitôt dans l'annuaire des remplaçants.
+          </p>
+        </div>
+        <div class="step">
+          <div class="step__num">2</div>
+          <h3>Trouvez le bon profil</h3>
+          <p style="color:var(--color-text-soft);">
+            Cherchez par spécialité et ville. Consultez les profils, la présentation, les disponibilités.
+            Contactez directement le praticien qui vous correspond.
+          </p>
+        </div>
+        <div class="step">
+          <div class="step__num">3</div>
+          <h3>Organisez entre vous</h3>
+          <p style="color:var(--color-text-soft);">
+            Le remplacement se gère directement entre professionnels — conditions, rémunération, durée.
+            MOB'SS facilite la mise en contact, pas la transaction.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Encadré informatif -->
+  <div class="container" style="max-width:800px;margin:0 auto;padding:0 24px;">
+    <div style="background:var(--color-cream-soft);border:1px solid var(--color-border);border-radius:var(--radius-md);padding:24px 28px;margin:0 0 16px;">
+      <strong style="display:block;margin-bottom:8px;">💡 MOB'SS facilite, vous décidez.</strong>
+      <p style="margin:0;color:var(--color-text-soft);font-size:0.95rem;">
+        MOB'SS n'intervient pas dans la négociation ni dans la rémunération du remplacement.
+        Les conditions (durée, modalités, rétrocession) sont librement fixées entre les praticiens concernés,
+        conformément aux règles de votre profession.
+      </p>
+    </div>
+  </div>
+
+  <!-- Recherche de remplaçants -->
+  <section id="chercher" class="section section--white" style="padding-top:56px;padding-bottom:80px;">
+    <div class="container" style="max-width:1100px;">
+
+      <header style="text-align:center;margin-bottom:36px;">
+        <h2>Praticiens disponibles pour un remplacement</h2>
+        <p style="color:var(--color-text-soft);">
+          Tous ces professionnels ont indiqué être ouverts aux remplacements dans leur spécialité.
+        </p>
+      </header>
+
+      <!-- Filtres -->
+      <div style="background:#fff;border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:20px 24px;margin-bottom:28px;display:grid;grid-template-columns:1fr 1fr auto;gap:12px;align-items:end;box-shadow:var(--shadow-sm);">
+        <div class="field" style="margin:0;">
+          <label for="rpl-specialite" style="font-size:0.85rem;font-weight:600;margin-bottom:6px;display:block;">Spécialité</label>
+          <select id="rpl-specialite" style="width:100%;padding:12px 14px;border:1px solid var(--color-border);border-radius:var(--radius-sm);font-family:inherit;font-size:0.95rem;background:#fff;">
+            <option value="">Toutes les spécialités</option>
+            <option>Kinésithérapeute</option>
+            <option>Ostéopathe</option>
+            <option>Coach sportif</option>
+            <option>Diététicien / nutritionniste</option>
+            <option>Professeur de yoga / Pilates</option>
+            <option>Sophrologue</option>
+            <option>Professionnel APA</option>
+            <option>Infirmier libéral</option>
+            <option>Médecin</option>
+            <option>Psychomotricien</option>
+            <option>Ergothérapeute</option>
+            <option>Autre</option>
+          </select>
+        </div>
+        <div class="field" style="margin:0;">
+          <label for="rpl-ville" style="font-size:0.85rem;font-weight:600;margin-bottom:6px;display:block;">Ville ou région</label>
+          <input id="rpl-ville" type="text" placeholder="Lyon, Bretagne, Paris…"
+            style="width:100%;padding:12px 14px;border:1px solid var(--color-border);border-radius:var(--radius-sm);font-family:inherit;font-size:0.95rem;" />
+        </div>
+        <button id="rpl-search-btn" class="btn btn--primary" style="padding:12px 24px;">
+          Filtrer
+        </button>
+      </div>
+
+      <!-- Compteur -->
+      <p style="margin:0 0 20px;color:var(--color-text-soft);">
+        <strong id="rpl-count" style="color:var(--color-text);">…</strong> praticien(s) disponible(s)
+      </p>
+
+      <!-- Chargement -->
+      <div id="rpl-loading" style="text-align:center;padding:48px 24px;color:var(--color-text-soft);">
+        <div style="font-size:2rem;margin-bottom:10px;">⏳</div>
+        <p>Chargement…</p>
+      </div>
+
+      <!-- Grille -->
+      <div id="rpl-grid" class="grid grid--3" style="display:none;gap:20px;"></div>
+
+      <!-- Vide -->
+      <div id="rpl-empty" style="display:none;text-align:center;padding:48px 24px;">
+        <div style="font-size:3rem;margin-bottom:12px;">🔍</div>
+        <h3>Aucun remplaçant trouvé</h3>
+        <p style="color:var(--color-text-soft);margin-bottom:20px;">
+          Essayez avec une spécialité ou une ville différente,<br/>
+          ou revenez plus tard — la communauté grandit chaque jour.
+        </p>
+        <button id="rpl-reset" class="btn btn--outline">Effacer les filtres</button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- CTA bas de page -->
+  <section style="background:var(--color-primary);color:#fff;padding:64px 0;">
+    <div class="container" style="max-width:640px;text-align:center;">
+      <h2 style="color:#fff;margin-bottom:12px;">Vous êtes disponible pour des remplacements ?</h2>
+      <p style="color:rgba(255,255,255,0.9);margin-bottom:28px;font-size:1.05rem;">
+        Inscrivez-vous sur MOB'SS et indiquez vos disponibilités depuis votre tableau de bord.
+        Vos confrères pourront vous trouver en quelques secondes.
+      </p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+        <a href="/rejoindre" class="btn btn--cream btn--lg">Rejoindre MOB'SS →</a>
+        <a href="/dashboard" class="btn btn--outline btn--lg" style="background:transparent;color:#fff;border-color:rgba(255,255,255,0.6);">Mon tableau de bord</a>
+      </div>
+    </div>
+  </section>
+
+</BaseLayout>
+
+<script>
+  import { supabase } from '../lib/supabase';
+
+  const loadingEl = document.getElementById('rpl-loading') as HTMLElement;
+  const gridEl    = document.getElementById('rpl-grid')    as HTMLElement;
+  const emptyEl   = document.getElementById('rpl-empty')   as HTMLElement;
+  const countEl   = document.getElementById('rpl-count')   as HTMLElement;
+
+  const specSel   = document.getElementById('rpl-specialite') as HTMLSelectElement;
+  const villeIn   = document.getElementById('rpl-ville')      as HTMLInputElement;
+  const searchBtn = document.getElementById('rpl-search-btn') as HTMLButtonElement;
+  const resetBtn  = document.getElementById('rpl-reset')      as HTMLButtonElement;
+
+  // ── Couleur d'avatar stable ──────────────────────────────────────────────────
+  const COLORS = ['#C8424F','#3A6EA5','#4A8F6D','#8A5A9C','#C87428','#2E8A8A'];
+  function avatarColor(seed: string): string {
+    let h = 0;
+    for (let i = 0; i < seed.length; i++) h = seed.charCodeAt(i) + ((h << 5) - h);
+    return COLORS[Math.abs(h) % COLORS.length];
+  }
+
+  // ── Carte praticien ──────────────────────────────────────────────────────────
+  function buildCard(p: any): string {
+    const prenom    = p.prenom || 'Praticien';
+    const nomInit   = p.nom ? p.nom[0].toUpperCase() + '.' : '';
+    const initiales = ((prenom[0] || '') + (p.nom?.[0] || '')).toUpperCase() || '?';
+    const color     = avatarColor(initiales);
+
+    return `
+      <div class="card" style="display:flex;flex-direction:column;gap:12px;padding:22px;">
+        <div style="display:flex;align-items:center;gap:14px;">
+          <div style="width:52px;height:52px;border-radius:12px;background:${color};color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.2rem;flex-shrink:0;">
+            ${initiales}
+          </div>
+          <div style="min-width:0;">
+            <strong style="display:block;font-size:1rem;">${prenom} ${nomInit}</strong>
+            <span style="font-size:0.85rem;color:var(--color-primary);font-weight:600;">${p.specialite || 'Praticien'}</span>
+          </div>
+        </div>
+        <span style="display:inline-block;background:#E8F4EA;color:#2D6E3F;border-radius:var(--radius-pill);padding:3px 10px;font-size:0.78rem;font-weight:600;width:fit-content;">
+          🔄 Disponible pour remplacement
+        </span>
+        ${p.ville ? `<p style="margin:0;font-size:0.88rem;color:var(--color-text-soft);">📍 ${p.ville}</p>` : ''}
+        ${p.bio ? `<p style="margin:0;font-size:0.88rem;color:var(--color-text-soft);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;">${p.bio}</p>` : ''}
+      </div>
+    `;
+  }
+
+  // ── Données ──────────────────────────────────────────────────────────────────
+  let allProfiles: any[] = [];
+
+  async function load() {
+    loadingEl.style.display = 'block';
+    gridEl.style.display    = 'none';
+    emptyEl.style.display   = 'none';
+
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('prenom, nom, specialite, ville, bio')
+        .eq('disponible_remplacement', true)
+        .eq('visible_annuaire', true)
+        .not('prenom', 'is', null)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      allProfiles = data || [];
+      renderFiltered();
+    } catch (e) {
+      console.error('Remplacements error:', e);
+      loadingEl.style.display = 'none';
+      if (countEl) countEl.textContent = '0';
+    }
+  }
+
+  function renderFiltered() {
+    const spec  = specSel.value.toLowerCase();
+    const ville = villeIn.value.toLowerCase().trim();
+
+    const filtered = allProfiles.filter(p => {
+      const sm = !spec  || (p.specialite || '').toLowerCase() === spec;
+      const vm = !ville || (p.ville || '').toLowerCase().includes(ville);
+      return sm && vm;
+    });
+
+    loadingEl.style.display = 'none';
+    if (countEl) countEl.textContent = String(filtered.length);
+
+    if (filtered.length === 0) {
+      gridEl.style.display  = 'none';
+      emptyEl.style.display = 'block';
+      return;
+    }
+
+    gridEl.innerHTML     = filtered.map(buildCard).join('');
+    gridEl.style.display = 'grid';
+    emptyEl.style.display = 'none';
+  }
+
+  searchBtn?.addEventListener('click', renderFiltered);
+  villeIn?.addEventListener('keydown', (e) => { if (e.key === 'Enter') renderFiltered(); });
+  resetBtn?.addEventListener('click', () => {
+    specSel.value = '';
+    villeIn.value = '';
+    renderFiltered();
+  });
+
+  load();
+</script>

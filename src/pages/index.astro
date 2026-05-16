@@ -1,0 +1,130 @@
+---
+// Page d'accueil — version 5 : élagage, encart Doctolib discret, sans sections redondantes.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AudienceCard from '../components/AudienceCard.astro';
+import Step from '../components/Step.astro';
+import StatItem from '../components/StatItem.astro';
+import Icon from '../components/Icon.astro';
+
+import audiences from '../data/audiences.json';
+import steps from '../data/steps.json';
+import stats from '../data/stats.json';
+---
+
+<BaseLayout
+  title="MOB'SS — Des espaces gratuits pour exercer, partout en France"
+  description="MOB'SS connecte les espaces inoccupés des collectivités et des entreprises avec les professionnels du sport et de la santé."
+  currentPage="accueil"
+>
+
+  <!-- HERO -->
+  <section class="hero" style="padding:80px 0 100px;">
+    <div class="container hero__content">
+      <h1>Des espaces gratuits<br />pour exercer,&nbsp;partout.</h1>
+      <p class="lead">
+        Les collectivités et entreprises mettent gracieusement leurs locaux à disposition
+        des professionnels du sport et de la santé.
+      </p>
+      <div class="hero__cta">
+        <a href="/inscription?role=praticien" class="btn btn--cream btn--lg">Je veux exercer</a>
+        <a href="/inscription?role=collectivite" class="btn btn--outline btn--lg" style="background:transparent;color:#fff;border-color:#fff;">
+          Je propose un espace
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- SEARCH CARD -->
+  <div class="container">
+    <div class="search-card" style="margin-top:-60px;position:relative;z-index:5;">
+      <h2>Trouvez le lieu idéal pour exercer votre activité.</h2>
+      <form class="search-form" action="/explorez" method="get">
+        <div class="search-field">
+          <Icon name="search" width={20} height={20} />
+          <input type="text" name="metier" placeholder="Votre métier (kiné, coach, ostéo…)" />
+        </div>
+        <div class="search-field">
+          <Icon name="map-pin" width={20} height={20} />
+          <input type="text" name="loc" placeholder="Ville, département, région…" />
+        </div>
+        <button type="submit" class="btn btn--primary">Rechercher</button>
+      </form>
+      <p style="text-align:center;margin:18px 0 0;font-size:0.9rem;color:var(--color-text-soft);">
+        Affinez ensuite par région, type d'espace, équipements…
+      </p>
+    </div>
+  </div>
+
+  <!-- 3 PUBLICS -->
+  <section class="section section--alt" style="margin-top:40px;">
+    <div class="container">
+      <header class="section__header">
+        <h2>Une réponse adaptée à chaque acteur du territoire</h2>
+        <p class="section__lead">
+          MOB'SS rassemble praticiens, collectivités et entreprises autour d'un même objectif :
+          rendre le sport et la santé accessibles partout, sans barrière financière.
+        </p>
+      </header>
+      <div class="grid grid--3">
+        {audiences.map(audience => <AudienceCard {...audience} />)}
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 ÉTAPES -->
+  <section class="section section--cream">
+    <div class="container">
+      <header class="section__header">
+        <h2>Comment ça marche</h2>
+        <p class="section__lead">
+          Un fonctionnement simple, en trois étapes, pour démarrer rapidement.
+        </p>
+      </header>
+      <div class="steps">
+        {steps.map(step => <Step {...step} />)}
+      </div>
+      <div class="text-center mt-32">
+        <a href="/comment-ca-marche" class="btn btn--primary">Voir le détail du fonctionnement</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- LES CHIFFRES -->
+  <section class="section section--white">
+    <div class="container">
+      <header class="section__header">
+        <h2>Pourquoi MOB'SS, et pourquoi maintenant&nbsp;?</h2>
+        <p class="section__lead">
+          Trois enjeux convergent&nbsp;: la vacance immobilière, l'accès aux soins et le bien-être au travail.
+        </p>
+      </header>
+      <div class="stats-strip">
+        {stats.map(stat => <StatItem {...stat} />)}
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA FINAL -->
+  <section class="section" style="background: var(--color-primary); color: #fff;">
+    <div class="container text-center">
+      <h2 style="color: #fff;">Prêt à rejoindre le mouvement&nbsp;?</h2>
+      <p style="font-size: 1.1rem; color: rgba(255,255,255,0.9); max-width: 600px; margin: 0 auto 28px;">
+        Praticien, collectivité ou entreprise — créez votre compte gratuit en moins de 3 minutes.
+      </p>
+      <div class="flex gap-12 justify-center" style="flex-wrap: wrap;">
+        <a href="/inscription" class="btn btn--cream btn--lg">Créer mon compte</a>
+        <a href="/comment-ca-marche" class="btn btn--outline btn--lg" style="background: transparent; color: #fff; border-color: #fff;">Découvrir la démarche</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- BANDEAU DOCTOLIB — discret, juste avant le footer -->
+  <div class="doctolib-banner">
+    <span>👤 Vous êtes patient·e ?</span>
+    <span style="color:var(--color-text-soft);">MOB'SS est réservé aux professionnels. Pour prendre rendez-vous :</span>
+    <a href="https://www.doctolib.fr" target="_blank" rel="noopener noreferrer" class="btn btn--outline" style="white-space:nowrap;">
+      Aller sur Doctolib →
+    </a>
+  </div>
+
+</BaseLayout>

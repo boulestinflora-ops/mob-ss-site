@@ -1,0 +1,172 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import FAQItem from '../components/FAQItem.astro';
+import faq from '../data/faq.json';
+---
+
+<BaseLayout
+  title="Comment ça marche — MOB'SS"
+  description="Découvrez comment MOB'SS connecte praticiens, collectivités et entreprises autour des espaces sport et santé."
+  currentPage="comment"
+>
+
+  <section style="background:linear-gradient(135deg,var(--color-primary),var(--color-primary-dark));color:#fff;padding:80px 0 60px;">
+    <div class="container text-center">
+      <span class="section__eyebrow" style="background:rgba(255,255,255,.18);color:#fff;">Notre fonctionnement</span>
+      <h1 style="color:#fff;margin-top:12px;">Comment ça marche&nbsp;?</h1>
+      <p style="color:rgba(255,255,255,0.92);max-width:640px;margin:0 auto;font-size:1.1rem;">
+        Deux parcours, une même promesse&nbsp;: connecter des espaces inoccupés avec les professionnels du sport et de la santé, gratuitement.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+
+      <!-- Onglets -->
+      <div class="tabs ccm-tabs" role="tablist" style="justify-content:center;flex-wrap:wrap;border-bottom:none;gap:12px;">
+        <button class="btn btn--primary ccm-tab-btn" data-tab="prat" aria-selected="true" style="border-radius:var(--radius-pill);">Je suis praticien</button>
+        <button class="btn btn--outline ccm-tab-btn" data-tab="hote" aria-selected="false" style="border-radius:var(--radius-pill);">J'ai un espace à proposer</button>
+      </div>
+
+      <!-- Panneau praticien -->
+      <div class="ccm-panel" id="tab-prat" style="margin-top:40px;">
+        <div class="grid grid--2" style="gap:48px;align-items:center;">
+          <div>
+            <h2>Praticiens du sport et de la santé</h2>
+            <p style="color:var(--color-text-soft);font-size:1.05rem;">
+              MOB'SS vous permet d'exercer là où la demande existe, sans louer de cabinet fixe.
+              Accédez à des espaces mis à disposition <strong>gracieusement</strong> par des collectivités et des entreprises.
+            </p>
+            <ul style="list-style:none;padding:0;margin:24px 0;">
+              <li style="display:flex;gap:12px;margin-bottom:14px;"><span style="color:var(--color-success);font-weight:700;">✓</span><span>Aucun loyer, aucune charge fixe — mise à disposition gratuite</span></li>
+              <li style="display:flex;gap:12px;margin-bottom:14px;"><span style="color:var(--color-success);font-weight:700;">✓</span><span>Filtrage par type d'activité, équipements, accessibilité PMR</span></li>
+              <li style="display:flex;gap:12px;margin-bottom:14px;"><span style="color:var(--color-success);font-weight:700;">✓</span><span>Créneaux ponctuels, récurrents ou à la demi-journée</span></li>
+              <li style="display:flex;gap:12px;margin-bottom:14px;"><span style="color:var(--color-success);font-weight:700;">✓</span><span>Profil pro vérifié visible par les collectivités partenaires</span></li>
+            </ul>
+            <a href="/inscription?role=praticien" class="btn btn--primary">Créer mon profil praticien</a>
+          </div>
+          <div>
+            <ol style="list-style:none;padding:0;margin:0;">
+              <li style="display:flex;gap:18px;margin-bottom:24px;"><div class="step__num">1</div><div><h3 style="margin:0 0 4px;">Créez votre profil pro</h3><p style="margin:0;color:var(--color-text-soft);">Renseignez votre activité, vos diplômes, votre zone d'intervention.</p></div></li>
+              <li style="display:flex;gap:18px;margin-bottom:24px;"><div class="step__num">2</div><div><h3 style="margin:0 0 4px;">Trouvez le lieu idéal</h3><p style="margin:0;color:var(--color-text-soft);">Recherche par carte, par filtres ou en fonction de vos critères.</p></div></li>
+              <li style="display:flex;gap:18px;margin-bottom:24px;"><div class="step__num">3</div><div><h3 style="margin:0 0 4px;">Envoyez une demande</h3><p style="margin:0;color:var(--color-text-soft);">Choisissez votre créneau et envoyez votre demande à l'hôte.</p></div></li>
+              <li style="display:flex;gap:18px;"><div class="step__num">4</div><div><h3 style="margin:0 0 4px;">Exercez et pilotez</h3><p style="margin:0;color:var(--color-text-soft);">Agenda, lieux favoris, impact solidaire : tout est centralisé.</p></div></li>
+            </ol>
+          </div>
+        </div>
+      </div>
+
+      <!-- Panneau hôte -->
+      <div class="ccm-panel" id="tab-hote" style="margin-top:40px;display:none;">
+        <div class="grid grid--2" style="gap:48px;align-items:center;">
+          <div>
+            <h2>Collectivités et entreprises</h2>
+            <p style="color:var(--color-text-soft);font-size:1.05rem;">
+              Vous disposez d'espaces inoccupés&nbsp;? Salle communale, salle polyvalente, bureaux, studio…
+              Proposez-les <strong>gracieusement</strong> à des praticiens du sport et de la santé pour créer de la valeur sur votre territoire.
+            </p>
+            <ul style="list-style:none;padding:0;margin:24px 0;">
+              <li style="display:flex;gap:12px;margin-bottom:14px;"><span style="color:var(--color-success);font-weight:700;">✓</span><span>Vérification systématique des praticiens (diplômes, assurances)</span></li>
+              <li style="display:flex;gap:12px;margin-bottom:14px;"><span style="color:var(--color-success);font-weight:700;">✓</span><span>Calendrier de disponibilités flexible (créneaux, jours off)</span></li>
+              <li style="display:flex;gap:12px;margin-bottom:14px;"><span style="color:var(--color-success);font-weight:700;">✓</span><span>Tableau d'impact territorial pour vos rapports d'activité</span></li>
+              <li style="display:flex;gap:12px;margin-bottom:14px;"><span style="color:var(--color-success);font-weight:700;">✓</span><span>Réduction d'impôt mécénat pour les entreprises (art. 238 bis CGI)</span></li>
+            </ul>
+            <a href="/inscription?role=collectivite" class="btn btn--primary">Référencer un espace</a>
+          </div>
+          <div>
+            <ol style="list-style:none;padding:0;margin:0;">
+              <li style="display:flex;gap:18px;margin-bottom:24px;"><div class="step__num">1</div><div><h3 style="margin:0 0 4px;">Publiez votre annonce</h3><p style="margin:0;color:var(--color-text-soft);">Photos, équipements, conditions d'accès et disponibilités.</p></div></li>
+              <li style="display:flex;gap:18px;margin-bottom:24px;"><div class="step__num">2</div><div><h3 style="margin:0 0 4px;">Définissez vos créneaux</h3><p style="margin:0;color:var(--color-text-soft);">Calendrier dynamique, récurrences, exclusions de dates.</p></div></li>
+              <li style="display:flex;gap:18px;margin-bottom:24px;"><div class="step__num">3</div><div><h3 style="margin:0 0 4px;">Validez les demandes</h3><p style="margin:0;color:var(--color-text-soft);">Validation automatique ou manuelle selon vos préférences.</p></div></li>
+              <li style="display:flex;gap:18px;"><div class="step__num">4</div><div><h3 style="margin:0 0 4px;">Mesurez votre impact</h3><p style="margin:0;color:var(--color-text-soft);">Tableau de bord, occupation, indicateurs d'impact social.</p></div></li>
+            </ol>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Modèle gracieux — remplace la section Tarifs -->
+  <section class="section section--alt">
+    <div class="container">
+      <header class="section__header">
+        <span class="section__eyebrow">Modèle économique</span>
+        <h2>Un modèle à impact, pas un modèle tarifaire</h2>
+        <p class="section__lead">MOB'SS repose sur la mise à disposition gracieuse des espaces. Les collectivités et entreprises donnent accès à leurs locaux — les praticiens y exercent sans loyer ni charges fixes.</p>
+      </header>
+
+      <div class="grid grid--3">
+        <div class="card text-center">
+          <div style="font-size:2.2rem;margin-bottom:12px;">🏛️</div>
+          <span class="audience-card__tag" style="background:var(--color-cream);color:var(--color-primary-dark);">Collectivités</span>
+          <h3 style="font-size:1.5rem;color:var(--color-primary);margin:16px 0;">Gratuit</h3>
+          <p style="color:var(--color-text-soft);">Inscription et publication d'espaces sans frais. La plateforme leur offre visibilité et tableau d'impact territorial.</p>
+          <a href="/inscription?role=collectivite" class="btn btn--outline btn--block" style="margin-top:16px;">Référencer un espace</a>
+        </div>
+        <div class="card text-center" style="border-color:var(--color-primary);box-shadow:var(--shadow-md);position:relative;">
+          <span style="position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--color-primary);color:#fff;padding:4px 14px;border-radius:var(--radius-pill);font-size:0.78rem;font-weight:600;">Cœur du dispositif</span>
+          <div style="font-size:2.2rem;margin-bottom:12px;">🩺</div>
+          <span class="audience-card__tag" style="background:var(--color-cream);color:var(--color-primary-dark);">Praticiens</span>
+          <h3 style="font-size:1.5rem;color:var(--color-primary);margin:16px 0;">0 € de loyer</h3>
+          <p style="color:var(--color-text-soft);">Aucun loyer, aucune charge d'espace. Vous exercez dans des lieux de qualité mis à disposition par le territoire.</p>
+          <a href="/inscription?role=praticien" class="btn btn--primary btn--block" style="margin-top:16px;">Créer mon profil</a>
+        </div>
+        <div class="card text-center">
+          <div style="font-size:2.2rem;margin-bottom:12px;">🏢</div>
+          <span class="audience-card__tag" style="background:var(--color-cream);color:var(--color-primary-dark);">Entreprises</span>
+          <h3 style="font-size:1.5rem;color:var(--color-primary);margin:16px 0;">60 % de réduction</h3>
+          <p style="color:var(--color-text-soft);">Les entreprises qui proposent leurs espaces bénéficient d'une réduction d'impôt mécénat (art. 238 bis CGI).</p>
+          <a href="/inscription?role=entreprise" class="btn btn--outline btn--block" style="margin-top:16px;">Demander une démo</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="faq">
+    <div class="container" style="max-width:840px;">
+      <header class="section__header">
+        <span class="section__eyebrow">FAQ</span>
+        <h2>Vos questions fréquentes</h2>
+      </header>
+      {faq.map(item => <FAQItem {...item} />)}
+    </div>
+  </section>
+
+  <section class="section" style="background:linear-gradient(135deg,var(--color-primary),var(--color-primary-dark));color:#fff;">
+    <div class="container text-center">
+      <h2 style="color:#fff;">Une question, un projet&nbsp;?</h2>
+      <p style="color:rgba(255,255,255,0.9);max-width:520px;margin:0 auto 24px;">Notre équipe vous accompagne dans le déploiement de MOB'SS sur votre territoire ou dans votre entreprise.</p>
+      <a href="/contact" class="btn btn--cream btn--lg">Prendre contact</a>
+    </div>
+  </section>
+
+</BaseLayout>
+
+<script>
+  // ─── Onglets Comment ça marche ───────────────────────────────────────────────
+  const tabBtns  = document.querySelectorAll('.ccm-tab-btn');
+  const panels   = document.querySelectorAll('.ccm-panel');
+
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = (btn as HTMLElement).dataset.tab;
+
+      // Boutons
+      tabBtns.forEach(b => {
+        b.classList.remove('btn--primary');
+        b.classList.add('btn--outline');
+        b.setAttribute('aria-selected', 'false');
+      });
+      btn.classList.add('btn--primary');
+      btn.classList.remove('btn--outline');
+      btn.setAttribute('aria-selected', 'true');
+
+      // Panneaux
+      panels.forEach(panel => {
+        (panel as HTMLElement).style.display = (panel as HTMLElement).id === `tab-${target}` ? '' : 'none';
+      });
+    });
+  });
+</script>

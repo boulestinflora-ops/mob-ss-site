@@ -1,0 +1,299 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Inscription — MOB'SS"
+  description="Créez votre compte MOB'SS gratuitement et sans engagement."
+>
+  <section class="section">
+    <div class="container" style="max-width:760px;">
+      <div class="text-center" style="margin-bottom:32px;">
+        <span class="section__eyebrow">Inscription</span>
+        <h1>Créez votre compte MOB'SS</h1>
+        <p style="color:var(--color-text-soft);">Gratuit, sans engagement. Choisissez votre profil pour personnaliser votre expérience.</p>
+      </div>
+
+      <div class="form-card">
+        <h2 style="font-size:1.2rem;margin-bottom:16px;font-family:var(--font-body);">1. Je suis…</h2>
+
+        <div class="role-picker">
+          <label class="role-option" data-role="praticien">
+            <input type="radio" name="role" value="praticien" />
+            <div class="role-option__inner">
+              <svg class="icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+                <path d="m22 11-3 3-2-2"/>
+              </svg>
+              <div class="role-option__title">Praticien</div>
+              <div class="role-option__desc">Sport, santé, bien-être</div>
+            </div>
+          </label>
+
+          <label class="role-option" data-role="collectivite">
+            <input type="radio" name="role" value="collectivite" />
+            <div class="role-option__inner">
+              <svg class="icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 21h18"/>
+                <path d="M5 21V8l7-5 7 5v13"/>
+                <path d="M9 21v-6h6v6"/>
+              </svg>
+              <div class="role-option__title">Collectivité</div>
+              <div class="role-option__desc">Commune, EPCI, département</div>
+            </div>
+          </label>
+
+          <label class="role-option" data-role="entreprise">
+            <input type="radio" name="role" value="entreprise" />
+            <div class="role-option__inner">
+              <svg class="icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="18" height="18" rx="2"/>
+                <path d="M9 9h6v6H9z"/>
+                <path d="M3 12h6M15 12h6M12 3v6M12 15v6"/>
+              </svg>
+              <div class="role-option__title">Entreprise</div>
+              <div class="role-option__desc">QVCT, sport en entreprise</div>
+            </div>
+          </label>
+        </div>
+
+        <h2 style="font-size:1.2rem;margin-bottom:16px;font-family:var(--font-body);">2. Vos coordonnées</h2>
+
+        <!-- Zone de message (succès ou erreur) injectée par le JS -->
+        <div id="signup-message" style="display:none;padding:14px 18px;border-radius:var(--radius-md);margin-bottom:18px;font-size:0.95rem;"></div>
+
+        <form id="signup-form" novalidate>
+          <div class="field-row">
+            <div class="field">
+              <label for="prenom">Prénom *</label>
+              <input id="prenom" type="text" required autocomplete="given-name" />
+            </div>
+            <div class="field">
+              <label for="nom">Nom *</label>
+              <input id="nom" type="text" required autocomplete="family-name" />
+            </div>
+          </div>
+
+          <div class="field" id="field-organisation" style="display:none;">
+            <label for="organisation">Nom de la structure *</label>
+            <input id="organisation" type="text" autocomplete="organization" placeholder="Mairie de…, Société…" />
+          </div>
+
+          <div class="field" id="field-activite" style="display:none;">
+            <label for="activite">Activité principale *</label>
+            <select id="activite">
+              <option value="">Sélectionner</option>
+              <option>Kinésithérapeute</option>
+              <option>Ostéopathe</option>
+              <option>Coach sportif</option>
+              <option>Diététicien / nutritionniste</option>
+              <option>Professeur de yoga / Pilates</option>
+              <option>Sophrologue</option>
+              <option>Professionnel APA</option>
+              <option>Infirmier libéral</option>
+              <option>Médecin</option>
+              <option>Autre</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="email">Email professionnel *</label>
+            <input id="email" type="email" required autocomplete="email" />
+          </div>
+
+          <div class="field">
+            <label for="tel">Téléphone *</label>
+            <input id="tel" type="tel" required autocomplete="tel" placeholder="06 12 34 56 78" />
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label for="mdp">Mot de passe *</label>
+              <input id="mdp" type="password" required autocomplete="new-password" minlength="8" />
+              <p class="form-help">8 caractères minimum, 1 chiffre, 1 majuscule.</p>
+            </div>
+            <div class="field">
+              <label for="mdp2">Confirmer *</label>
+              <input id="mdp2" type="password" required autocomplete="new-password" minlength="8" />
+            </div>
+          </div>
+
+          <label class="option" style="display:flex;gap:8px;align-items:flex-start;font-size:0.9rem;color:var(--color-text-soft);margin:8px 0 18px;">
+            <input type="checkbox" required style="margin-top:4px;" />
+            <span>J'accepte les <a href="#">conditions générales</a> et la <a href="/confidentialite">politique de confidentialité</a>.</span>
+          </label>
+
+          <label class="option" style="display:flex;gap:8px;align-items:flex-start;font-size:0.9rem;color:var(--color-text-soft);margin-bottom:18px;">
+            <input type="checkbox" style="margin-top:4px;" />
+            <span>Je souhaite recevoir les actualités et conseils MOB'SS (1 fois par mois maximum).</span>
+          </label>
+
+          <button type="submit" class="btn btn--primary btn--block btn--lg">Créer mon compte</button>
+        </form>
+
+        <div style="text-align:center;margin-top:24px;color:var(--color-text-soft);">
+          Déjà inscrit&nbsp;? <a href="/connexion">Se connecter</a>
+        </div>
+      </div>
+
+      <div style="text-align:center;margin-top:24px;font-size:0.9rem;color:var(--color-text-soft);">
+        🔒 Vos données sont chiffrées et hébergées en France, conformément au RGPD.
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<!--
+  Script d'inscription : connecté à Supabase
+  Quand l'utilisateur soumet le formulaire :
+   1. On vérifie qu'un rôle est sélectionné
+   2. On appelle supabase.auth.signUp()
+   3. Supabase crée le compte et envoie un email de confirmation
+   4. Notre trigger SQL crée automatiquement la ligne dans la table profiles
+-->
+<script>
+  import { supabase } from '../lib/supabase';
+
+  // ─── Pré-sélection du rôle via ?role= dans l'URL ─────────────────────────────
+  const params = new URLSearchParams(window.location.search);
+  const roleParam = params.get('role'); // "praticien", "collectivite", "entreprise"
+  if (roleParam) {
+    const radioToCheck = document.querySelector<HTMLInputElement>(`input[name="role"][value="${roleParam}"]`);
+    if (radioToCheck) {
+      radioToCheck.checked = true;
+      radioToCheck.closest('.role-option')?.classList.add('is-selected');
+    }
+  }
+
+  // ─── Champs conditionnels selon le rôle ──────────────────────────────────────
+  const fieldOrga    = document.getElementById('field-organisation') as HTMLElement | null;
+  const fieldActivite = document.getElementById('field-activite') as HTMLElement | null;
+  const inputOrga    = document.getElementById('organisation') as HTMLInputElement | null;
+  const inputActivite = document.getElementById('activite') as HTMLSelectElement | null;
+
+  function applyRole(role: string) {
+    const isPraticien  = role === 'praticien';
+    const isStructure  = role === 'collectivite' || role === 'entreprise';
+
+    if (fieldActivite) fieldActivite.style.display = isPraticien  ? '' : 'none';
+    if (fieldOrga)     fieldOrga.style.display     = isStructure  ? '' : 'none';
+    if (inputActivite) inputActivite.required       = isPraticien;
+    if (inputOrga)     inputOrga.required           = isStructure;
+
+    // Style visuel des cartes
+    document.querySelectorAll<HTMLElement>('.role-option').forEach(label => {
+      const radio = label.querySelector<HTMLInputElement>('input[type="radio"]');
+      label.classList.toggle('is-selected', radio?.value === role);
+    });
+  }
+
+  // Initialisation si un rôle est déjà coché (URL ou navigateur)
+  const alreadyChecked = document.querySelector<HTMLInputElement>('input[name="role"]:checked');
+  if (alreadyChecked) applyRole(alreadyChecked.value);
+
+  // Écoute les changements de rôle
+  document.querySelectorAll<HTMLInputElement>('input[name="role"]').forEach(radio => {
+    radio.addEventListener('change', () => applyRole(radio.value));
+    // Clic sur toute la carte (pas seulement le radio caché)
+    radio.closest('.role-option')?.addEventListener('click', () => {
+      radio.checked = true;
+      applyRole(radio.value);
+    });
+  });
+
+  const form = document.getElementById('signup-form') as HTMLFormElement | null;
+  const messageBox = document.getElementById('signup-message') as HTMLDivElement | null;
+
+  function showMessage(type: 'success' | 'error', text: string) {
+    if (!messageBox) return;
+    messageBox.style.display = 'block';
+    messageBox.textContent = text;
+    if (type === 'success') {
+      messageBox.style.background = '#E8F4EA';
+      messageBox.style.color = '#2D6E3F';
+      messageBox.style.border = '1px solid #B8DBC0';
+    } else {
+      messageBox.style.background = '#FBE5E5';
+      messageBox.style.color = '#A02323';
+      messageBox.style.border = '1px solid #F0B8B8';
+    }
+    messageBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  if (form) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      // Récupère les valeurs du formulaire
+      const role = (document.querySelector('input[name="role"]:checked') as HTMLInputElement)?.value;
+      const prenom = (document.getElementById('prenom') as HTMLInputElement).value.trim();
+      const nom = (document.getElementById('nom') as HTMLInputElement).value.trim();
+      const email = (document.getElementById('email') as HTMLInputElement).value.trim();
+      const tel = (document.getElementById('tel') as HTMLInputElement).value.trim();
+      const mdp = (document.getElementById('mdp') as HTMLInputElement).value;
+      const mdp2 = (document.getElementById('mdp2') as HTMLInputElement).value;
+
+      // Validations basiques
+      if (!role) {
+        showMessage('error', 'Veuillez sélectionner votre profil (Praticien, Collectivité ou Entreprise).');
+        return;
+      }
+      if (mdp !== mdp2) {
+        showMessage('error', 'Les deux mots de passe ne correspondent pas.');
+        return;
+      }
+      if (mdp.length < 8) {
+        showMessage('error', 'Le mot de passe doit faire au moins 8 caractères.');
+        return;
+      }
+
+      const submitBtn = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Création du compte…';
+
+      // Appel Supabase : crée le compte + envoie email de confirmation
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password: mdp,
+        options: {
+          data: {
+            role,
+            prenom,
+            nom,
+            telephone: tel,
+          },
+          emailRedirectTo: `${window.location.origin}/dashboard`,
+        },
+      });
+
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Créer mon compte';
+
+      if (error) {
+        if (error.message.includes('already registered')) {
+          showMessage('error', 'Cet email est déjà utilisé. Essayez de vous connecter.');
+        } else {
+          showMessage('error', `Erreur : ${error.message}`);
+        }
+        return;
+      }
+
+      // Succès
+      if (data.user && data.user.identities && data.user.identities.length === 0) {
+        showMessage('error', 'Cet email est déjà utilisé. Essayez de vous connecter.');
+      } else {
+        showMessage(
+          'success',
+          `✓ Compte créé ! Un email de confirmation a été envoyé à ${email}. Cliquez sur le lien dans l'email pour activer votre compte.`
+        );
+        form.reset();
+        // Retour à la page d'origine si ?retour= était présent
+        const retourParam = new URLSearchParams(window.location.search).get('retour');
+        if (retourParam) {
+          setTimeout(() => { window.location.href = retourParam; }, 3000);
+        }
+      }
+    });
+  }
+</script>

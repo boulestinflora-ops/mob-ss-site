@@ -1,0 +1,10 @@
+---
+// StatItem — Une statistique avec source
+const { value, label, source } = Astro.props;
+---
+
+<div class="stat-item">
+  <div class="stat-item__value">{value}</div>
+  <div class="stat-item__label">{label}</div>
+  {source && <div class="stat-item__source">{source}</div>}
+</div>

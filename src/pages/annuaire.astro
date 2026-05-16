@@ -1,0 +1,262 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Annuaire des praticiens — MOB'SS"
+  description="Trouvez un praticien du sport ou de la santé près de chez vous : kinésithérapeutes, ostéopathes, coachs sportifs, soprhologues et bien d'autres."
+  currentPage="annuaire"
+>
+
+  <!-- Hero -->
+  <section style="background:var(--color-primary);color:#fff;padding:60px 0 70px;">
+    <div class="container" style="max-width:700px;text-align:center;">
+      <span style="display:inline-block;background:rgba(255,255,255,0.15);border-radius:var(--radius-pill);padding:6px 16px;font-size:0.85rem;font-weight:600;letter-spacing:0.04em;margin-bottom:20px;">
+        👥 Annuaire professionnel
+      </span>
+      <h1 style="color:#fff;font-size:clamp(1.8rem,4vw,3rem);margin-bottom:16px;">
+        Les praticiens du sport et de la santé
+      </h1>
+      <p style="font-size:1.05rem;color:rgba(255,255,255,0.9);max-width:560px;margin:0 auto 28px;line-height:1.65;">
+        Retrouvez ici les professionnels inscrits sur MOB'SS. Confrères, vous pouvez les contacter
+        pour des remplacements ou des collaborations.
+      </p>
+      <p style="font-size:0.95rem;color:rgba(255,255,255,0.75);">
+        <span id="annuaire-count" style="font-weight:700;font-size:1.1rem;color:#fff;">…</span>
+        praticiens référencés
+      </p>
+    </div>
+  </section>
+
+  <!-- Barre de recherche -->
+  <div class="container" style="max-width:880px;margin-top:-28px;position:relative;z-index:5;">
+    <div style="background:#fff;border-radius:var(--radius-lg);padding:24px 28px;box-shadow:var(--shadow-lg);display:grid;grid-template-columns:1fr 1fr auto;gap:12px;align-items:end;">
+      <div class="field" style="margin:0;">
+        <label for="ann-specialite" style="font-size:0.85rem;font-weight:600;margin-bottom:6px;display:block;">Spécialité</label>
+        <select id="ann-specialite" style="width:100%;padding:12px 14px;border:1px solid var(--color-border);border-radius:var(--radius-sm);font-family:inherit;font-size:0.95rem;background:#fff;">
+          <option value="">Toutes les spécialités</option>
+          <option>Kinésithérapeute</option>
+          <option>Ostéopathe</option>
+          <option>Coach sportif</option>
+          <option>Diététicien / nutritionniste</option>
+          <option>Professeur de yoga / Pilates</option>
+          <option>Sophrologue</option>
+          <option>Professionnel APA</option>
+          <option>Infirmier libéral</option>
+          <option>Médecin</option>
+          <option>Psychomotricien</option>
+          <option>Ergothérapeute</option>
+          <option>Autre</option>
+        </select>
+      </div>
+      <div class="field" style="margin:0;">
+        <label for="ann-ville" style="font-size:0.85rem;font-weight:600;margin-bottom:6px;display:block;">Ville ou région</label>
+        <input id="ann-ville" type="text" placeholder="Lyon, Paris, Bretagne…"
+          style="width:100%;padding:12px 14px;border:1px solid var(--color-border);border-radius:var(--radius-sm);font-family:inherit;font-size:0.95rem;" />
+      </div>
+      <button id="ann-search-btn" class="btn btn--primary" style="padding:12px 24px;height:fit-content;">
+        Rechercher
+      </button>
+    </div>
+    <!-- Filtre remplacement -->
+    <div style="margin-top:12px;padding:0 4px;">
+      <label style="display:inline-flex;align-items:center;gap:8px;cursor:pointer;font-size:0.9rem;color:var(--color-text-soft);">
+        <input type="checkbox" id="ann-remplacement" style="width:16px;height:16px;accent-color:var(--color-primary);" />
+        Afficher uniquement les praticiens disponibles pour des remplacements
+      </label>
+    </div>
+  </div>
+
+  <!-- Grille des praticiens -->
+  <section class="section" style="padding-top:40px;padding-bottom:80px;">
+    <div class="container" style="max-width:1100px;">
+
+      <!-- En-tête résultats -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px;">
+        <p id="ann-results-label" style="margin:0;color:var(--color-text-soft);">
+          <strong id="ann-results-count" style="color:var(--color-text);">…</strong> praticien(s) trouvé(s)
+        </p>
+        <a href="/rejoindre" class="btn btn--outline" style="font-size:0.9rem;padding:10px 18px;">
+          + Rejoindre l'annuaire
+        </a>
+      </div>
+
+      <!-- État : chargement -->
+      <div id="ann-loading" style="text-align:center;padding:60px 24px;color:var(--color-text-soft);">
+        <div style="font-size:2rem;margin-bottom:12px;">⏳</div>
+        <p>Chargement de l'annuaire…</p>
+      </div>
+
+      <!-- État : liste -->
+      <div id="ann-grid" class="grid grid--3" style="display:none;gap:20px;"></div>
+
+      <!-- État : aucun résultat -->
+      <div id="ann-empty" style="display:none;text-align:center;padding:60px 24px;">
+        <div style="font-size:3rem;margin-bottom:16px;">🔍</div>
+        <h3>Aucun praticien trouvé</h3>
+        <p style="color:var(--color-text-soft);margin-bottom:24px;">
+          Essayez avec une spécialité ou une ville différente,<br />ou élargissez votre recherche.
+        </p>
+        <button id="ann-reset" class="btn btn--outline">Réinitialiser la recherche</button>
+      </div>
+
+      <!-- État : erreur -->
+      <div id="ann-error" style="display:none;text-align:center;padding:60px 24px;">
+        <div style="font-size:3rem;margin-bottom:16px;">⚠️</div>
+        <p style="color:var(--color-text-soft);">Impossible de charger l'annuaire. Veuillez réessayer.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- CTA bas de page -->
+  <section style="background:var(--color-cream-soft);border-top:1px solid var(--color-border);padding:48px 0;">
+    <div class="container" style="max-width:640px;text-align:center;">
+      <h2 style="font-size:1.5rem;margin-bottom:12px;">Vous êtes praticien et pas encore inscrit ?</h2>
+      <p style="color:var(--color-text-soft);margin-bottom:24px;">
+        Rejoignez l'annuaire en 30 secondes. Accédez aussi aux espaces gratuits et aux remplacements entre confrères.
+      </p>
+      <a href="/rejoindre" class="btn btn--primary btn--lg">Rejoindre MOB'SS →</a>
+    </div>
+  </section>
+
+</BaseLayout>
+
+<script>
+  import { supabase } from '../lib/supabase';
+
+  const loadingEl  = document.getElementById('ann-loading')  as HTMLElement;
+  const gridEl     = document.getElementById('ann-grid')     as HTMLElement;
+  const emptyEl    = document.getElementById('ann-empty')    as HTMLElement;
+  const errorEl    = document.getElementById('ann-error')    as HTMLElement;
+  const countEl    = document.getElementById('annuaire-count') as HTMLElement;
+  const resultsCt  = document.getElementById('ann-results-count') as HTMLElement;
+
+  const specSelect = document.getElementById('ann-specialite')    as HTMLSelectElement;
+  const villeInput = document.getElementById('ann-ville')         as HTMLInputElement;
+  const rempl      = document.getElementById('ann-remplacement')  as HTMLInputElement;
+  const searchBtn  = document.getElementById('ann-search-btn')    as HTMLButtonElement;
+  const resetBtn   = document.getElementById('ann-reset')         as HTMLButtonElement;
+
+  // ── Génération d'une couleur d'avatar stable par initiales ──────────────────
+  const AVATAR_COLORS = [
+    '#C8424F','#3A6EA5','#4A8F6D','#8A5A9C','#C87428','#2E8A8A',
+  ];
+  function avatarColor(seed: string): string {
+    let h = 0;
+    for (let i = 0; i < seed.length; i++) h = seed.charCodeAt(i) + ((h << 5) - h);
+    return AVATAR_COLORS[Math.abs(h) % AVATAR_COLORS.length];
+  }
+
+  // ── Création d'une carte praticien ──────────────────────────────────────────
+  function buildCard(p: any): string {
+    const prenom    = p.prenom || 'Praticien';
+    const nomInit   = p.nom ? p.nom[0].toUpperCase() + '.' : '';
+    const initiales = ((prenom[0] || '') + (p.nom?.[0] || '')).toUpperCase() || '?';
+    const color     = avatarColor(initiales);
+    const badgeRemp = p.disponible_remplacement
+      ? `<span style="display:inline-block;background:#E8F4EA;color:#2D6E3F;border-radius:var(--radius-pill);padding:3px 10px;font-size:0.78rem;font-weight:600;margin-top:6px;">🔄 Disponible pour remplacement</span>`
+      : '';
+
+    return `
+      <div class="card" style="display:flex;flex-direction:column;gap:12px;padding:22px;">
+        <div style="display:flex;align-items:center;gap:14px;">
+          <div style="width:52px;height:52px;border-radius:12px;background:${color};color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.2rem;flex-shrink:0;">
+            ${initiales}
+          </div>
+          <div style="min-width:0;">
+            <strong style="display:block;font-size:1rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${prenom} ${nomInit}</strong>
+            <span style="font-size:0.85rem;color:var(--color-primary);font-weight:600;">${p.specialite || 'Praticien'}</span>
+          </div>
+        </div>
+        ${badgeRemp}
+        ${p.ville ? `<p style="margin:0;font-size:0.88rem;color:var(--color-text-soft);">📍 ${p.ville}</p>` : ''}
+        ${p.bio ? `<p style="margin:0;font-size:0.88rem;color:var(--color-text-soft);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;">${p.bio}</p>` : ''}
+      </div>
+    `;
+  }
+
+  // ── Chargement et affichage ──────────────────────────────────────────────────
+  let allProfiles: any[] = [];
+
+  async function loadProfiles() {
+    loadingEl.style.display = 'block';
+    gridEl.style.display    = 'none';
+    emptyEl.style.display   = 'none';
+    errorEl.style.display   = 'none';
+
+    try {
+      const { data, error, count } = await supabase
+        .from('profiles')
+        .select('prenom, nom, specialite, ville, bio, disponible_remplacement', { count: 'exact' })
+        .eq('visible_annuaire', true)
+        .eq('role', 'praticien')
+        .not('prenom', 'is', null)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      allProfiles = data || [];
+
+      // Compteur hero
+      if (countEl) countEl.textContent = String(count ?? allProfiles.length);
+
+      renderFiltered();
+    } catch (e) {
+      console.error('Annuaire error:', e);
+      loadingEl.style.display = 'none';
+      errorEl.style.display   = 'block';
+    }
+  }
+
+  function renderFiltered() {
+    const specialite = specSelect.value.toLowerCase();
+    const ville      = villeInput.value.toLowerCase().trim();
+    const remplOnly  = rempl.checked;
+
+    const filtered = allProfiles.filter(p => {
+      const specMatch = !specialite || (p.specialite || '').toLowerCase() === specialite;
+      const villeMatch = !ville || (p.ville || '').toLowerCase().includes(ville);
+      const remplMatch = !remplOnly || p.disponible_remplacement;
+      return specMatch && villeMatch && remplMatch;
+    });
+
+    loadingEl.style.display = 'none';
+
+    if (filtered.length === 0) {
+      gridEl.style.display  = 'none';
+      emptyEl.style.display = 'block';
+      if (resultsCt) resultsCt.textContent = '0';
+      return;
+    }
+
+    gridEl.innerHTML        = filtered.map(buildCard).join('');
+    gridEl.style.display    = 'grid';
+    emptyEl.style.display   = 'none';
+    if (resultsCt) resultsCt.textContent = String(filtered.length);
+  }
+
+  // ── Listeners ───────────────────────────────────────────────────────────────
+  searchBtn?.addEventListener('click', renderFiltered);
+  villeInput?.addEventListener('keydown', (e) => { if (e.key === 'Enter') renderFiltered(); });
+  rempl?.addEventListener('change', renderFiltered);
+  resetBtn?.addEventListener('click', () => {
+    specSelect.value  = '';
+    villeInput.value  = '';
+    rempl.checked     = false;
+    renderFiltered();
+  });
+
+  // ── Pré-remplissage depuis ?specialite= (lien depuis /remplacements) ────────
+  const params = new URLSearchParams(window.location.search);
+  const paramSpec = params.get('specialite');
+  if (paramSpec && specSelect) {
+    const match = Array.from(specSelect.options).find(o =>
+      o.text.toLowerCase().includes(paramSpec.toLowerCase())
+    );
+    if (match) specSelect.value = match.value;
+  }
+
+  // Lancement
+  loadProfiles();
+</script>

@@ -1,0 +1,154 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+// Types d'espaces (modifiables sans toucher au code)
+const spaceTypes = [
+  { icon: "🏛️", title: "Salle communale", desc: "Mairie, polyvalente", value: "salle-communale", selected: true },
+  { icon: "🩺", title: "Cabinet", desc: "Paramédical, médical", value: "cabinet" },
+  { icon: "🧘", title: "Studio", desc: "Yoga, bien-être", value: "studio" },
+  { icon: "🏋️", title: "Salle de sport", desc: "Box, dojo, fitness", value: "salle-sport" },
+  { icon: "🏢", title: "Espace entreprise", desc: "Salle de réunion", value: "entreprise" },
+  { icon: "🌳", title: "Espace extérieur", desc: "Jardin, plateforme", value: "exterieur" }
+];
+
+const steps = [
+  { num: 1, label: "Type & lieu", active: true },
+  { num: 2, label: "Description", active: true },
+  { num: 3, label: "Disponibilités", active: false },
+  { num: 4, label: "Récurrence", active: false }
+];
+---
+
+<BaseLayout
+  title="Déposer une annonce — MOB'SS"
+  description="Référencez votre lieu sport et santé en 5 minutes."
+>
+  <section class="section">
+    <div class="container" style="max-width:840px;">
+      <div class="text-center" style="margin-bottom:32px;">
+        <span class="section__eyebrow">Hôte d'espace</span>
+        <h1>Déposez votre annonce</h1>
+        <p style="color:var(--color-text-soft);">Référencez votre lieu en 5 minutes. Vous pourrez le modifier à tout moment.</p>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:32px;">
+        {steps.map(step => (
+          <div style="text-align:center;">
+            <div style={`width:36px;height:36px;border-radius:50%;background:${step.active ? 'var(--color-primary)' : 'var(--color-bg-alt)'};color:${step.active ? '#fff' : 'var(--color-text-soft)'};display:flex;align-items:center;justify-content:center;margin:0 auto 6px;font-weight:700;${!step.active ? 'border:1px solid var(--color-border);' : ''}`}>{step.num}</div>
+            <span style={`font-size:0.85rem;font-weight:${step.active ? '600' : '400'};color:${step.active ? 'var(--color-text)' : 'var(--color-text-soft)'};`}>{step.label}</span>
+          </div>
+        ))}
+      </div>
+
+      <div class="form-card">
+        <h2 style="font-size:1.2rem;font-family:var(--font-body);margin-bottom:20px;">Type d'espace</h2>
+
+        <div class="role-picker role-picker--3col">
+          {spaceTypes.map(type => (
+            <label class={`role-option ${type.selected ? 'is-selected' : ''}`}>
+              <input type="radio" name="space-type" value={type.value} checked={type.selected} />
+              <div class="role-option__inner">
+                <span style="font-size:2rem;">{type.icon}</span>
+                <div class="role-option__title">{type.title}</div>
+                <div class="role-option__desc">{type.desc}</div>
+              </div>
+            </label>
+          ))}
+        </div>
+
+        <h2 style="font-size:1.2rem;font-family:var(--font-body);margin:32px 0 20px;">Adresse</h2>
+
+        <div class="field">
+          <label for="adresse">Adresse complète *</label>
+          <input id="adresse" type="text" placeholder="12 rue de la Mairie" autocomplete="street-address" />
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="cp">Code postal *</label>
+            <input id="cp" type="text" placeholder="45170" autocomplete="postal-code" />
+          </div>
+          <div class="field">
+            <label for="ville">Ville *</label>
+            <input id="ville" type="text" placeholder="Saint-Pierre-en-Vallée" autocomplete="address-level2" />
+          </div>
+        </div>
+
+        <h2 style="font-size:1.2rem;font-family:var(--font-body);margin:32px 0 20px;">Photos</h2>
+
+        <div style="border:2px dashed var(--color-border);border-radius:var(--radius-md);padding:40px;text-align:center;background:var(--color-bg-alt);">
+          <svg aria-hidden="true" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="1.5" style="margin:0 auto 12px;display:block;">
+            <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-5-5L5 21"/>
+          </svg>
+          <strong>Glissez vos photos ici ou cliquez pour parcourir</strong>
+          <p style="color:var(--color-text-soft);font-size:0.9rem;margin:4px 0 12px;">JPG, PNG · 5 Mo max par image · 3 photos minimum</p>
+          <button type="button" class="btn btn--outline">Parcourir</button>
+        </div>
+
+        <!-- Message de validation -->
+        <div id="step-msg" style="display:none;padding:14px 18px;border-radius:var(--radius-md);margin-top:16px;font-size:0.95rem;"></div>
+
+        <div style="display:flex;justify-content:space-between;margin-top:32px;">
+          <a href="/" class="btn btn--ghost">← Annuler</a>
+          <button id="btn-next" class="btn btn--primary">Étape suivante →</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  // ─── Sélection du type d'espace ──────────────────────────────────────────────
+  document.querySelectorAll<HTMLElement>('.role-option').forEach(label => {
+    label.addEventListener('click', () => {
+      // Désélectionne tout
+      document.querySelectorAll('.role-option').forEach(l => l.classList.remove('is-selected'));
+      // Sélectionne le cliqué
+      label.classList.add('is-selected');
+      const radio = label.querySelector<HTMLInputElement>('input[type="radio"]');
+      if (radio) radio.checked = true;
+    });
+  });
+
+  // ─── Bouton "Étape suivante" ──────────────────────────────────────────────────
+  const btnNext = document.getElementById('btn-next') as HTMLButtonElement | null;
+  const stepMsg = document.getElementById('step-msg') as HTMLDivElement | null;
+
+  btnNext?.addEventListener('click', () => {
+    const adresse = (document.getElementById('adresse') as HTMLInputElement)?.value.trim();
+    const ville   = (document.getElementById('ville')   as HTMLInputElement)?.value.trim();
+    const cp      = (document.getElementById('cp')      as HTMLInputElement)?.value.trim();
+    const type    = document.querySelector<HTMLInputElement>('input[name="space-type"]:checked')?.value;
+
+    // Validation du premier écran
+    if (!type) {
+      showStepMsg('error', 'Veuillez sélectionner un type d\'espace.');
+      return;
+    }
+    if (!adresse || !ville || !cp) {
+      showStepMsg('error', 'Veuillez renseigner l\'adresse complète (adresse, code postal, ville).');
+      return;
+    }
+
+    // La suite du formulaire (étapes 2–4) sera disponible au lancement
+    showStepMsg('info',
+      '✓ Première étape enregistrée ! Le dépôt complet d\'annonce sera disponible dès l\'ouverture de la plateforme. Votre demande a bien été notée.'
+    );
+    btnNext.style.display = 'none';
+  });
+
+  function showStepMsg(type: 'error' | 'info', text: string) {
+    if (!stepMsg) return;
+    stepMsg.style.display = 'block';
+    stepMsg.textContent   = text;
+    if (type === 'info') {
+      stepMsg.style.background = '#E8F4EA';
+      stepMsg.style.color      = '#2D6E3F';
+      stepMsg.style.border     = '1px solid #B8DBC0';
+    } else {
+      stepMsg.style.background = '#FBE5E5';
+      stepMsg.style.color      = '#A02323';
+      stepMsg.style.border     = '1px solid #F0B8B8';
+    }
+    stepMsg.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+</script>

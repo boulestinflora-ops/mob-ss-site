@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="14" fill="#C8424F"/>
+  <rect x="0" y="58" width="64" height="6" rx="0" fill="#9C2E3A"/>
+  <text
+    x="32"
+    y="43"
+    font-family="'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif"
+    font-size="26"
+    font-weight="800"
+    fill="#ffffff"
+    text-anchor="middle"
+    letter-spacing="0.5"
+  >M</text>
+</svg>

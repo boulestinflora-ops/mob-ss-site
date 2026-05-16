@@ -1,0 +1,136 @@
+---
+// Header — Le menu en haut du site
+// Pour modifier les liens du menu, ajoutez/retirez ici.
+// Pour ajouter une page, c'est ICI qu'on met le lien.
+
+const { currentPage = '' } = Astro.props;
+
+// Liste centralisée des liens du menu — facile à modifier
+// Note : "Comment ça marche" sans "?" pour éviter la coupure de ligne
+const navLinks = [
+  { href: '/', label: 'Accueil', key: 'accueil' },
+  { href: '/explorez', label: 'Espaces', key: 'explorez' },
+  { href: '/annuaire', label: 'Annuaire', key: 'annuaire' },
+  { href: '/remplacements', label: 'Remplacements', key: 'remplacements' },
+  { href: '/contact', label: 'Contact', key: 'contact' }
+];
+---
+
+<header class="site-header">
+  <div class="container site-header__inner">
+    <!-- Logo seul à gauche -->
+    <a class="brand" href="/" aria-label="MOB'SS Accueil">
+      <img src="/logo.svg" alt="MOB'SS" height="44" width="auto" style="display:block;" />
+    </a>
+
+    <button class="menu-toggle" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="main-nav">
+      <span aria-hidden="true"></span>
+    </button>
+
+    <!-- Navigation au centre -->
+    <nav class="nav" id="main-nav" aria-label="Navigation principale" style="justify-content:center;">
+      {navLinks.map(link => (
+        <a href={link.href} class={currentPage === link.key ? 'is-active' : ''} style="white-space:nowrap;">
+          {link.label}
+        </a>
+      ))}
+      <!-- Actions supplémentaires dans le menu hamburger (mobile uniquement) -->
+      <div class="nav__mobile-actions">
+        <a href="/deposer-annonce" class="btn btn--cream" style="margin-top:4px;">Déposer un espace</a>
+        <div id="nav-loggedout" style="display:flex;flex-direction:column;gap:8px;">
+          <a href="/connexion" class="btn btn--outline">Se connecter</a>
+          <a href="/inscription" class="btn btn--primary">S'inscrire</a>
+        </div>
+        <div id="nav-loggedin" style="display:none;flex-direction:column;gap:8px;">
+          <a href="/dashboard" class="btn btn--outline">Mon espace</a>
+          <button type="button" id="logout-mobile" class="btn btn--ghost">Se déconnecter</button>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Actions à droite : déposer + auth -->
+    <div class="header-actions">
+      <!-- Non connecté -->
+      <div id="user-loggedout" style="display:flex;align-items:center;gap:10px;">
+        <a href="/deposer-annonce" class="btn btn--cream" style="white-space:nowrap;">Déposer un espace</a>
+        <a href="/connexion" class="btn btn--outline">Se connecter</a>
+        <a href="/inscription" class="btn btn--primary">S'inscrire</a>
+      </div>
+      <!-- Connecté -->
+      <div id="user-loggedin" style="display:none;align-items:center;gap:10px;">
+        <a href="/deposer-annonce" class="btn btn--cream" style="white-space:nowrap;">Déposer un espace</a>
+        <a href="/dashboard" class="btn btn--ghost" style="display:flex;align-items:center;gap:8px;">
+          <span id="user-avatar" style="width:32px;height:32px;border-radius:8px;background:var(--color-cream);color:var(--color-primary);display:flex;align-items:center;justify-content:center;font-weight:700;">?</span>
+          <span id="user-name">Mon espace</span>
+        </a>
+        <button type="button" id="logout-btn" class="btn btn--ghost" title="Se déconnecter">Se déconnecter</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!--
+  Script de header — version simplifiée, sans listener persistant.
+  Pour basculer entre "connecté" et "déconnecté", on lit juste la session
+  une fois au chargement, sans abonnement temps réel.
+-->
+<script>
+  import { supabase } from '../lib/supabase';
+
+  // Bouton déconnexion (desktop + mobile)
+  async function doLogout() {
+    try { await supabase.auth.signOut(); } catch (e) { console.error('Erreur déconnexion :', e); }
+    window.location.href = '/';
+  }
+  document.getElementById('logout-btn')?.addEventListener('click', doLogout);
+  document.getElementById('logout-mobile')?.addEventListener('click', doLogout);
+
+  // Lecture de session au chargement (en arrière-plan, n'attend rien)
+  // On utilise getSession() (synchrone, lit le cookie) plutôt que getUser()
+  // (qui fait un appel HTTP). Bien plus rapide et ne bloque pas la page.
+  supabase.auth.getSession().then(async ({ data: { session } }) => {
+    const loggedOut = document.getElementById('user-loggedout');
+    const loggedIn = document.getElementById('user-loggedin');
+    const avatar = document.getElementById('user-avatar');
+    const nameEl = document.getElementById('user-name');
+
+    // Menu mobile — blocs connecté/déconnecté
+    const navLoggedOut = document.getElementById('nav-loggedout');
+    const navLoggedIn  = document.getElementById('nav-loggedin');
+
+    if (!session?.user) {
+      // Personne de connecté : on garde l'affichage par défaut (loggedOut visible)
+      return;
+    }
+
+    // Affiche le bloc connecté avant même de charger le profil
+    if (loggedOut) loggedOut.style.display = 'none';
+    if (loggedIn) loggedIn.style.display = 'flex';
+    if (navLoggedOut) navLoggedOut.style.display = 'none';
+    if (navLoggedIn)  navLoggedIn.style.display  = 'flex';
+
+    // Affiche un fallback immédiat (avant la requête profil)
+    const fallbackName = session.user.email?.split('@')[0] || 'Mon espace';
+    if (nameEl) nameEl.textContent = fallbackName;
+    if (avatar) avatar.textContent = (fallbackName[0] || '?').toUpperCase();
+
+    // Charge le profil en arrière-plan (si ça échoue, le fallback reste)
+    try {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('prenom, nom')
+        .eq('id', session.user.id)
+        .single();
+
+      if (profile) {
+        const prenom = profile.prenom || fallbackName;
+        const nom = profile.nom || '';
+        const initiales = ((prenom[0] || '') + (nom[0] || '')).toUpperCase() || '?';
+        if (avatar) avatar.textContent = initiales;
+        if (nameEl) nameEl.textContent = prenom;
+      }
+    } catch (e) {
+      console.warn('Profil non chargé, fallback gardé', e);
+    }
+  });
+</script>

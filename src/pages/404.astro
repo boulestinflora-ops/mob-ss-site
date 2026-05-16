@@ -1,0 +1,28 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Page introuvable — MOB'SS"
+  description="Cette page n'existe pas ou a été déplacée."
+>
+  <section class="section" style="min-height:60vh;display:flex;align-items:center;">
+    <div class="container text-center" style="max-width:560px;">
+
+      <div style="font-size:4rem;margin-bottom:16px;">📍</div>
+
+      <span class="section__eyebrow">Erreur 404</span>
+      <h1 style="margin-top:12px;">Cette page est introuvable</h1>
+      <p style="color:var(--color-text-soft);font-size:1.05rem;margin-bottom:32px;">
+        L'espace que vous cherchez a peut-être été déplacé ou n'existe plus.
+        Pas de panique — revenez à l'accueil ou explorez les espaces disponibles.
+      </p>
+
+      <div class="flex gap-12 justify-center" style="flex-wrap:wrap;">
+        <a href="/" class="btn btn--primary btn--lg">Retour à l'accueil</a>
+        <a href="/explorez" class="btn btn--outline btn--lg">Explorer les espaces</a>
+      </div>
+
+    </div>
+  </section>
+</BaseLayout>

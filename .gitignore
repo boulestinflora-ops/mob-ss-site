@@ -1,0 +1,8 @@
+# Fichiers et dossiers à ne pas sauvegarder/partager
+node_modules/
+dist/
+.astro/
+.env
+.env.local
+.DS_Store
+*.log

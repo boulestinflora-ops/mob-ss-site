@@ -1,0 +1,32 @@
+[
+  {
+    "icon": "map-pin",
+    "title": "Géolocalisation",
+    "description": "Carte interactive pour identifier les espaces disponibles autour de vous, avec filtres par type, équipements et tarifs."
+  },
+  {
+    "icon": "calendar",
+    "title": "Calendrier intelligent",
+    "description": "Gérez vos créneaux, votre disponibilité et vos réservations récurrentes depuis un calendrier synchronisable."
+  },
+  {
+    "icon": "credit-card",
+    "title": "Paiement sécurisé",
+    "description": "Encaissement en ligne avec validation à l'utilisation, protection des paiements et reçus automatiques."
+  },
+  {
+    "icon": "message",
+    "title": "Messagerie intégrée",
+    "description": "Échangez en direct avec vos hôtes ou vos clients, partagez des documents et confirmez vos réservations."
+  },
+  {
+    "icon": "chart",
+    "title": "Tableau de bord",
+    "description": "Suivez vos statistiques d'utilisation : taux de remplissage, revenus, satisfaction client et impact territorial."
+  },
+  {
+    "icon": "subscription",
+    "title": "Abonnements pros",
+    "description": "Formules dédiées aux collectivités et entreprises pour piloter plusieurs espaces et bénéficier d'analyses avancées."
+  }
+]
