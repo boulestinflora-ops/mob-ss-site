@@ -2,11 +2,16 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import spaces from '../data/spaces.json';
 
-// Table de correspondance id → titre des espaces (pour afficher le nom dans les demandes)
-const spacesMap = Object.fromEntries(spaces.map((s: any) => [s.id, s.title]));
+// Table de correspondance id → titre (injectée en JSON dans la page, lue par le script)
+const spacesMapJson = JSON.stringify(
+  Object.fromEntries(spaces.map((s: any) => [s.id, s.title]))
+);
 ---
 
 <BaseLayout title="Mon espace — MOB'SS" description="Votre tableau de bord MOB'SS.">
+
+<!-- Données statiques lisibles par le script module sans define:vars -->
+<script type="application/json" id="spaces-map-data" set:html={spacesMapJson}></script>
 
   <!-- ÉTAT DE CHARGEMENT -->
   <div id="dash-loading" style="text-align:center;padding:120px 24px;color:var(--color-text-soft);">
@@ -517,8 +522,13 @@ const spacesMap = Object.fromEntries(spaces.map((s: any) => [s.id, s.title]));
 <!-- ─────────────────────────────────────────────────────────────────────
      Script principal
      ───────────────────────────────────────────────────────────────────── -->
-<script define:vars={{ spacesMap }}>
+<script>
   import { supabase } from '../lib/supabase';
+
+  // Récupère la table espaces injectée en JSON dans la page
+  const spacesMap: Record<string, string> = JSON.parse(
+    document.getElementById('spaces-map-data')?.textContent || '{}'
+  );
 
   // ── Éléments DOM ──────────────────────────────────────────────────────────────
   const loadingEl  = document.getElementById('dash-loading');
