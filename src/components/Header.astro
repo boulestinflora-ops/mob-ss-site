@@ -9,6 +9,17 @@ const navLinks = [
 // Annuaire et Remplacements sont ajoutés dynamiquement par JS selon le rôle connecté
 ---
 
+<!-- Bandeau explicatif — visible sur toutes les pages -->
+<div class="header-topbar">
+  <div class="container header-topbar__inner">
+    <span class="header-topbar__text">
+      <strong>MOB'SS</strong> connecte les espaces inoccupés des collectivités &amp; entreprises avec les professionnels du sport et de la santé —
+      <strong>gratuitement, partout en France.</strong>
+    </span>
+    <a href="/comment-ca-marche" class="header-topbar__link">Comment ça marche →</a>
+  </div>
+</div>
+
 <header class="site-header">
   <div class="container site-header__inner">
 
@@ -89,6 +100,42 @@ const navLinks = [
 </header>
 
 <style>
+  /* ── Bandeau explicatif ─────────────────────────────────────────────────────── */
+  .header-topbar {
+    background: var(--color-primary);
+    color: #fff;
+    padding: 9px 0;
+    font-size: 0.82rem;
+    line-height: 1.4;
+  }
+  .header-topbar__inner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    text-align: center;
+  }
+  .header-topbar__text {
+    color: rgba(255,255,255,0.92);
+  }
+  .header-topbar__text strong {
+    color: #fff;
+  }
+  .header-topbar__link {
+    color: var(--color-cream);
+    font-weight: 600;
+    white-space: nowrap;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(247,229,162,0.5);
+    padding-bottom: 1px;
+    transition: border-color 0.15s;
+  }
+  .header-topbar__link:hover {
+    color: var(--color-cream);
+    border-color: var(--color-cream);
+  }
+
   /* Uniformiser les boutons Se connecter / S'inscrire */
   #user-loggedout .btn--outline {
     padding: 10px 18px;
