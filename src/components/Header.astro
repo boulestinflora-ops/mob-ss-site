@@ -1,136 +1,243 @@
 ---
-// Header — Le menu en haut du site
-// Pour modifier les liens du menu, ajoutez/retirez ici.
-// Pour ajouter une page, c'est ICI qu'on met le lien.
-
 const { currentPage = '' } = Astro.props;
 
-// Liste centralisée des liens du menu — facile à modifier
-// Note : "Comment ça marche" sans "?" pour éviter la coupure de ligne
 const navLinks = [
   { href: '/', label: 'Accueil', key: 'accueil' },
   { href: '/explorez', label: 'Espaces', key: 'explorez' },
-  { href: '/annuaire', label: 'Annuaire', key: 'annuaire' },
-  { href: '/remplacements', label: 'Remplacements', key: 'remplacements' },
   { href: '/contact', label: 'Contact', key: 'contact' }
 ];
+// Annuaire et Remplacements sont ajoutés dynamiquement par JS selon le rôle connecté
 ---
 
 <header class="site-header">
   <div class="container site-header__inner">
-    <!-- Logo seul à gauche -->
+
+    <!-- Logo -->
     <a class="brand" href="/" aria-label="MOB'SS Accueil">
-      <img src="/logo.svg" alt="MOB'SS" height="44" width="auto" style="display:block;" />
+      <img src="/logo.svg" alt="MOB'SS" height="52" width="auto" style="display:block;" />
     </a>
 
     <button class="menu-toggle" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="main-nav">
       <span aria-hidden="true"></span>
     </button>
 
-    <!-- Navigation au centre -->
+    <!-- Navigation -->
     <nav class="nav" id="main-nav" aria-label="Navigation principale" style="justify-content:center;">
       {navLinks.map(link => (
         <a href={link.href} class={currentPage === link.key ? 'is-active' : ''} style="white-space:nowrap;">
           {link.label}
         </a>
       ))}
-      <!-- Actions supplémentaires dans le menu hamburger (mobile uniquement) -->
+      <!-- Liens conditionnels injectés par JS quand connecté -->
+      <a href="/annuaire" id="nav-annuaire" style="display:none;white-space:nowrap;">Annuaire</a>
+      <a href="/remplacements" id="nav-remplacements" style="display:none;white-space:nowrap;">Remplacements</a>
+
+      <!-- Actions mobile -->
       <div class="nav__mobile-actions">
-        <a href="/deposer-annonce" class="btn btn--cream" style="margin-top:4px;">Déposer un espace</a>
-        <div id="nav-loggedout" style="display:flex;flex-direction:column;gap:8px;">
+        <div id="nav-loggedout-mobile" style="display:flex;flex-direction:column;gap:8px;">
           <a href="/connexion" class="btn btn--outline">Se connecter</a>
-          <a href="/inscription" class="btn btn--primary">S'inscrire</a>
+          <a href="/inscription" class="btn btn--outline">S'inscrire</a>
         </div>
-        <div id="nav-loggedin" style="display:none;flex-direction:column;gap:8px;">
+        <div id="nav-loggedin-mobile" style="display:none;flex-direction:column;gap:8px;">
           <a href="/dashboard" class="btn btn--outline">Mon espace</a>
-          <button type="button" id="logout-mobile" class="btn btn--ghost">Se déconnecter</button>
+          <button type="button" id="logout-mobile" class="btn btn--outline">Se déconnecter</button>
         </div>
+        <a href="/deposer-annonce" id="nav-deposer-mobile" class="btn btn--cream" style="margin-top:4px;">Déposer un espace</a>
       </div>
     </nav>
 
-    <!-- Actions à droite : déposer + auth -->
+    <!-- Actions desktop -->
     <div class="header-actions">
+
       <!-- Non connecté -->
-      <div id="user-loggedout" style="display:flex;align-items:center;gap:10px;">
-        <a href="/deposer-annonce" class="btn btn--cream" style="white-space:nowrap;">Déposer un espace</a>
-        <a href="/connexion" class="btn btn--outline">Se connecter</a>
-        <a href="/inscription" class="btn btn--primary">S'inscrire</a>
+      <div id="user-loggedout" style="display:flex;align-items:center;gap:8px;">
+        <a href="/deposer-annonce" class="btn btn--cream" style="white-space:nowrap;" id="deposer-btn-out">Déposer un espace</a>
+        <a href="/connexion" class="btn btn--outline" style="white-space:nowrap;">Se connecter</a>
+        <a href="/inscription" class="btn btn--outline" style="white-space:nowrap;">S'inscrire</a>
       </div>
+
       <!-- Connecté -->
       <div id="user-loggedin" style="display:none;align-items:center;gap:10px;">
-        <a href="/deposer-annonce" class="btn btn--cream" style="white-space:nowrap;">Déposer un espace</a>
-        <a href="/dashboard" class="btn btn--ghost" style="display:flex;align-items:center;gap:8px;">
-          <span id="user-avatar" style="width:32px;height:32px;border-radius:8px;background:var(--color-cream);color:var(--color-primary);display:flex;align-items:center;justify-content:center;font-weight:700;">?</span>
-          <span id="user-name">Mon espace</span>
-        </a>
-        <button type="button" id="logout-btn" class="btn btn--ghost" title="Se déconnecter">Se déconnecter</button>
+        <a href="/deposer-annonce" id="deposer-btn-in" class="btn btn--cream" style="white-space:nowrap;">Déposer un espace</a>
+
+        <!-- Avatar + dropdown -->
+        <div class="user-menu" id="user-menu">
+          <button type="button" class="user-menu__trigger" id="user-menu-trigger" aria-expanded="false" aria-haspopup="true">
+            <span id="user-avatar" style="width:34px;height:34px;border-radius:8px;background:var(--color-cream);color:var(--color-primary);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.9rem;">?</span>
+            <span id="user-name" style="font-weight:600;font-size:0.92rem;">Mon espace</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="user-menu__dropdown" id="user-dropdown" role="menu">
+            <a href="/dashboard" role="menuitem">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+              Mon tableau de bord
+            </a>
+            <a href="/completer-profil" role="menuitem">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+              Mon profil
+            </a>
+            <hr style="border:none;border-top:1px solid var(--color-border);margin:4px 0;" />
+            <button type="button" id="logout-btn" role="menuitem" style="width:100%;text-align:left;display:flex;align-items:center;gap:8px;padding:8px 14px;color:var(--color-text-soft);background:none;border:none;font-family:inherit;font-size:0.9rem;cursor:pointer;border-radius:var(--radius-sm);">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+              Se déconnecter
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </header>
 
-<!--
-  Script de header — version simplifiée, sans listener persistant.
-  Pour basculer entre "connecté" et "déconnecté", on lit juste la session
-  une fois au chargement, sans abonnement temps réel.
--->
+<style>
+  /* Uniformiser les boutons Se connecter / S'inscrire */
+  #user-loggedout .btn--outline {
+    padding: 10px 18px;
+    font-size: 0.9rem;
+  }
+
+  /* User menu dropdown */
+  .user-menu {
+    position: relative;
+  }
+  .user-menu__trigger {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px;
+    border-radius: var(--radius-md);
+    border: 1.5px solid var(--color-border);
+    background: #fff;
+    cursor: pointer;
+    font-family: inherit;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .user-menu__trigger:hover,
+  .user-menu__trigger[aria-expanded="true"] {
+    border-color: var(--color-primary);
+    background: var(--color-cream-soft);
+  }
+  .user-menu__dropdown {
+    display: none;
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    min-width: 210px;
+    background: #fff;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    box-shadow: 0 8px 24px rgba(31,21,24,0.10);
+    z-index: 200;
+    padding: 6px;
+    animation: dropIn 0.15s ease;
+  }
+  .user-menu__dropdown.is-open { display: block; }
+  .user-menu__dropdown a,
+  .user-menu__dropdown button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 14px;
+    border-radius: var(--radius-sm);
+    font-size: 0.9rem;
+    color: var(--color-text);
+    text-decoration: none;
+    transition: background 0.12s;
+    font-family: inherit;
+  }
+  .user-menu__dropdown a:hover,
+  .user-menu__dropdown button:hover {
+    background: var(--color-cream-soft);
+    color: var(--color-primary);
+  }
+  @keyframes dropIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+</style>
+
 <script>
   import { supabase } from '../lib/supabase';
 
-  // Bouton déconnexion (desktop + mobile)
+  // Déconnexion
   async function doLogout() {
-    try { await supabase.auth.signOut(); } catch (e) { console.error('Erreur déconnexion :', e); }
+    try { await supabase.auth.signOut(); } catch (e) {}
     window.location.href = '/';
   }
   document.getElementById('logout-btn')?.addEventListener('click', doLogout);
   document.getElementById('logout-mobile')?.addEventListener('click', doLogout);
 
-  // Lecture de session au chargement (en arrière-plan, n'attend rien)
-  // On utilise getSession() (synchrone, lit le cookie) plutôt que getUser()
-  // (qui fait un appel HTTP). Bien plus rapide et ne bloque pas la page.
+  // Dropdown menu toggle
+  const trigger  = document.getElementById('user-menu-trigger');
+  const dropdown = document.getElementById('user-dropdown');
+  trigger?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const open = dropdown?.classList.toggle('is-open');
+    trigger.setAttribute('aria-expanded', String(open));
+  });
+  document.addEventListener('click', (e) => {
+    if (!document.getElementById('user-menu')?.contains(e.target as Node)) {
+      dropdown?.classList.remove('is-open');
+      trigger?.setAttribute('aria-expanded', 'false');
+    }
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      dropdown?.classList.remove('is-open');
+      trigger?.setAttribute('aria-expanded', 'false');
+    }
+  });
+
+  // Session
   supabase.auth.getSession().then(async ({ data: { session } }) => {
     const loggedOut = document.getElementById('user-loggedout');
-    const loggedIn = document.getElementById('user-loggedin');
-    const avatar = document.getElementById('user-avatar');
-    const nameEl = document.getElementById('user-name');
+    const loggedIn  = document.getElementById('user-loggedin');
+    const avatar    = document.getElementById('user-avatar');
+    const nameEl    = document.getElementById('user-name');
+    const navLoggedOutMobile = document.getElementById('nav-loggedout-mobile');
+    const navLoggedInMobile  = document.getElementById('nav-loggedin-mobile');
 
-    // Menu mobile — blocs connecté/déconnecté
-    const navLoggedOut = document.getElementById('nav-loggedout');
-    const navLoggedIn  = document.getElementById('nav-loggedin');
+    if (!session?.user) return;
 
-    if (!session?.user) {
-      // Personne de connecté : on garde l'affichage par défaut (loggedOut visible)
-      return;
-    }
-
-    // Affiche le bloc connecté avant même de charger le profil
+    // Affiche le bloc connecté
     if (loggedOut) loggedOut.style.display = 'none';
-    if (loggedIn) loggedIn.style.display = 'flex';
-    if (navLoggedOut) navLoggedOut.style.display = 'none';
-    if (navLoggedIn)  navLoggedIn.style.display  = 'flex';
+    if (loggedIn)  loggedIn.style.display  = 'flex';
+    if (navLoggedOutMobile) navLoggedOutMobile.style.display = 'none';
+    if (navLoggedInMobile)  navLoggedInMobile.style.display  = 'flex';
 
-    // Affiche un fallback immédiat (avant la requête profil)
-    const fallbackName = session.user.email?.split('@')[0] || 'Mon espace';
-    if (nameEl) nameEl.textContent = fallbackName;
-    if (avatar) avatar.textContent = (fallbackName[0] || '?').toUpperCase();
+    // Fallback immédiat
+    const fallback = session.user.email?.split('@')[0] || '?';
+    if (nameEl) nameEl.textContent = fallback;
+    if (avatar) avatar.textContent = (fallback[0] || '?').toUpperCase();
 
-    // Charge le profil en arrière-plan (si ça échoue, le fallback reste)
+    // Profil complet
     try {
       const { data: profile } = await supabase
         .from('profiles')
-        .select('prenom, nom')
+        .select('prenom, nom, role')
         .eq('id', session.user.id)
         .single();
 
       if (profile) {
-        const prenom = profile.prenom || fallbackName;
-        const nom = profile.nom || '';
-        const initiales = ((prenom[0] || '') + (nom[0] || '')).toUpperCase() || '?';
+        const prenom = profile.prenom || fallback;
+        const initiales = ((prenom[0] || '') + (profile.nom?.[0] || '')).toUpperCase() || '?';
         if (avatar) avatar.textContent = initiales;
         if (nameEl) nameEl.textContent = prenom;
+
+        // Annuaire + Remplacements : visibles pour praticien et hôte
+        const role = profile.role;
+        if (role === 'praticien' || role === 'collectivite' || role === 'entreprise') {
+          document.getElementById('nav-annuaire')?.style.setProperty('display', 'inline');
+          document.getElementById('nav-remplacements')?.style.setProperty('display', 'inline');
+        }
+
+        // Praticien : cacher "Déposer un espace"
+        if (role === 'praticien') {
+          document.getElementById('deposer-btn-in')?.style.setProperty('display', 'none');
+          document.getElementById('nav-deposer-mobile')?.style.setProperty('display', 'none');
+        }
       }
     } catch (e) {
-      console.warn('Profil non chargé, fallback gardé', e);
+      console.warn('Profil header non chargé', e);
     }
   });
 </script>

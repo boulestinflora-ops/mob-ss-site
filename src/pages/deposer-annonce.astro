@@ -97,6 +97,14 @@ const steps = [
 </BaseLayout>
 
 <script>
+  // ─── Vérification de la session — redirection si non connecté ────────────────
+  import { supabase } from '../lib/supabase';
+  supabase.auth.getSession().then(({ data: { session } }) => {
+    if (!session?.user) {
+      window.location.href = '/inscription?role=collectivite&redirect=deposer-annonce';
+    }
+  });
+
   // ─── Sélection du type d'espace ──────────────────────────────────────────────
   document.querySelectorAll<HTMLElement>('.role-option').forEach(label => {
     label.addEventListener('click', () => {

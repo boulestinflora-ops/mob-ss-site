@@ -9,8 +9,8 @@
   --color-primary: #C8424F;        /* avant #B0414B — plus saturé */
   --color-primary-dark: #9C2E3A;
   --color-primary-light: #E07585;
-  --color-cream: #F4E8B8;            /* crème un peu plus chaud */
-  --color-cream-soft: #FBF6E0;
+  --color-cream: #f7e5a2;            /* crème MOB'SS */
+  --color-cream-soft: #fdf6da;
 
   /* Fonds : maximum de blanc — comme le prototype Bubble */
   --color-bg: #FFFFFF;
@@ -268,9 +268,9 @@ p  { margin: 0 0 1em; }
 .btn--cream {
   background: var(--color-cream);
   color: var(--color-primary-dark);
-  box-shadow: 0 4px 0 #D8C58A;
+  box-shadow: 0 2px 0 #c9bb6e;
 }
-.btn--cream:hover { background: #EAD89A; color: var(--color-primary-dark); }
+.btn--cream:hover { background: #f2d96e; color: var(--color-primary-dark); }
 
 .btn--outline {
   background: #fff;

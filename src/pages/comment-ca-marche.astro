@@ -25,8 +25,8 @@ import faq from '../data/faq.json';
 
       <!-- Onglets -->
       <div class="tabs ccm-tabs" role="tablist" style="justify-content:center;flex-wrap:wrap;border-bottom:none;gap:12px;">
-        <button class="btn btn--primary ccm-tab-btn" data-tab="prat" aria-selected="true" style="border-radius:var(--radius-pill);">Je suis praticien</button>
-        <button class="btn btn--outline ccm-tab-btn" data-tab="hote" aria-selected="false" style="border-radius:var(--radius-pill);">J'ai un espace à proposer</button>
+        <button class="btn btn--cream ccm-tab-btn" data-tab="prat" aria-selected="true">Je suis praticien·ne</button>
+        <button class="btn btn--outline ccm-tab-btn" data-tab="hote" aria-selected="false">J'ai un espace à proposer</button>
       </div>
 
       <!-- Panneau praticien -->
@@ -155,11 +155,11 @@ import faq from '../data/faq.json';
 
       // Boutons
       tabBtns.forEach(b => {
-        b.classList.remove('btn--primary');
+        b.classList.remove('btn--cream');
         b.classList.add('btn--outline');
         b.setAttribute('aria-selected', 'false');
       });
-      btn.classList.add('btn--primary');
+      btn.classList.add('btn--cream');
       btn.classList.remove('btn--outline');
       btn.setAttribute('aria-selected', 'true');
 
