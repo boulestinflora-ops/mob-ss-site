@@ -9,4 +9,5 @@ export default defineConfig({
 
   // Le dossier où sont les pages publiques (favicon, images, etc.)
   publicDir: 'public',
+
 });

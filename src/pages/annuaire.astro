@@ -148,11 +148,17 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     return AVATAR_COLORS[Math.abs(h) % AVATAR_COLORS.length];
   }
 
+  // ── Échappement HTML — protection XSS ───────────────────────────────────────
+  function esc(str: string): string {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+              .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  }
+
   // ── Création d'une carte praticien ──────────────────────────────────────────
   function buildCard(p: any): string {
-    const prenom    = p.prenom || 'Praticien';
-    const nomInit   = p.nom ? p.nom[0].toUpperCase() + '.' : '';
-    const initiales = ((prenom[0] || '') + (p.nom?.[0] || '')).toUpperCase() || '?';
+    const prenom    = esc(p.prenom || 'Praticien');
+    const nomInit   = p.nom ? esc(p.nom[0].toUpperCase()) + '.' : '';
+    const initiales = esc(((p.prenom?.[0] || '') + (p.nom?.[0] || '')).toUpperCase() || '?');
     const color     = avatarColor(initiales);
     const badgeRemp = p.disponible_remplacement
       ? `<span style="display:inline-block;background:#E8F4EA;color:#2D6E3F;border-radius:var(--radius-pill);padding:3px 10px;font-size:0.78rem;font-weight:600;margin-top:6px;">🔄 Disponible pour remplacement</span>`
@@ -166,12 +172,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           </div>
           <div style="min-width:0;">
             <strong style="display:block;font-size:1rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${prenom} ${nomInit}</strong>
-            <span style="font-size:0.85rem;color:var(--color-primary);font-weight:600;">${p.specialite || 'Praticien'}</span>
+            <span style="font-size:0.85rem;color:var(--color-primary);font-weight:600;">${esc(p.specialite || 'Praticien')}</span>
           </div>
         </div>
         ${badgeRemp}
-        ${p.ville ? `<p style="margin:0;font-size:0.88rem;color:var(--color-text-soft);">📍 ${p.ville}</p>` : ''}
-        ${p.bio ? `<p style="margin:0;font-size:0.88rem;color:var(--color-text-soft);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;">${p.bio}</p>` : ''}
+        ${p.ville ? `<p style="margin:0;font-size:0.88rem;color:var(--color-text-soft);">📍 ${esc(p.ville)}</p>` : ''}
+        ${p.bio ? `<p style="margin:0;font-size:0.88rem;color:var(--color-text-soft);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;">${esc(p.bio)}</p>` : ''}
       </div>
     `;
   }
