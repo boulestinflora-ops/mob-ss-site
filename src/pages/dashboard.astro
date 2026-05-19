@@ -300,48 +300,117 @@ const spacesMapJson = JSON.stringify(
       <div class="dash-section" id="documents" style="display:none;">
         <div style="max-width:640px;">
 
-          <div class="panel" style="margin-bottom:20px;">
-            <div class="panel__head">
-              <h3>Documents professionnels</h3>
-              <a href="/completer-profil" class="btn btn--outline" style="font-size:0.85rem;">Modifier →</a>
-            </div>
-            <p style="font-size:0.88rem;color:var(--color-text-soft);margin:0 0 20px;">
-              Vos justificatifs légaux sont stockés de façon privée et sécurisée. Seule l'équipe MOB'SS peut les consulter.
-            </p>
+          <!-- Onglets -->
+          <div class="doc-tabs" role="tablist">
+            <button class="doc-tab doc-tab--active" role="tab" data-doctab="mes-docs" aria-selected="true">
+              📄 Mes documents
+            </button>
+            <button class="doc-tab" role="tab" data-doctab="confidentialite" aria-selected="false">
+              🔒 Confidentialité & stockage
+            </button>
+          </div>
 
-            <!-- Diplôme -->
-            <div class="doc-row" id="doc-row-diplome">
-              <div class="doc-row__icon">🎓</div>
-              <div class="doc-row__info">
-                <strong>Diplôme / Titre professionnel</strong>
-                <span id="doc-diplome-label" style="font-size:0.85rem;color:var(--color-text-soft);">Chargement…</span>
+          <!-- Panneau : Mes documents -->
+          <div id="doctab-mes-docs" class="doc-tabpanel">
+
+            <div class="panel" style="margin-bottom:20px;">
+              <div class="panel__head">
+                <h3>Documents professionnels</h3>
+                <a href="/completer-profil" class="btn btn--outline" style="font-size:0.85rem;">Modifier →</a>
               </div>
-              <div id="doc-diplome-badge" class="doc-badge doc-badge--loading">…</div>
-            </div>
+              <p style="font-size:0.88rem;color:var(--color-text-soft);margin:0 0 20px;">
+                Vos justificatifs légaux sont stockés de façon privée et sécurisée. Seule l'équipe MOB'SS peut les consulter dans le cadre d'une vérification.
+              </p>
 
-            <hr style="border:none;border-top:1px solid var(--color-border);margin:12px 0;" />
-
-            <!-- Assurance RC Pro -->
-            <div class="doc-row" id="doc-row-assurance">
-              <div class="doc-row__icon">🛡️</div>
-              <div class="doc-row__info">
-                <strong>Assurance RC Pro</strong>
-                <span id="doc-assurance-label" style="font-size:0.85rem;color:var(--color-text-soft);">Chargement…</span>
+              <!-- Diplôme -->
+              <div class="doc-row" id="doc-row-diplome">
+                <div class="doc-row__icon">🎓</div>
+                <div class="doc-row__info">
+                  <strong>Diplôme / Titre professionnel</strong>
+                  <span id="doc-diplome-label" style="font-size:0.85rem;color:var(--color-text-soft);">Chargement…</span>
+                </div>
+                <div id="doc-diplome-badge" class="doc-badge doc-badge--loading">…</div>
               </div>
-              <div id="doc-assurance-badge" class="doc-badge doc-badge--loading">…</div>
+
+              <hr style="border:none;border-top:1px solid var(--color-border);margin:12px 0;" />
+
+              <!-- Assurance RC Pro -->
+              <div class="doc-row" id="doc-row-assurance">
+                <div class="doc-row__icon">🛡️</div>
+                <div class="doc-row__info">
+                  <strong>Assurance RC Pro</strong>
+                  <span id="doc-assurance-label" style="font-size:0.85rem;color:var(--color-text-soft);">Chargement…</span>
+                </div>
+                <div id="doc-assurance-badge" class="doc-badge doc-badge--loading">…</div>
+              </div>
             </div>
-          </div>
 
-          <!-- Alerte si documents manquants -->
-          <div id="docs-alert" style="display:none;background:#FFF8DC;border:1px solid #E8D87A;border-radius:var(--radius-md);padding:16px 20px;font-size:0.9rem;color:#6B5800;">
-            ⚠️ <strong>Documents manquants.</strong> Ajoutez votre diplôme et votre RC Pro pour rassurer les hôtes et valider votre conformité légale.
-            <a href="/completer-profil" style="display:inline-block;margin-top:10px;" class="btn btn--primary btn--sm">Ajouter mes documents →</a>
-          </div>
+            <!-- Alerte si documents manquants -->
+            <div id="docs-alert" style="display:none;background:#FFF8DC;border:1px solid #E8D87A;border-radius:var(--radius-md);padding:16px 20px;font-size:0.9rem;color:#6B5800;">
+              ⚠️ <strong>Documents manquants.</strong> Ajoutez votre diplôme et votre RC Pro pour rassurer les hôtes et valider votre conformité légale.
+              <a href="/completer-profil" style="display:inline-block;margin-top:10px;" class="btn btn--primary btn--sm">Ajouter mes documents →</a>
+            </div>
 
-          <!-- Confirmation si tout est ok -->
-          <div id="docs-ok" style="display:none;background:#E8F4EA;border:1px solid #B8DBC0;border-radius:var(--radius-md);padding:16px 20px;font-size:0.9rem;color:#2D6E3F;">
-            ✅ <strong>Dossier complet.</strong> Vos deux documents sont enregistrés. L'équipe MOB'SS peut les vérifier à tout moment.
-          </div>
+            <!-- Confirmation si tout est ok -->
+            <div id="docs-ok" style="display:none;background:#E8F4EA;border:1px solid #B8DBC0;border-radius:var(--radius-md);padding:16px 20px;font-size:0.9rem;color:#2D6E3F;">
+              ✅ <strong>Dossier complet.</strong> Vos deux documents sont enregistrés. L'équipe MOB'SS peut les vérifier à tout moment.
+            </div>
+
+          </div><!-- /doctab-mes-docs -->
+
+          <!-- Panneau : Confidentialité -->
+          <div id="doctab-confidentialite" class="doc-tabpanel" style="display:none;">
+
+            <div class="panel" style="margin-bottom:16px;">
+              <div class="panel__head"><h3>Comment sont stockés vos documents ?</h3></div>
+
+              <div class="privacy-block">
+                <div class="privacy-block__icon">🔐</div>
+                <div>
+                  <strong>Stockage chiffré et privé</strong>
+                  <p>Vos fichiers sont hébergés sur <strong>Supabase</strong>, une infrastructure certifiée SOC 2 Type II hébergée en Europe (région Frankfurt). Chaque fichier est chiffré au repos (AES-256) et en transit (TLS 1.2+). Ils ne sont <em>jamais</em> accessibles via une URL publique.</p>
+                </div>
+              </div>
+
+              <div class="privacy-block">
+                <div class="privacy-block__icon">👁️</div>
+                <div>
+                  <strong>Qui peut voir vos documents ?</strong>
+                  <p><strong>Vous seul</strong> et, dans le cadre d'une vérification manuelle, <strong>l'équipe MOB'SS</strong>. Les hôtes ne voient jamais vos fichiers — ils voient uniquement si votre dossier est "complet" ou non. Aucun tiers, aucun partenaire publicitaire, aucun algorithme n'y a accès.</p>
+                </div>
+              </div>
+
+              <div class="privacy-block">
+                <div class="privacy-block__icon">🚫</div>
+                <div>
+                  <strong>Ce que nous ne faisons pas</strong>
+                  <p>Nous ne partageons pas vos documents avec des tiers. Nous ne les utilisons pas à des fins commerciales. Nous ne les indexons pas pour les moteurs de recherche. Ils ne sont jamais affichés publiquement sur votre profil.</p>
+                </div>
+              </div>
+
+              <div class="privacy-block">
+                <div class="privacy-block__icon">🗑️</div>
+                <div>
+                  <strong>Votre droit à la suppression</strong>
+                  <p>Conformément au <strong>RGPD</strong>, vous pouvez demander la suppression de vos documents à tout moment, sans justification. Il vous suffit de nous contacter via la page <a href="/contact" style="color:var(--color-primary);text-decoration:underline;">Contact</a>. La suppression est effective sous 72 heures.</p>
+                </div>
+              </div>
+
+              <div class="privacy-block">
+                <div class="privacy-block__icon">📅</div>
+                <div>
+                  <strong>Durée de conservation</strong>
+                  <p>Vos documents sont conservés tant que votre compte est actif. En cas de suppression de votre compte, tous vos fichiers sont définitivement effacés de nos serveurs dans un délai de 30 jours.</p>
+                </div>
+              </div>
+            </div>
+
+            <div style="background:var(--color-cream-soft);border-radius:var(--radius-md);padding:16px 20px;font-size:0.85rem;color:var(--color-text-soft);">
+              Des questions sur la confidentialité de vos données ?
+              <a href="/contact?sujet=donnees-personnelles" style="color:var(--color-primary);font-weight:600;"> Contactez-nous →</a>
+            </div>
+
+          </div><!-- /doctab-confidentialite -->
 
         </div>
       </div>
@@ -893,6 +962,51 @@ const spacesMapJson = JSON.stringify(
   .param-row:last-child { border-bottom: none; }
   .param-row__label { font-size: 0.85rem; color: var(--color-text-soft); font-weight: 500; }
   .param-row__value { font-weight: 600; font-size: 0.92rem; text-align: right; }
+
+  /* ── Documents — onglets ────────────────────────────────────────────────────── */
+  .doc-tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid var(--color-border);
+  }
+  .doc-tab {
+    background: none;
+    border: none;
+    padding: 10px 18px;
+    font-size: 0.9rem;
+    font-family: var(--font-body);
+    font-weight: 500;
+    color: var(--color-text-soft);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+    transition: color 0.15s, border-color 0.15s, background 0.15s;
+  }
+  .doc-tab:hover { background: var(--color-bg-soft); color: var(--color-text); }
+  .doc-tab--active {
+    color: var(--color-primary);
+    border-bottom-color: var(--color-primary);
+    font-weight: 600;
+  }
+
+  /* ── Documents — blocs confidentialité ──────────────────────────────────────── */
+  .privacy-block {
+    display: flex;
+    gap: 16px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .privacy-block:last-child { border-bottom: none; }
+  .privacy-block__icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .privacy-block strong { display: block; font-size: 0.92rem; margin-bottom: 6px; }
+  .privacy-block p { margin: 0; font-size: 0.87rem; color: var(--color-text-soft); line-height: 1.55; }
+  .privacy-block em { font-style: italic; }
 
   /* ── Documents ──────────────────────────────────────────────────────────────── */
   .doc-row {
@@ -1522,6 +1636,23 @@ const spacesMapJson = JSON.stringify(
     // Charger les demandes dès l'initialisation
     loadHoteDemandes();
   }
+
+  // ── Onglets Documents ─────────────────────────────────────────────────────────
+  document.querySelectorAll<HTMLButtonElement>('.doc-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      const target = tab.dataset.doctab!;
+      // Activer le bon onglet
+      document.querySelectorAll('.doc-tab').forEach(t => {
+        t.classList.toggle('doc-tab--active', t === tab);
+        t.setAttribute('aria-selected', t === tab ? 'true' : 'false');
+      });
+      // Afficher le bon panneau
+      document.querySelectorAll('.doc-tabpanel').forEach(panel => {
+        (panel as HTMLElement).style.display =
+          panel.id === `doctab-${target}` ? '' : 'none';
+      });
+    });
+  });
 
   // ── Point d'entrée ────────────────────────────────────────────────────────────
   supabase.auth.getSession().then(async ({ data: { session } }) => {
