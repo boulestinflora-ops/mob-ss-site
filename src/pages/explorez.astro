@@ -4,8 +4,14 @@ import SpaceCard from '../components/SpaceCard.astro';
 import Icon from '../components/Icon.astro';
 import spaces from '../data/spaces.json';
 
-const regions = [...new Set(spaces.map(s => s.region))].sort();
-const types   = [...new Set(spaces.map(s => s.type))].sort();
+const ALL_REGIONS = [
+  "Auvergne-Rhône-Alpes","Bourgogne-Franche-Comté","Bretagne",
+  "Centre-Val de Loire","Corse","Grand Est","Guadeloupe","Guyane",
+  "Hauts-de-France","Île-de-France","La Réunion","Martinique","Mayotte",
+  "Normandie","Nouvelle-Aquitaine","Occitanie","Pays de la Loire",
+  "Provence-Alpes-Côte d'Azur"
+];
+const types = [...new Set((spaces as any[]).map(s => s.type))].sort();
 ---
 
 <BaseLayout
@@ -42,12 +48,15 @@ const types   = [...new Set(spaces.map(s => s.type))].sort();
     </div>
   </div>
 
-  <!-- Filtres avancés — tiroir horizontal collapsible -->
+  <!-- Filtres avancés -->
   <div class="container" style="margin-top:16px;">
     <div class="filters-bar-panel" id="filters-bar-panel">
+
+      <!-- Bouton toggle -->
       <button class="filters-bar-toggle" id="filters-toggle" aria-expanded="false" aria-controls="filters-bar-body">
         <span style="font-size:1rem;">⚙️</span>
-        <span>Affiner la recherche</span>
+        <span>Filtres avancés</span>
+        <span id="filters-active-count" class="filters-active-badge" style="display:none;">0</span>
         <svg class="filters-toggle__chevron" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
           <polyline points="6 9 12 15 18 9"/>
         </svg>
@@ -56,38 +65,136 @@ const types   = [...new Set(spaces.map(s => s.type))].sort();
       <div class="filters-bar-body filters-bar-body--closed" id="filters-bar-body">
         <div class="filters-bar-inner">
 
-          <div class="filter-h-group">
-            <label class="filter-h-label" for="filter-region-h">Région</label>
-            <select id="filter-region-h" class="filter-h-select">
-              <option value="">Toutes</option>
-              {regions.map(r => <option value={r}>{r}</option>)}
-            </select>
+          <!-- ── Ligne 1 : Localisation avancée ── -->
+          <div class="filters-row">
+
+            <div class="filter-h-group">
+              <label class="filter-h-label" for="filter-region-h">Région</label>
+              <select id="filter-region-h" class="filter-h-select">
+                <option value="">Toutes les régions</option>
+                {ALL_REGIONS.map(r => <option value={r}>{r}</option>)}
+              </select>
+            </div>
+
+            <div class="filter-h-group">
+              <label class="filter-h-label" for="filter-dept-h">Département</label>
+              <select id="filter-dept-h" class="filter-h-select">
+                <option value="">Tous les départements</option>
+              </select>
+            </div>
+
+            <div class="filter-h-group">
+              <label class="filter-h-label" for="filter-host-h">Proposé par</label>
+              <select id="filter-host-h" class="filter-h-select">
+                <option value="">Tous</option>
+                <option value="collectivite">🏛 Collectivité</option>
+                <option value="entreprise">🏢 Entreprise</option>
+              </select>
+            </div>
+
+            <div class="filter-h-group">
+              <label class="filter-h-label" for="filter-tarif">Tarif</label>
+              <select id="filter-tarif" class="filter-h-select">
+                <option value="">Tous</option>
+                <option value="gratuit">✅ Gratuit</option>
+                <option value="payant">💶 Payant</option>
+              </select>
+            </div>
+
+            <div class="filter-h-group">
+              <label class="filter-h-label" for="filter-capacite">Capacité</label>
+              <select id="filter-capacite" class="filter-h-select">
+                <option value="">Toutes</option>
+                <option value="1">1–2 personnes</option>
+                <option value="5">Jusqu'à 5</option>
+                <option value="10">Jusqu'à 10</option>
+                <option value="20">Jusqu'à 20</option>
+                <option value="999">20+</option>
+              </select>
+            </div>
+
           </div>
 
-          <div class="filter-h-group">
-            <label class="filter-h-label" for="filter-host-h">Proposé par</label>
-            <select id="filter-host-h" class="filter-h-select">
-              <option value="">Tous</option>
-              <option value="collectivite">Collectivité</option>
-              <option value="entreprise">Entreprise</option>
-            </select>
-          </div>
-
-          <div class="filter-h-group">
-            <label class="filter-h-label">Équipements</label>
-            <div class="filter-chips">
-              <label class="filter-chip"><input type="checkbox" class="filter-equip" value="Table de massage" /> Table de massage</label>
-              <label class="filter-chip"><input type="checkbox" class="filter-equip" value="Tapis" /> Tapis</label>
-              <label class="filter-chip"><input type="checkbox" class="filter-equip" value="Vestiaires" /> Vestiaires</label>
-              <label class="filter-chip"><input type="checkbox" class="filter-equip" value="Wi-Fi" /> Wi-Fi</label>
-              <label class="filter-chip"><input type="checkbox" class="filter-equip" value="Parking" /> Parking</label>
-              <label class="filter-chip"><input type="checkbox" class="filter-equip" value="PMR" /> PMR</label>
+          <!-- ── Ligne 2 : Distance ── -->
+          <div class="filters-row filters-row--distance">
+            <div class="filter-distance-group">
+              <label class="filter-h-label">📍 Distance depuis ma ville</label>
+              <div class="filter-distance-controls">
+                <input type="text" id="filter-ref-city" class="filter-h-input" placeholder="Entrez votre ville de référence…" autocomplete="off" />
+                <div class="filter-distance-slider-wrap">
+                  <input type="range" id="filter-distance" min="5" max="200" step="5" value="50" class="filter-slider" disabled />
+                  <div class="filter-distance-labels">
+                    <span>5 km</span>
+                    <span id="filter-distance-val" class="filter-distance-current">50 km</span>
+                    <span>200 km</span>
+                  </div>
+                </div>
+              </div>
+              <p class="filter-hint" id="distance-hint">Entrez une ville pour activer le filtre par distance.</p>
             </div>
           </div>
 
-          <button class="btn btn--outline" id="reset-filters" style="align-self:flex-end;white-space:nowrap;">
-            Tout effacer
-          </button>
+          <!-- ── Ligne 3 : Superficie ── -->
+          <div class="filters-row">
+            <div class="filter-h-group filter-h-group--wide">
+              <label class="filter-h-label">Superficie</label>
+              <div class="filter-chips">
+                <label class="filter-chip"><input type="radio" name="filter-superficie" class="filter-sup" value="" checked /> Toutes tailles</label>
+                <label class="filter-chip"><input type="radio" name="filter-superficie" class="filter-sup" value="25" /> &lt; 25 m²</label>
+                <label class="filter-chip"><input type="radio" name="filter-superficie" class="filter-sup" value="50" /> 25 – 50 m²</label>
+                <label class="filter-chip"><input type="radio" name="filter-superficie" class="filter-sup" value="100" /> 50 – 100 m²</label>
+                <label class="filter-chip"><input type="radio" name="filter-superficie" class="filter-sup" value="999" /> &gt; 100 m²</label>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── Ligne 4 : Jours disponibles ── -->
+          <div class="filters-row">
+            <div class="filter-h-group filter-h-group--wide">
+              <label class="filter-h-label">Jours disponibles</label>
+              <div class="filter-chips">
+                <label class="filter-chip"><input type="checkbox" class="filter-jour" value="lundi" /> Lun</label>
+                <label class="filter-chip"><input type="checkbox" class="filter-jour" value="mardi" /> Mar</label>
+                <label class="filter-chip"><input type="checkbox" class="filter-jour" value="mercredi" /> Mer</label>
+                <label class="filter-chip"><input type="checkbox" class="filter-jour" value="jeudi" /> Jeu</label>
+                <label class="filter-chip"><input type="checkbox" class="filter-jour" value="vendredi" /> Ven</label>
+                <label class="filter-chip"><input type="checkbox" class="filter-jour" value="samedi" /> Sam</label>
+                <label class="filter-chip"><input type="checkbox" class="filter-jour" value="dimanche" /> Dim</label>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── Ligne 5 : Équipements ── -->
+          <div class="filters-row">
+            <div class="filter-h-group filter-h-group--wide">
+              <label class="filter-h-label">Équipements disponibles</label>
+              <div class="filter-chips">
+                <label class="filter-chip"><input type="checkbox" class="filter-equip" value="Table de massage" /> 🛏 Table de massage</label>
+                <label class="filter-chip"><input type="checkbox" class="filter-equip" value="Tapis" /> 🧘 Tapis</label>
+                <label class="filter-chip"><input type="checkbox" class="filter-equip" value="Matériel sportif" /> 🏋 Matériel sportif</label>
+                <label class="filter-chip"><input type="checkbox" class="filter-equip" value="Miroirs" /> 🪞 Miroirs</label>
+                <label class="filter-chip"><input type="checkbox" class="filter-equip" value="Vestiaires" /> 🚪 Vestiaires</label>
+                <label class="filter-chip"><input type="checkbox" class="filter-equip" value="Douches" /> 🚿 Douches</label>
+                <label class="filter-chip"><input type="checkbox" class="filter-equip" value="Salle d'attente" /> 🪑 Salle d'attente</label>
+                <label class="filter-chip"><input type="checkbox" class="filter-equip" value="Wi-Fi" /> 📶 Wi-Fi</label>
+                <label class="filter-chip"><input type="checkbox" class="filter-equip" value="Parking" /> 🅿 Parking</label>
+                <label class="filter-chip"><input type="checkbox" class="filter-equip" value="PMR" /> ♿ Accessible PMR</label>
+                <label class="filter-chip"><input type="checkbox" class="filter-equip" value="Sonorisation" /> 🔊 Sonorisation</label>
+                <label class="filter-chip"><input type="checkbox" class="filter-equip" value="Climatisation" /> ❄ Climatisation</label>
+                <label class="filter-chip"><input type="checkbox" class="filter-equip" value="Lumière naturelle" /> ☀ Lumière naturelle</label>
+                <label class="filter-chip"><input type="checkbox" class="filter-equip" value="Cuisine" /> 🍵 Cuisine / Kitchenette</label>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── Actions ── -->
+          <div class="filters-row filters-row--actions">
+            <p id="filters-summary" class="filters-summary"></p>
+            <button class="btn btn--outline" id="reset-filters" style="white-space:nowrap;">
+              ✕ Tout effacer
+            </button>
+          </div>
+
         </div>
       </div>
     </div>
@@ -112,10 +219,12 @@ const types   = [...new Set(spaces.map(s => s.type))].sort();
           <p style="margin:0;color:var(--color-text-soft);">
             <strong id="results-count" style="color:var(--color-text);">{spaces.length} espaces</strong> correspondent à votre recherche
           </p>
-          <select id="sort-select" style="padding:8px 12px;border-radius:var(--radius-pill);border:1px solid var(--color-border);font-family:inherit;font-size:0.9rem;">
-            <option value="pertinence">Trier par : pertinence</option>
-            <option value="region">Région A → Z</option>
-            <option value="type">Type d'espace</option>
+          <select id="sort-select" style="padding:8px 12px;border-radius:var(--radius-pill);border:1px solid var(--color-border);font-family:inherit;font-size:0.9rem;background:var(--color-bg);">
+            <option value="pertinence">Trier : pertinence</option>
+            <option value="distance">📍 Le plus proche</option>
+            <option value="superficie-desc">Surface décroissante</option>
+            <option value="superficie-asc">Surface croissante</option>
+            <option value="gratuit">Gratuit en premier</option>
             <option value="host-collec">Collectivités en premier</option>
             <option value="host-entrep">Entreprises en premier</option>
           </select>
@@ -211,105 +320,445 @@ const types   = [...new Set(spaces.map(s => s.type))].sort();
 </script>
 
 <script>
-// ─── Données des espaces (pour les filtres) ───────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════════════
+//  Données des espaces — enrichies avec coordonnées, superficie, tarif, jours
+// ══════════════════════════════════════════════════════════════════════════════
 const SPACES = [
-  { id: "salle-mairie-caen",       city: "Caen",                  department: "14", region: "Normandie", type: "Salle communale",     host: "collectivite", tags: ["50 m²","PMR","Vestiaires"] },
-  { id: "cabinet-rouen-centre",    city: "Rouen",                 department: "76", region: "Normandie", type: "Cabinet paramédical", host: "entreprise",   tags: ["18 m²","Table de massage","PMR"] },
-  { id: "studio-cherbourg",        city: "Cherbourg-en-Cotentin", department: "50", region: "Normandie", type: "Studio bien-être",    host: "collectivite", tags: ["22 m²","Tapis fournis","Wi-Fi"] },
-  { id: "salle-sport-le-havre",    city: "Le Havre",              department: "76", region: "Normandie", type: "Salle de sport",      host: "entreprise",   tags: ["80 m²","Matériel inclus","Parking"] },
-  { id: "salle-bayeux",            city: "Bayeux",                department: "14", region: "Normandie", type: "Salle communale",     host: "collectivite", tags: ["45 m²","PMR","Sonorisation"] },
-  { id: "cabinet-evreux",          city: "Évreux",                department: "27", region: "Normandie", type: "Cabinet paramédical", host: "entreprise",   tags: ["20 m²","Table de massage","Wi-Fi"] },
-  { id: "studio-yoga-alencon",     city: "Alençon",               department: "61", region: "Normandie", type: "Studio bien-être",    host: "collectivite", tags: ["30 m²","Tapis fournis","PMR"] },
-  { id: "salle-omnisports-dieppe", city: "Dieppe",                department: "76", region: "Normandie", type: "Salle de sport",      host: "collectivite", tags: ["120 m²","Vestiaires","PMR"] },
+  {
+    id: "salle-mairie-caen", city: "Caen", lat: 49.1829, lng: 0.3707,
+    department: "14", region: "Normandie", type: "Salle communale", host: "collectivite",
+    tags: ["PMR","Vestiaires","Sonorisation","Parking"],
+    superficie: 50, tarif_type: "gratuit",
+    jours: ["lundi","mardi","mercredi","jeudi","vendredi"], capacite: 15,
+  },
+  {
+    id: "cabinet-rouen-centre", city: "Rouen", lat: 49.4432, lng: 1.0993,
+    department: "76", region: "Normandie", type: "Cabinet paramédical", host: "entreprise",
+    tags: ["Table de massage","PMR","Salle d'attente","Wi-Fi"],
+    superficie: 18, tarif_type: "payant",
+    jours: ["lundi","mardi","jeudi","vendredi"], capacite: 2,
+  },
+  {
+    id: "studio-cherbourg", city: "Cherbourg-en-Cotentin", lat: 49.6333, lng: -1.6167,
+    department: "50", region: "Normandie", type: "Studio bien-être", host: "collectivite",
+    tags: ["Tapis","Wi-Fi","Lumière naturelle","Miroirs"],
+    superficie: 22, tarif_type: "gratuit",
+    jours: ["lundi","mercredi","vendredi","samedi"], capacite: 8,
+  },
+  {
+    id: "salle-sport-le-havre", city: "Le Havre", lat: 49.4944, lng: 0.1079,
+    department: "76", region: "Normandie", type: "Salle de sport", host: "entreprise",
+    tags: ["Matériel sportif","Parking","Vestiaires","Douches","Climatisation"],
+    superficie: 80, tarif_type: "payant",
+    jours: ["lundi","mardi","mercredi","jeudi","vendredi","samedi"], capacite: 20,
+  },
+  {
+    id: "salle-bayeux", city: "Bayeux", lat: 49.2744, lng: -0.7046,
+    department: "14", region: "Normandie", type: "Salle communale", host: "collectivite",
+    tags: ["PMR","Sonorisation","Parking","Lumière naturelle"],
+    superficie: 45, tarif_type: "gratuit",
+    jours: ["mardi","jeudi","samedi"], capacite: 12,
+  },
+  {
+    id: "cabinet-evreux", city: "Évreux", lat: 49.0242, lng: 1.1514,
+    department: "27", region: "Normandie", type: "Cabinet paramédical", host: "entreprise",
+    tags: ["Table de massage","Wi-Fi","Salle d'attente","Climatisation"],
+    superficie: 20, tarif_type: "payant",
+    jours: ["lundi","mardi","mercredi","jeudi","vendredi"], capacite: 2,
+  },
+  {
+    id: "studio-yoga-alencon", city: "Alençon", lat: 48.4306, lng: 0.0925,
+    department: "61", region: "Normandie", type: "Studio bien-être", host: "collectivite",
+    tags: ["Tapis","PMR","Lumière naturelle","Miroirs","Cuisine"],
+    superficie: 30, tarif_type: "gratuit",
+    jours: ["lundi","mercredi","vendredi","samedi","dimanche"], capacite: 10,
+  },
+  {
+    id: "salle-omnisports-dieppe", city: "Dieppe", lat: 49.9232, lng: 1.0806,
+    department: "76", region: "Normandie", type: "Salle de sport", host: "collectivite",
+    tags: ["Vestiaires","PMR","Douches","Matériel sportif","Sonorisation"],
+    superficie: 120, tarif_type: "gratuit",
+    jours: ["lundi","mardi","mercredi","jeudi","vendredi","samedi"], capacite: 30,
+  },
 ];
 
-// ─── Restaurer la recherche depuis sessionStorage ─────────────────────────────
-(function restoreSearch() {
-  const loc    = sessionStorage.getItem('search_loc')    || '';
-  const metier = sessionStorage.getItem('search_metier') || '';
-  const locInput = document.getElementById('filter-loc') as HTMLInputElement | null;
-  if (locInput) {
-    if (loc)         locInput.value = loc;
-    else if (metier) locInput.value = metier;
-  }
-})();
+// ══════════════════════════════════════════════════════════════════════════════
+//  Départements par région
+// ══════════════════════════════════════════════════════════════════════════════
+const DEPTS_BY_REGION: Record<string, {num:string; name:string}[]> = {
+  "Auvergne-Rhône-Alpes": [
+    {num:"01",name:"Ain"},{num:"03",name:"Allier"},{num:"07",name:"Ardèche"},
+    {num:"15",name:"Cantal"},{num:"26",name:"Drôme"},{num:"38",name:"Isère"},
+    {num:"42",name:"Loire"},{num:"43",name:"Haute-Loire"},{num:"63",name:"Puy-de-Dôme"},
+    {num:"69",name:"Rhône"},{num:"73",name:"Savoie"},{num:"74",name:"Haute-Savoie"},
+  ],
+  "Bourgogne-Franche-Comté": [
+    {num:"21",name:"Côte-d'Or"},{num:"25",name:"Doubs"},{num:"39",name:"Jura"},
+    {num:"58",name:"Nièvre"},{num:"70",name:"Haute-Saône"},{num:"71",name:"Saône-et-Loire"},
+    {num:"89",name:"Yonne"},{num:"90",name:"Territoire de Belfort"},
+  ],
+  "Bretagne": [
+    {num:"22",name:"Côtes-d'Armor"},{num:"29",name:"Finistère"},
+    {num:"35",name:"Ille-et-Vilaine"},{num:"56",name:"Morbihan"},
+  ],
+  "Centre-Val de Loire": [
+    {num:"18",name:"Cher"},{num:"28",name:"Eure-et-Loir"},{num:"36",name:"Indre"},
+    {num:"37",name:"Indre-et-Loire"},{num:"41",name:"Loir-et-Cher"},{num:"45",name:"Loiret"},
+  ],
+  "Corse": [{num:"2A",name:"Corse-du-Sud"},{num:"2B",name:"Haute-Corse"}],
+  "Grand Est": [
+    {num:"08",name:"Ardennes"},{num:"10",name:"Aube"},{num:"51",name:"Marne"},
+    {num:"52",name:"Haute-Marne"},{num:"54",name:"Meurthe-et-Moselle"},
+    {num:"55",name:"Meuse"},{num:"57",name:"Moselle"},
+    {num:"67",name:"Bas-Rhin"},{num:"68",name:"Haut-Rhin"},{num:"88",name:"Vosges"},
+  ],
+  "Guadeloupe":  [{num:"971",name:"Guadeloupe"}],
+  "Guyane":      [{num:"973",name:"Guyane"}],
+  "Hauts-de-France": [
+    {num:"02",name:"Aisne"},{num:"59",name:"Nord"},{num:"60",name:"Oise"},
+    {num:"62",name:"Pas-de-Calais"},{num:"80",name:"Somme"},
+  ],
+  "Île-de-France": [
+    {num:"75",name:"Paris"},{num:"77",name:"Seine-et-Marne"},
+    {num:"78",name:"Yvelines"},{num:"91",name:"Essonne"},
+    {num:"92",name:"Hauts-de-Seine"},{num:"93",name:"Seine-Saint-Denis"},
+    {num:"94",name:"Val-de-Marne"},{num:"95",name:"Val-d'Oise"},
+  ],
+  "La Réunion":  [{num:"974",name:"La Réunion"}],
+  "Martinique":  [{num:"972",name:"Martinique"}],
+  "Mayotte":     [{num:"976",name:"Mayotte"}],
+  "Normandie": [
+    {num:"14",name:"Calvados"},{num:"27",name:"Eure"},
+    {num:"50",name:"Manche"},{num:"61",name:"Orne"},{num:"76",name:"Seine-Maritime"},
+  ],
+  "Nouvelle-Aquitaine": [
+    {num:"16",name:"Charente"},{num:"17",name:"Charente-Maritime"},{num:"19",name:"Corrèze"},
+    {num:"23",name:"Creuse"},{num:"24",name:"Dordogne"},{num:"33",name:"Gironde"},
+    {num:"40",name:"Landes"},{num:"47",name:"Lot-et-Garonne"},{num:"64",name:"Pyrénées-Atlantiques"},
+    {num:"79",name:"Deux-Sèvres"},{num:"86",name:"Vienne"},{num:"87",name:"Haute-Vienne"},
+  ],
+  "Occitanie": [
+    {num:"09",name:"Ariège"},{num:"11",name:"Aude"},{num:"12",name:"Aveyron"},
+    {num:"30",name:"Gard"},{num:"31",name:"Haute-Garonne"},{num:"32",name:"Gers"},
+    {num:"34",name:"Hérault"},{num:"46",name:"Lot"},{num:"48",name:"Lozère"},
+    {num:"65",name:"Hautes-Pyrénées"},{num:"66",name:"Pyrénées-Orientales"},
+    {num:"81",name:"Tarn"},{num:"82",name:"Tarn-et-Garonne"},
+  ],
+  "Pays de la Loire": [
+    {num:"44",name:"Loire-Atlantique"},{num:"49",name:"Maine-et-Loire"},
+    {num:"53",name:"Mayenne"},{num:"72",name:"Sarthe"},{num:"85",name:"Vendée"},
+  ],
+  "Provence-Alpes-Côte d'Azur": [
+    {num:"04",name:"Alpes-de-Haute-Provence"},{num:"05",name:"Hautes-Alpes"},
+    {num:"06",name:"Alpes-Maritimes"},{num:"13",name:"Bouches-du-Rhône"},
+    {num:"83",name:"Var"},{num:"84",name:"Vaucluse"},
+  ],
+};
 
-// ─── Toggle filtres avancés ───────────────────────────────────────────────────
-const toggleBtn   = document.getElementById('filters-toggle');
-const filtersBody = document.getElementById('filters-bar-body');
+// ══════════════════════════════════════════════════════════════════════════════
+//  Lookup coordonnées pour les villes de référence (démo)
+// ══════════════════════════════════════════════════════════════════════════════
+const CITY_COORDS: Record<string, {lat:number; lng:number}> = {
+  "caen":          {lat:49.1829, lng:0.3707},  "rouen":         {lat:49.4432, lng:1.0993},
+  "cherbourg":     {lat:49.6333, lng:-1.6167}, "le havre":      {lat:49.4944, lng:0.1079},
+  "bayeux":        {lat:49.2744, lng:-0.7046}, "évreux":        {lat:49.0242, lng:1.1514},
+  "evreux":        {lat:49.0242, lng:1.1514},  "alençon":       {lat:48.4306, lng:0.0925},
+  "alencon":       {lat:48.4306, lng:0.0925},  "dieppe":        {lat:49.9232, lng:1.0806},
+  "paris":         {lat:48.8566, lng:2.3522},  "lyon":          {lat:45.7640, lng:4.8357},
+  "marseille":     {lat:43.2965, lng:5.3698},  "toulouse":      {lat:43.6047, lng:1.4442},
+  "nice":          {lat:43.7102, lng:7.2620},  "nantes":        {lat:47.2184, lng:-1.5536},
+  "bordeaux":      {lat:44.8378, lng:-0.5792}, "strasbourg":    {lat:48.5734, lng:7.7521},
+  "lille":         {lat:50.6292, lng:3.0573},  "rennes":        {lat:48.1173, lng:-1.6778},
+  "montpellier":   {lat:43.6108, lng:3.8767},  "grenoble":      {lat:45.1885, lng:5.7245},
+};
+
+// ══════════════════════════════════════════════════════════════════════════════
+//  Haversine — distance en km entre deux points GPS
+// ══════════════════════════════════════════════════════════════════════════════
+function haversine(lat1:number, lng1:number, lat2:number, lng2:number): number {
+  const R = 6371;
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLng = (lng2 - lng1) * Math.PI / 180;
+  const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180) * Math.cos(lat2*Math.PI/180) * Math.sin(dLng/2)**2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+//  Éléments DOM
+// ══════════════════════════════════════════════════════════════════════════════
+const grid          = document.getElementById('listing-grid')   as HTMLElement;
+const noResults     = document.getElementById('no-results')     as HTMLElement;
+const resultsCount  = document.getElementById('results-count')  as HTMLElement;
+const filterSummary = document.getElementById('filters-summary')as HTMLElement;
+const activeBadge   = document.getElementById('filters-active-count') as HTMLElement;
+const cards         = Array.from(grid.querySelectorAll('article.space-card')) as HTMLElement[];
+
+// ── Restaurer depuis sessionStorage ─────────────────────────────────────────
+const locInput   = document.getElementById('filter-loc')  as HTMLInputElement;
+const typeSelect = document.getElementById('filter-type') as HTMLSelectElement;
+const storedLoc  = sessionStorage.getItem('search_loc') || sessionStorage.getItem('search_metier') || '';
+if (storedLoc && locInput) locInput.value = storedLoc;
+
+// ── Toggle tiroir filtres ────────────────────────────────────────────────────
+const toggleBtn   = document.getElementById('filters-toggle') as HTMLButtonElement;
+const filtersBody = document.getElementById('filters-bar-body') as HTMLElement;
 toggleBtn?.addEventListener('click', () => {
   const isOpen = toggleBtn.getAttribute('aria-expanded') === 'true';
   toggleBtn.setAttribute('aria-expanded', String(!isOpen));
-  filtersBody?.classList.toggle('filters-bar-body--closed', isOpen);
-  const chevron = toggleBtn.querySelector('.filters-toggle__chevron') as SVGElement | null;
-  if (chevron) chevron.style.transform = isOpen ? '' : 'rotate(180deg)';
+  filtersBody.classList.toggle('filters-bar-body--closed', isOpen);
+  (toggleBtn.querySelector('.filters-toggle__chevron') as SVGElement).style.transform = isOpen ? '' : 'rotate(180deg)';
 });
 
-// ─── Filtres liste ────────────────────────────────────────────────────────────
-const grid         = document.getElementById('listing-grid') as HTMLElement;
-const noResults    = document.getElementById('no-results')   as HTMLElement;
-const resultsCount = document.getElementById('results-count') as HTMLElement;
-const cards        = Array.from(grid.querySelectorAll('article.space-card')) as HTMLElement[];
+// ── Cascade Région → Département ────────────────────────────────────────────
+const regionSelect = document.getElementById('filter-region-h') as HTMLSelectElement;
+const deptSelect   = document.getElementById('filter-dept-h')   as HTMLSelectElement;
 
-function getActiveFilters() {
-  return {
-    loc:    (document.getElementById('filter-loc')      as HTMLInputElement  | null)?.value.toLowerCase().trim() || '',
-    type:   (document.getElementById('filter-type')     as HTMLSelectElement | null)?.value || '',
-    region: (document.getElementById('filter-region-h') as HTMLSelectElement | null)?.value || '',
-    host:   (document.getElementById('filter-host-h')   as HTMLSelectElement | null)?.value || '',
-    equip:  Array.from(document.querySelectorAll('.filter-equip:checked')).map((cb: any) => cb.value as string),
-  };
+function updateDepts() {
+  const region = regionSelect.value;
+  deptSelect.innerHTML = '<option value="">Tous les départements</option>';
+  if (region && DEPTS_BY_REGION[region]) {
+    DEPTS_BY_REGION[region].forEach(d => {
+      const opt = document.createElement('option');
+      opt.value = d.num; opt.textContent = `${d.num} – ${d.name}`;
+      deptSelect.appendChild(opt);
+    });
+    deptSelect.disabled = false;
+  } else {
+    deptSelect.disabled = true;
+  }
+  applyFilters();
+}
+regionSelect.addEventListener('change', updateDepts);
+deptSelect.disabled = true;
+
+// ── Slider de distance ───────────────────────────────────────────────────────
+const refCityInput  = document.getElementById('filter-ref-city')   as HTMLInputElement;
+const distSlider    = document.getElementById('filter-distance')    as HTMLInputElement;
+const distVal       = document.getElementById('filter-distance-val') as HTMLElement;
+const distHint      = document.getElementById('distance-hint')      as HTMLElement;
+let refCoords: {lat:number; lng:number} | null = null;
+
+// Pré-remplir depuis le profil local (stocké après connexion)
+const profileCity = localStorage.getItem('mobss_profile_city') || '';
+if (profileCity) { refCityInput.value = profileCity; resolveRefCity(); }
+
+function resolveRefCity() {
+  const key = refCityInput.value.toLowerCase().trim().normalize('NFD').replace(/[̀-ͯ]/g,'');
+  // Essai direct
+  let found = CITY_COORDS[key] || CITY_COORDS[refCityInput.value.toLowerCase().trim()];
+  // Essai partiel
+  if (!found) {
+    const match = Object.keys(CITY_COORDS).find(k => k.includes(key) || key.includes(k));
+    if (match) found = CITY_COORDS[match];
+  }
+  if (found) {
+    refCoords = found;
+    distSlider.disabled = false;
+    distHint.textContent = `📍 ${refCityInput.value} — rayon actif`;
+    distHint.style.color = 'var(--color-primary)';
+  } else {
+    refCoords = null;
+    distSlider.disabled = true;
+    distHint.textContent = refCityInput.value ? '⚠️ Ville non reconnue. Essayez une grande ville.' : 'Entrez une ville pour activer le filtre par distance.';
+    distHint.style.color = refCityInput.value ? '#B45309' : 'var(--color-text-soft)';
+  }
+  applyFilters();
 }
 
-function applyFilters() {
-  const f = getActiveFilters();
-  let visible = 0;
-  SPACES.forEach((space, i) => {
-    const card = cards[i];
-    if (!card) return;
-    const show =
-      (!f.loc    || space.city.toLowerCase().includes(f.loc) || space.region.toLowerCase().includes(f.loc) || space.department.includes(f.loc)) &&
-      (!f.type   || space.type === f.type) &&
-      (!f.region || space.region === f.region) &&
-      (!f.host   || space.host === f.host) &&
-      (f.equip.length === 0 || f.equip.every((eq: string) => space.tags.some((tag: string) => tag.toLowerCase().includes(eq.toLowerCase()))));
-    card.style.display = show ? '' : 'none';
-    if (show) visible++;
-  });
-  if (resultsCount) resultsCount.textContent = `${visible} espace${visible > 1 ? 's' : ''}`;
-  if (noResults)    noResults.style.display = visible === 0 ? 'block' : 'none';
-  if (grid)         grid.style.display      = visible === 0 ? 'none'  : '';
-}
-
-['filter-loc', 'filter-type', 'filter-region-h', 'filter-host-h'].forEach(id => {
-  document.getElementById(id)?.addEventListener('input', applyFilters);
-  document.getElementById(id)?.addEventListener('change', applyFilters);
-});
-document.querySelectorAll('.filter-equip').forEach(el => el.addEventListener('change', applyFilters));
-document.getElementById('search-btn')?.addEventListener('click', applyFilters);
-document.getElementById('reset-filters')?.addEventListener('click', () => {
-  (document.getElementById('filter-loc')      as HTMLInputElement  | null) && ((document.getElementById('filter-loc')      as HTMLInputElement).value  = '');
-  (document.getElementById('filter-type')     as HTMLSelectElement | null) && ((document.getElementById('filter-type')     as HTMLSelectElement).value = '');
-  (document.getElementById('filter-region-h') as HTMLSelectElement | null) && ((document.getElementById('filter-region-h') as HTMLSelectElement).value = '');
-  (document.getElementById('filter-host-h')   as HTMLSelectElement | null) && ((document.getElementById('filter-host-h')   as HTMLSelectElement).value = '');
-  document.querySelectorAll('.filter-equip').forEach((cb: any) => { cb.checked = false; });
+refCityInput.addEventListener('change', resolveRefCity);
+refCityInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') resolveRefCity(); });
+distSlider.addEventListener('input', () => {
+  distVal.textContent = distSlider.value + ' km';
   applyFilters();
 });
 
-// ─── Pré-remplissage depuis les query params de l'accueil ─────────────────────
+// ── Lecture des filtres actifs ───────────────────────────────────────────────
+function getActiveFilters() {
+  const supRadio = document.querySelector('.filter-sup:checked') as HTMLInputElement | null;
+  return {
+    loc:       locInput?.value.toLowerCase().trim() || '',
+    type:      typeSelect?.value || '',
+    region:    regionSelect.value,
+    dept:      deptSelect.value,
+    host:      (document.getElementById('filter-host-h')  as HTMLSelectElement).value,
+    tarif:     (document.getElementById('filter-tarif')   as HTMLSelectElement).value,
+    capacite:  parseInt((document.getElementById('filter-capacite') as HTMLSelectElement).value || '0') || 0,
+    superficie: supRadio?.value || '',
+    distance:  refCoords ? parseInt(distSlider.value) : 0,
+    equip:     Array.from(document.querySelectorAll('.filter-equip:checked')).map((cb:any) => cb.value as string),
+    jours:     Array.from(document.querySelectorAll('.filter-jour:checked')).map((cb:any) => cb.value as string),
+  };
+}
+
+// ── Application des filtres ──────────────────────────────────────────────────
+function applyFilters() {
+  const f = getActiveFilters();
+  let visible = 0;
+  const sort  = (document.getElementById('sort-select') as HTMLSelectElement).value;
+  let visibleSpaces: typeof SPACES = [];
+
+  SPACES.forEach((space, i) => {
+    const card = cards[i];
+    if (!card) return;
+
+    // Localisation texte
+    const matchLoc = !f.loc ||
+      space.city.toLowerCase().includes(f.loc) ||
+      space.region.toLowerCase().includes(f.loc) ||
+      space.department.includes(f.loc);
+
+    // Type
+    const matchType = !f.type || space.type === f.type;
+
+    // Région
+    const matchRegion = !f.region || space.region === f.region;
+
+    // Département
+    const matchDept = !f.dept || space.department === f.dept;
+
+    // Hôte
+    const matchHost = !f.host || space.host === f.host;
+
+    // Tarif
+    const matchTarif = !f.tarif || space.tarif_type === f.tarif;
+
+    // Capacité
+    const matchCapacite = !f.capacite ||
+      (f.capacite === 1  && space.capacite <= 2) ||
+      (f.capacite === 5  && space.capacite <= 5) ||
+      (f.capacite === 10 && space.capacite <= 10) ||
+      (f.capacite === 20 && space.capacite <= 20) ||
+      (f.capacite === 999 && space.capacite > 20);
+
+    // Superficie
+    let matchSup = true;
+    if (f.superficie === '25')  matchSup = space.superficie < 25;
+    else if (f.superficie === '50')  matchSup = space.superficie >= 25 && space.superficie < 50;
+    else if (f.superficie === '100') matchSup = space.superficie >= 50 && space.superficie < 100;
+    else if (f.superficie === '999') matchSup = space.superficie >= 100;
+
+    // Distance
+    let matchDist = true;
+    if (refCoords && f.distance > 0) {
+      const km = haversine(refCoords.lat, refCoords.lng, space.lat, space.lng);
+      (space as any)._dist = Math.round(km);
+      matchDist = km <= f.distance;
+    } else {
+      (space as any)._dist = null;
+    }
+
+    // Équipements (tous cochés doivent être présents)
+    const matchEquip = f.equip.length === 0 ||
+      f.equip.every(eq => space.tags.some(tag => tag.toLowerCase().includes(eq.toLowerCase())));
+
+    // Jours (au moins un jour coché doit être disponible)
+    const matchJours = f.jours.length === 0 ||
+      f.jours.some(j => space.jours.includes(j));
+
+    const show = matchLoc && matchType && matchRegion && matchDept &&
+                 matchHost && matchTarif && matchCapacite && matchSup &&
+                 matchDist && matchEquip && matchJours;
+
+    card.style.display = show ? '' : 'none';
+    if (show) { visible++; visibleSpaces.push(space); }
+  });
+
+  // ── Tri ───────────────────────────────────────────────────────────────────
+  if (sort !== 'pertinence') {
+    const sorted = [...visibleSpaces].sort((a, b) => {
+      if (sort === 'distance')       return ((a as any)._dist ?? 999) - ((b as any)._dist ?? 999);
+      if (sort === 'superficie-desc')return b.superficie - a.superficie;
+      if (sort === 'superficie-asc') return a.superficie - b.superficie;
+      if (sort === 'gratuit')        return a.tarif_type === 'gratuit' ? -1 : 1;
+      if (sort === 'host-collec')    return a.host === 'collectivite' ? -1 : 1;
+      if (sort === 'host-entrep')    return a.host === 'entreprise' ? -1 : 1;
+      return 0;
+    });
+    sorted.forEach(space => {
+      const idx = SPACES.indexOf(space);
+      if (cards[idx]) grid.appendChild(cards[idx]);
+    });
+  }
+
+  // ── Compteur et résumé ────────────────────────────────────────────────────
+  if (resultsCount) resultsCount.textContent = `${visible} espace${visible !== 1 ? 's' : ''}`;
+  if (noResults)    noResults.style.display = visible === 0 ? 'block' : 'none';
+  if (grid)         grid.style.display      = visible === 0 ? 'none'  : '';
+
+  // Badge filtres actifs
+  const activeCount = countActiveFilters(f);
+  if (activeBadge) {
+    activeBadge.textContent = String(activeCount);
+    activeBadge.style.display = activeCount > 0 ? 'inline-flex' : 'none';
+  }
+
+  // Résumé textuel
+  const parts: string[] = [];
+  if (f.region)    parts.push(f.region);
+  if (f.dept)      parts.push(`Dép. ${f.dept}`);
+  if (f.tarif)     parts.push(f.tarif === 'gratuit' ? 'Gratuit' : 'Payant');
+  if (f.distance)  parts.push(`≤ ${f.distance} km`);
+  if (f.equip.length)  parts.push(`${f.equip.length} équipement${f.equip.length>1?'s':''}`);
+  if (f.jours.length)  parts.push(`${f.jours.length} jour${f.jours.length>1?'s':''}`);
+  if (filterSummary) filterSummary.textContent = parts.length ? parts.join(' · ') : '';
+}
+
+function countActiveFilters(f: ReturnType<typeof getActiveFilters>): number {
+  let n = 0;
+  if (f.region) n++;
+  if (f.dept) n++;
+  if (f.host) n++;
+  if (f.tarif) n++;
+  if (f.capacite) n++;
+  if (f.superficie) n++;
+  if (f.distance) n++;
+  n += f.equip.length;
+  n += f.jours.length;
+  return n;
+}
+
+// ── Listeners ────────────────────────────────────────────────────────────────
+['filter-loc','filter-type','filter-host-h','filter-tarif','filter-capacite'].forEach(id => {
+  document.getElementById(id)?.addEventListener('input',  applyFilters);
+  document.getElementById(id)?.addEventListener('change', applyFilters);
+});
+document.querySelectorAll('.filter-equip,.filter-jour,.filter-sup').forEach(el => {
+  el.addEventListener('change', applyFilters);
+});
+document.getElementById('sort-select')?.addEventListener('change', applyFilters);
+document.getElementById('search-btn')?.addEventListener('click', applyFilters);
+
+// ── Reset ─────────────────────────────────────────────────────────────────────
+document.getElementById('reset-filters')?.addEventListener('click', () => {
+  locInput.value = '';
+  typeSelect.value = '';
+  regionSelect.value = ''; updateDepts();
+  (document.getElementById('filter-host-h')  as HTMLSelectElement).value = '';
+  (document.getElementById('filter-tarif')   as HTMLSelectElement).value = '';
+  (document.getElementById('filter-capacite')as HTMLSelectElement).value = '';
+  refCityInput.value = ''; refCoords = null;
+  distSlider.value = '50'; distVal.textContent = '50 km'; distSlider.disabled = true;
+  distHint.textContent = 'Entrez une ville pour activer le filtre par distance.';
+  distHint.style.color = 'var(--color-text-soft)';
+  document.querySelectorAll('.filter-equip,.filter-jour') .forEach((cb:any) => { cb.checked = false; });
+  (document.querySelector('.filter-sup[value=""]') as HTMLInputElement).checked = true;
+  // Remettre les cartes en ordre original
+  SPACES.forEach((_, i) => { if (cards[i]) grid.appendChild(cards[i]); });
+  applyFilters();
+});
+
+// ── Pré-remplissage depuis query params ──────────────────────────────────────
 const params = new URLSearchParams(window.location.search);
-const metier = params.get('metier')?.trim() || '';
-const loc    = params.get('loc')?.trim()    || '';
-const type   = params.get('type')?.trim()   || '';
-const locInput   = document.getElementById('filter-loc')  as HTMLInputElement  | null;
-const typeSelect = document.getElementById('filter-type') as HTMLSelectElement | null;
-let changed = false;
-if (loc && locInput)                       { locInput.value = loc;    changed = true; }
-if (metier && locInput && !locInput.value) { locInput.value = metier; changed = true; }
-if (type && typeSelect) {
+const qLoc   = params.get('loc')?.trim()    || '';
+const qMetier= params.get('metier')?.trim() || '';
+const qType  = params.get('type')?.trim()   || '';
+let changed  = false;
+if (qLoc    && locInput)   { locInput.value = qLoc;    changed = true; }
+if (qMetier && !qLoc && locInput) { locInput.value = qMetier; changed = true; }
+if (qType   && typeSelect) {
   const match = Array.from(typeSelect.options).find(o =>
-    o.value.toLowerCase().includes(type.toLowerCase()) || o.text.toLowerCase().includes(type.toLowerCase())
-  );
+    o.value.toLowerCase().includes(qType.toLowerCase()) ||
+    o.text.toLowerCase().includes(qType.toLowerCase()));
   if (match) { typeSelect.value = match.value; changed = true; }
 }
 if (changed) applyFilters();
@@ -435,5 +884,172 @@ if (changed) applyFilters();
     white-space: nowrap;
   }
   .filter-chip:hover { background: var(--color-cream); border-color: var(--color-primary); }
-  .filter-chip input[type="checkbox"] { accent-color: var(--color-primary); cursor: pointer; }
+  .filter-chip input[type="checkbox"],
+  .filter-chip input[type="radio"]   { accent-color: var(--color-primary); cursor: pointer; }
+  .filter-chip:has(input:checked) {
+    background: var(--color-primary);
+    color: #fff;
+    border-color: var(--color-primary);
+  }
+
+  /* ── Lignes de filtres ─────────────────────────────────────────────────────── */
+  .filters-bar-body {
+    /* augmenté pour les 5 lignes de filtres */
+    max-height: 800px;
+  }
+  .filters-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 20px;
+    align-items: flex-start;
+    width: 100%;
+    padding-bottom: 14px;
+    border-bottom: 1px dashed var(--color-border);
+  }
+  .filters-row:last-child { border-bottom: none; padding-bottom: 0; }
+
+  .filters-row--distance { align-items: stretch; }
+  .filters-row--actions  {
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding-top: 2px;
+  }
+
+  /* ── Groupe large (pleine largeur) ─────────────────────────────────────────── */
+  .filter-h-group--wide {
+    width: 100%;
+    min-width: 0;
+  }
+
+  /* ── Input texte (ville de référence) ──────────────────────────────────────── */
+  .filter-h-input {
+    padding: 8px 12px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    font-family: inherit;
+    font-size: 0.9rem;
+    background: #fff;
+    min-width: 200px;
+    width: 100%;
+    max-width: 280px;
+    transition: border-color 0.15s;
+  }
+  .filter-h-input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 15%, transparent);
+  }
+
+  /* ── Groupe distance ────────────────────────────────────────────────────────── */
+  .filter-distance-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+  }
+  .filter-distance-controls {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .filter-distance-slider-wrap {
+    flex: 1;
+    min-width: 200px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  /* ── Slider range ───────────────────────────────────────────────────────────── */
+  .filter-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--color-border);
+    outline: none;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  .filter-slider:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+  .filter-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    border: 2px solid #fff;
+    box-shadow: 0 1px 4px rgba(0,0,0,.2);
+    cursor: pointer;
+    transition: transform 0.12s;
+  }
+  .filter-slider:not(:disabled)::-webkit-slider-thumb:hover { transform: scale(1.15); }
+  .filter-slider::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    border: 2px solid #fff;
+    box-shadow: 0 1px 4px rgba(0,0,0,.2);
+    cursor: pointer;
+  }
+
+  /* ── Labels distance ─────────────────────────────────────────────────────────*/
+  .filter-distance-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: var(--color-text-soft);
+  }
+  .filter-distance-current {
+    font-weight: 700;
+    color: var(--color-primary);
+  }
+
+  /* ── Texte d'aide ────────────────────────────────────────────────────────────*/
+  .filter-hint {
+    margin: 0;
+    font-size: 0.78rem;
+    color: var(--color-text-soft);
+    font-style: italic;
+  }
+
+  /* ── Badge nombre de filtres actifs ──────────────────────────────────────────*/
+  .filters-active-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    border-radius: 999px;
+    background: var(--color-primary);
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  /* ── Résumé des filtres actifs ───────────────────────────────────────────────*/
+  .filters-summary {
+    margin: 0;
+    font-size: 0.82rem;
+    color: var(--color-text-soft);
+    font-style: italic;
+    flex: 1;
+  }
+
+  /* ── Responsive ──────────────────────────────────────────────────────────────*/
+  @media (max-width: 640px) {
+    .filters-bar-inner { gap: 14px; padding: 12px 14px 14px; }
+    .filter-h-input    { max-width: 100%; }
+    .filter-distance-controls { flex-direction: column; }
+    .filters-row--actions { flex-direction: column-reverse; align-items: flex-start; }
+  }
 </style>
