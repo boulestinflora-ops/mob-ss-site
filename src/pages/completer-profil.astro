@@ -28,12 +28,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     </div>
   </div>
 
-  <!-- État : formulaire de complétion -->
+  <!-- ═══════════ ÉTAPE 1 : Profil ═══════════ -->
   <div id="cp-form-wrap" style="display:none;">
     <section class="section" style="padding-top:32px;">
       <div class="container" style="max-width:640px;">
 
-        <!-- En-tête -->
         <div style="text-align:center;margin-bottom:32px;">
           <div style="font-size:3rem;margin-bottom:12px;">👋</div>
           <span class="section__eyebrow">Bienvenue sur MOB'SS</span>
@@ -44,22 +43,19 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           </p>
         </div>
 
-        <!-- Message de retour -->
         <div id="cp-msg" style="display:none;padding:14px 18px;border-radius:var(--radius-md);margin-bottom:20px;font-size:0.95rem;"></div>
 
         <div class="form-card">
 
-          <!-- Barre de progression -->
+          <!-- Barre de progression étape 1/2 -->
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:28px;">
             <div style="flex:1;height:6px;border-radius:3px;background:var(--color-primary);"></div>
             <div style="flex:1;height:6px;border-radius:3px;background:var(--color-border);"></div>
-            <div style="flex:1;height:6px;border-radius:3px;background:var(--color-border);"></div>
-            <span style="font-size:0.82rem;color:var(--color-text-soft);white-space:nowrap;">Étape 1/3</span>
+            <span style="font-size:0.82rem;color:var(--color-text-soft);white-space:nowrap;">Étape 1 / 2</span>
           </div>
 
           <form id="cp-form" novalidate>
 
-            <!-- Identité -->
             <h2 style="font-size:1.1rem;font-family:var(--font-body);margin-bottom:16px;">Votre identité</h2>
             <div class="field-row">
               <div class="field">
@@ -77,7 +73,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
               <p class="form-help">Visible uniquement par les hôtes qui confirment vos demandes.</p>
             </div>
 
-            <!-- Activité (pré-remplie depuis l'inscription rapide) -->
             <h2 style="font-size:1.1rem;font-family:var(--font-body);margin:28px 0 16px;">Votre activité</h2>
             <div class="field-row">
               <div class="field">
@@ -109,7 +104,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
               <p class="form-help">Apparaît sur votre fiche dans l'annuaire. Facultatif mais recommandé.</p>
             </div>
 
-            <!-- Remplacements -->
             <h2 style="font-size:1.1rem;font-family:var(--font-body);margin:28px 0 16px;">Remplacements</h2>
             <div style="background:var(--color-cream-soft);border-radius:var(--radius-md);padding:20px;display:flex;align-items:flex-start;gap:14px;">
               <input type="checkbox" id="cp-remplacement" style="margin-top:3px;width:18px;height:18px;flex-shrink:0;accent-color:var(--color-primary);" />
@@ -121,7 +115,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
               </label>
             </div>
 
-            <!-- Mot de passe (pour sécuriser le compte créé via magic link) -->
             <h2 style="font-size:1.1rem;font-family:var(--font-body);margin:28px 0 16px;">Sécurisez votre compte</h2>
             <div class="field-row">
               <div class="field">
@@ -133,10 +126,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
                 <input id="cp-mdp2" type="password" autocomplete="new-password" minlength="8" />
               </div>
             </div>
-            <p class="form-help" style="margin-top:-8px;">Optionnel — vous pouvez toujours vous connecter par magic link si vous préférez ne pas en définir.</p>
+            <p class="form-help" style="margin-top:-8px;">Optionnel — vous pouvez toujours vous connecter par magic link.</p>
 
             <button type="submit" id="cp-btn" class="btn btn--primary btn--block btn--lg" style="margin-top:28px;">
-              Enregistrer mon profil →
+              Continuer → Documents professionnels
             </button>
           </form>
         </div>
@@ -148,29 +141,180 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     </section>
   </div>
 
+  <!-- ═══════════ ÉTAPE 2 : Documents ═══════════ -->
+  <div id="cp-docs-wrap" style="display:none;">
+    <section class="section" style="padding-top:32px;">
+      <div class="container" style="max-width:640px;">
+
+        <div style="text-align:center;margin-bottom:32px;">
+          <div style="font-size:3rem;margin-bottom:12px;">📄</div>
+          <span class="section__eyebrow">Documents professionnels</span>
+          <h1 style="margin-top:12px;">Justificatifs légaux</h1>
+          <p style="color:var(--color-text-soft);">
+            Ces documents sont requis pour exercer légalement et rassurer les hôtes.
+            Ils sont stockés de façon sécurisée et ne sont jamais partagés publiquement.
+          </p>
+        </div>
+
+        <div id="cp-docs-msg" style="display:none;padding:14px 18px;border-radius:var(--radius-md);margin-bottom:20px;font-size:0.95rem;"></div>
+
+        <div class="form-card">
+
+          <!-- Barre de progression étape 2/2 -->
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:28px;">
+            <div style="flex:1;height:6px;border-radius:3px;background:var(--color-primary);"></div>
+            <div style="flex:1;height:6px;border-radius:3px;background:var(--color-primary);"></div>
+            <span style="font-size:0.82rem;color:var(--color-text-soft);white-space:nowrap;">Étape 2 / 2</span>
+          </div>
+
+          <!-- Zone upload : Diplôme -->
+          <div style="margin-bottom:28px;">
+            <h2 style="font-size:1.1rem;font-family:var(--font-body);margin-bottom:6px;">
+              🎓 Diplôme / Titre professionnel
+            </h2>
+            <p style="font-size:0.88rem;color:var(--color-text-soft);margin-bottom:12px;">
+              Diplôme d'État, titre RNCP ou certificat officiel reconnaissant votre qualité de professionnel.
+            </p>
+            <label class="upload-zone" id="zone-diplome" for="file-diplome">
+              <input type="file" id="file-diplome" accept=".pdf,.jpg,.jpeg,.png,.webp" style="display:none;" />
+              <div class="upload-zone__icon">📁</div>
+              <div class="upload-zone__text">
+                <strong>Cliquez pour sélectionner un fichier</strong>
+                <span>PDF, JPG ou PNG — 10 Mo max</span>
+              </div>
+            </label>
+            <div id="status-diplome" class="doc-status" style="display:none;"></div>
+          </div>
+
+          <!-- Zone upload : Assurance RC Pro -->
+          <div style="margin-bottom:28px;">
+            <h2 style="font-size:1.1rem;font-family:var(--font-body);margin-bottom:6px;">
+              🛡️ Assurance Responsabilité Civile Professionnelle
+            </h2>
+            <p style="font-size:0.88rem;color:var(--color-text-soft);margin-bottom:12px;">
+              Attestation RC Pro en cours de validité. Elle est obligatoire pour exercer en France.
+            </p>
+            <label class="upload-zone" id="zone-assurance" for="file-assurance">
+              <input type="file" id="file-assurance" accept=".pdf,.jpg,.jpeg,.png,.webp" style="display:none;" />
+              <div class="upload-zone__icon">📁</div>
+              <div class="upload-zone__text">
+                <strong>Cliquez pour sélectionner un fichier</strong>
+                <span>PDF, JPG ou PNG — 10 Mo max</span>
+              </div>
+            </label>
+            <div class="field" style="margin-top:10px;">
+              <label for="assurance-expiry" style="font-size:0.88rem;">Date d'expiration de votre RC Pro</label>
+              <input type="date" id="assurance-expiry" style="max-width:220px;" />
+              <p class="form-help">Vous recevrez un rappel avant l'échéance.</p>
+            </div>
+            <div id="status-assurance" class="doc-status" style="display:none;"></div>
+          </div>
+
+          <!-- Note légale -->
+          <div style="background:var(--color-cream-soft);border-radius:var(--radius-md);padding:16px;font-size:0.85rem;color:var(--color-text-soft);margin-bottom:24px;">
+            🔒 Vos documents sont chiffrés et stockés de façon privée sur nos serveurs. Seule l'équipe MOB'SS peut les consulter dans le cadre d'une vérification manuelle. Conformément au RGPD, vous pouvez demander leur suppression à tout moment.
+          </div>
+
+          <div style="display:flex;gap:12px;flex-wrap:wrap;">
+            <button id="docs-skip-btn" class="btn btn--outline" style="flex:1;">
+              Passer cette étape →
+            </button>
+            <button id="docs-save-btn" class="btn btn--primary" style="flex:2;">
+              Enregistrer les documents →
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </section>
+  </div>
+
 </BaseLayout>
+
+<style>
+  .upload-zone {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 24px;
+    border: 2px dashed var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-bg-soft);
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .upload-zone:hover,
+  .upload-zone--active {
+    border-color: var(--color-primary);
+    background: var(--color-cream-soft);
+  }
+  .upload-zone--done {
+    border-color: #2D6E3F;
+    background: #E8F4EA;
+  }
+  .upload-zone__icon {
+    font-size: 2rem;
+    flex-shrink: 0;
+  }
+  .upload-zone__text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    font-size: 0.9rem;
+    color: var(--color-text-soft);
+  }
+  .upload-zone__text strong {
+    color: var(--color-text);
+    font-size: 0.95rem;
+  }
+  .doc-status {
+    margin-top: 8px;
+    padding: 10px 14px;
+    border-radius: var(--radius-sm);
+    font-size: 0.88rem;
+  }
+  .doc-status--uploading {
+    background: #EFF6FF;
+    color: #1D4ED8;
+    border: 1px solid #BFDBFE;
+  }
+  .doc-status--ok {
+    background: #E8F4EA;
+    color: #2D6E3F;
+    border: 1px solid #B8DBC0;
+  }
+  .doc-status--error {
+    background: #FBE5E5;
+    color: #A02323;
+    border: 1px solid #F0B8B8;
+  }
+</style>
 
 <script>
   import { supabase } from '../lib/supabase';
 
-  const loadingEl  = document.getElementById('cp-loading')  as HTMLElement;
-  const anonEl     = document.getElementById('cp-anon')     as HTMLElement;
+  const loadingEl  = document.getElementById('cp-loading')   as HTMLElement;
+  const anonEl     = document.getElementById('cp-anon')      as HTMLElement;
   const formWrapEl = document.getElementById('cp-form-wrap') as HTMLElement;
-  const msgBox     = document.getElementById('cp-msg')      as HTMLDivElement;
+  const docsWrapEl = document.getElementById('cp-docs-wrap') as HTMLElement;
+  const msgBox     = document.getElementById('cp-msg')       as HTMLDivElement;
+  const docsMsgBox = document.getElementById('cp-docs-msg')  as HTMLDivElement;
 
-  function showMsg(type: 'success' | 'error', text: string) {
-    msgBox.style.display = 'block';
-    msgBox.textContent   = text;
+  let currentUserId = '';
+
+  function showMsg(box: HTMLDivElement, type: 'success' | 'error', text: string) {
+    box.style.display = 'block';
+    box.textContent   = text;
     if (type === 'success') {
-      msgBox.style.background = '#E8F4EA';
-      msgBox.style.color      = '#2D6E3F';
-      msgBox.style.border     = '1px solid #B8DBC0';
+      box.style.background = '#E8F4EA';
+      box.style.color      = '#2D6E3F';
+      box.style.border     = '1px solid #B8DBC0';
     } else {
-      msgBox.style.background = '#FBE5E5';
-      msgBox.style.color      = '#A02323';
-      msgBox.style.border     = '1px solid #F0B8B8';
+      box.style.background = '#FBE5E5';
+      box.style.color      = '#A02323';
+      box.style.border     = '1px solid #F0B8B8';
     }
-    msgBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    box.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
 
   // ─── Vérification de session ──────────────────────────────────────────────────
@@ -182,7 +326,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       return;
     }
 
-    // Utilisateur connecté → afficher le formulaire
+    currentUserId = session.user.id;
     formWrapEl.style.display = 'block';
 
     // Pré-remplir depuis les metadata de l'inscription rapide
@@ -191,16 +335,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     const villeEl      = document.getElementById('cp-ville')      as HTMLInputElement;
 
     if (meta.specialite && specialiteEl) {
-      // Cherche l'option correspondante
       Array.from(specialiteEl.options).forEach(opt => {
-        if (opt.value === meta.specialite || opt.text === meta.specialite) {
-          opt.selected = true;
-        }
+        if (opt.value === meta.specialite || opt.text === meta.specialite) opt.selected = true;
       });
     }
     if (meta.ville && villeEl) villeEl.value = meta.ville;
 
-    // Charger le profil existant s'il y en a un
+    // Charger le profil existant
     try {
       const { data: profile } = await supabase
         .from('profiles')
@@ -226,12 +367,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         const rempl = document.getElementById('cp-remplacement') as HTMLInputElement;
         if (rempl) rempl.checked = !!profile.disponible_remplacement;
       }
-    } catch (e) {
-      // Pas de profil existant — normal pour un nouvel inscrit
-    }
+    } catch (_) { /* Pas de profil existant */ }
   });
 
-  // ─── Soumission du formulaire ─────────────────────────────────────────────────
+  // ─── Étape 1 : Soumission du formulaire profil ────────────────────────────────
   const cpForm = document.getElementById('cp-form') as HTMLFormElement;
   if (cpForm) {
     cpForm.addEventListener('submit', async (e) => {
@@ -249,15 +388,15 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       const mdp2        = (document.getElementById('cp-mdp2')        as HTMLInputElement).value;
 
       if (!prenom || !nom || !specialite || !ville) {
-        showMsg('error', 'Veuillez remplir les champs obligatoires (*).');
+        showMsg(msgBox, 'error', 'Veuillez remplir les champs obligatoires (*).');
         return;
       }
       if (mdp && mdp !== mdp2) {
-        showMsg('error', 'Les deux mots de passe ne correspondent pas.');
+        showMsg(msgBox, 'error', 'Les deux mots de passe ne correspondent pas.');
         return;
       }
       if (mdp && mdp.length < 8) {
-        showMsg('error', 'Le mot de passe doit faire au moins 8 caractères.');
+        showMsg(msgBox, 'error', 'Le mot de passe doit faire au moins 8 caractères.');
         return;
       }
 
@@ -267,24 +406,22 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
       const { data: { session } } = await supabase.auth.getSession();
       if (!session?.user) {
-        showMsg('error', 'Session expirée. Veuillez vous reconnecter.');
-        btn.disabled = false;
-        btn.textContent = 'Enregistrer mon profil →';
+        showMsg(msgBox, 'error', 'Session expirée. Veuillez vous reconnecter.');
+        btn.disabled    = false;
+        btn.textContent = 'Continuer → Documents professionnels';
         return;
       }
 
-      // Mise à jour du mot de passe si fourni
       if (mdp) {
         const { error: pwError } = await supabase.auth.updateUser({ password: mdp });
         if (pwError) {
-          showMsg('error', `Erreur mot de passe : ${pwError.message}`);
-          btn.disabled = false;
-          btn.textContent = 'Enregistrer mon profil →';
+          showMsg(msgBox, 'error', `Erreur mot de passe : ${pwError.message}`);
+          btn.disabled    = false;
+          btn.textContent = 'Continuer → Documents professionnels';
           return;
         }
       }
 
-      // Upsert du profil
       const { error: profileError } = await supabase.from('profiles').upsert({
         id: session.user.id,
         prenom,
@@ -299,19 +436,132 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       });
 
       btn.disabled    = false;
-      btn.textContent = 'Enregistrer mon profil →';
+      btn.textContent = 'Continuer → Documents professionnels';
 
       if (profileError) {
-        showMsg('error', `Erreur : ${profileError.message}`);
+        showMsg(msgBox, 'error', `Erreur : ${profileError.message}`);
         return;
       }
 
-      showMsg('success', '✓ Profil enregistré ! Redirection vers votre tableau de bord…');
-      setTimeout(() => { window.location.href = '/dashboard'; }, 1800);
+      // Passer à l'étape 2 documents
+      formWrapEl.style.display = 'none';
+      docsWrapEl.style.display = 'block';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     });
   }
 
-  // ─── Renvoi du magic link (si session expirée) ────────────────────────────────
+  // ─── Étape 2 : Upload de fichiers ─────────────────────────────────────────────
+
+  function setupUploadZone(
+    zoneId: string,
+    fileInputId: string,
+    statusId: string,
+    docType: 'diplome' | 'assurance'
+  ) {
+    const zone      = document.getElementById(zoneId)      as HTMLLabelElement;
+    const fileInput = document.getElementById(fileInputId) as HTMLInputElement;
+    const statusEl  = document.getElementById(statusId)    as HTMLElement;
+
+    if (!zone || !fileInput || !statusEl) return;
+
+    fileInput.addEventListener('change', async () => {
+      const file = fileInput.files?.[0];
+      if (!file) return;
+
+      // Validation taille
+      if (file.size > 10 * 1024 * 1024) {
+        statusEl.style.display = 'block';
+        statusEl.className     = 'doc-status doc-status--error';
+        statusEl.textContent   = '⚠️ Fichier trop lourd (10 Mo maximum).';
+        return;
+      }
+
+      // Affichage : en cours
+      zone.classList.add('upload-zone--active');
+      statusEl.style.display = 'block';
+      statusEl.className     = 'doc-status doc-status--uploading';
+      statusEl.textContent   = `⏳ Upload de "${file.name}" en cours…`;
+
+      const filePath = `${currentUserId}/${docType}/${Date.now()}_${file.name}`;
+
+      // Upload dans Supabase Storage
+      const { error: uploadError } = await supabase.storage
+        .from('documents')
+        .upload(filePath, file, { upsert: true });
+
+      if (uploadError) {
+        zone.classList.remove('upload-zone--active');
+        statusEl.className   = 'doc-status doc-status--error';
+        statusEl.textContent = `❌ Erreur d'upload : ${uploadError.message}`;
+        return;
+      }
+
+      // Récupérer la date d'expiration si assurance
+      let expiresAt: string | null = null;
+      if (docType === 'assurance') {
+        const expInput = document.getElementById('assurance-expiry') as HTMLInputElement;
+        expiresAt = expInput?.value || null;
+      }
+
+      // Insérer les métadonnées dans la table documents
+      // (supprimer l'ancien document du même type s'il existe)
+      await supabase
+        .from('documents')
+        .delete()
+        .eq('user_id', currentUserId)
+        .eq('type', docType);
+
+      const { error: dbError } = await supabase.from('documents').insert({
+        user_id:   currentUserId,
+        type:      docType,
+        file_path: filePath,
+        file_name: file.name,
+        file_size: file.size,
+        mime_type: file.type,
+        expires_at: expiresAt || null,
+      });
+
+      if (dbError) {
+        statusEl.className   = 'doc-status doc-status--error';
+        statusEl.textContent = `❌ Erreur enregistrement : ${dbError.message}`;
+        return;
+      }
+
+      // Succès
+      zone.classList.remove('upload-zone--active');
+      zone.classList.add('upload-zone--done');
+      zone.querySelector('.upload-zone__icon')!.textContent = '✅';
+      (zone.querySelector('.upload-zone__text strong') as HTMLElement).textContent = file.name;
+      (zone.querySelector('.upload-zone__text span') as HTMLElement).textContent = 'Document enregistré avec succès';
+
+      statusEl.className   = 'doc-status doc-status--ok';
+      statusEl.textContent = `✓ "${file.name}" enregistré.`;
+    });
+  }
+
+  setupUploadZone('zone-diplome',   'file-diplome',   'status-diplome',   'diplome');
+  setupUploadZone('zone-assurance', 'file-assurance', 'status-assurance', 'assurance');
+
+  // Bouton "Passer" → aller au dashboard sans documents
+  document.getElementById('docs-skip-btn')?.addEventListener('click', () => {
+    window.location.href = '/dashboard';
+  });
+
+  // Bouton "Enregistrer les documents" → aller au dashboard
+  document.getElementById('docs-save-btn')?.addEventListener('click', () => {
+    const diplomeOk   = document.getElementById('zone-diplome')?.classList.contains('upload-zone--done');
+    const assuranceOk = document.getElementById('zone-assurance')?.classList.contains('upload-zone--done');
+
+    if (!diplomeOk && !assuranceOk) {
+      showMsg(docsMsgBox, 'error', 'Ajoutez au moins un document, ou cliquez sur "Passer cette étape".');
+      return;
+    }
+
+    showMsg(docsMsgBox, 'success', '✓ Documents enregistrés ! Redirection vers votre tableau de bord…');
+    setTimeout(() => { window.location.href = '/dashboard'; }, 1500);
+  });
+
+  // ─── Renvoi du magic link ──────────────────────────────────────────────────────
   const relinkBtn = document.getElementById('relink-btn') as HTMLButtonElement;
   if (relinkBtn) {
     relinkBtn.addEventListener('click', async () => {

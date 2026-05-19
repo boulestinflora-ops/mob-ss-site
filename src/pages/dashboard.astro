@@ -66,6 +66,11 @@ const spacesMapJson = JSON.stringify(
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
           Remplacements
         </button>
+        <button class="dash-nav-btn" data-section="documents">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg>
+          Mes documents
+          <span id="badge-docs" style="display:none;background:#E8F4EA;color:#2D6E3F;border:1px solid #B8DBC0;border-radius:20px;padding:1px 7px;font-size:0.72rem;font-weight:700;margin-left:auto;">✓</span>
+        </button>
         <a href="/explorez" class="dash-nav-btn" style="text-decoration:none;">
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 10c0 7-8 13-8 13S4 17 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
           Trouver un espace
@@ -288,6 +293,56 @@ const spacesMapJson = JSON.stringify(
               </p>
             </div>
           </div>
+        </div>
+      </div>
+
+      <!-- ── Mes documents ── -->
+      <div class="dash-section" id="documents" style="display:none;">
+        <div style="max-width:640px;">
+
+          <div class="panel" style="margin-bottom:20px;">
+            <div class="panel__head">
+              <h3>Documents professionnels</h3>
+              <a href="/completer-profil" class="btn btn--outline" style="font-size:0.85rem;">Modifier →</a>
+            </div>
+            <p style="font-size:0.88rem;color:var(--color-text-soft);margin:0 0 20px;">
+              Vos justificatifs légaux sont stockés de façon privée et sécurisée. Seule l'équipe MOB'SS peut les consulter.
+            </p>
+
+            <!-- Diplôme -->
+            <div class="doc-row" id="doc-row-diplome">
+              <div class="doc-row__icon">🎓</div>
+              <div class="doc-row__info">
+                <strong>Diplôme / Titre professionnel</strong>
+                <span id="doc-diplome-label" style="font-size:0.85rem;color:var(--color-text-soft);">Chargement…</span>
+              </div>
+              <div id="doc-diplome-badge" class="doc-badge doc-badge--loading">…</div>
+            </div>
+
+            <hr style="border:none;border-top:1px solid var(--color-border);margin:12px 0;" />
+
+            <!-- Assurance RC Pro -->
+            <div class="doc-row" id="doc-row-assurance">
+              <div class="doc-row__icon">🛡️</div>
+              <div class="doc-row__info">
+                <strong>Assurance RC Pro</strong>
+                <span id="doc-assurance-label" style="font-size:0.85rem;color:var(--color-text-soft);">Chargement…</span>
+              </div>
+              <div id="doc-assurance-badge" class="doc-badge doc-badge--loading">…</div>
+            </div>
+          </div>
+
+          <!-- Alerte si documents manquants -->
+          <div id="docs-alert" style="display:none;background:#FFF8DC;border:1px solid #E8D87A;border-radius:var(--radius-md);padding:16px 20px;font-size:0.9rem;color:#6B5800;">
+            ⚠️ <strong>Documents manquants.</strong> Ajoutez votre diplôme et votre RC Pro pour rassurer les hôtes et valider votre conformité légale.
+            <a href="/completer-profil" style="display:inline-block;margin-top:10px;" class="btn btn--primary btn--sm">Ajouter mes documents →</a>
+          </div>
+
+          <!-- Confirmation si tout est ok -->
+          <div id="docs-ok" style="display:none;background:#E8F4EA;border:1px solid #B8DBC0;border-radius:var(--radius-md);padding:16px 20px;font-size:0.9rem;color:#2D6E3F;">
+            ✅ <strong>Dossier complet.</strong> Vos deux documents sont enregistrés. L'équipe MOB'SS peut les vérifier à tout moment.
+          </div>
+
         </div>
       </div>
 
@@ -839,6 +894,28 @@ const spacesMapJson = JSON.stringify(
   .param-row__label { font-size: 0.85rem; color: var(--color-text-soft); font-weight: 500; }
   .param-row__value { font-weight: 600; font-size: 0.92rem; text-align: right; }
 
+  /* ── Documents ──────────────────────────────────────────────────────────────── */
+  .doc-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 4px 0;
+  }
+  .doc-row__icon { font-size: 1.5rem; flex-shrink: 0; }
+  .doc-row__info { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+  .doc-row__info strong { font-size: 0.92rem; }
+  .doc-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .doc-badge--loading { background: var(--color-bg-soft); color: var(--color-text-soft); }
+  .doc-badge--ok      { background: #E8F4EA; color: #2D6E3F; border: 1px solid #B8DBC0; }
+  .doc-badge--missing { background: #FFF8DC; color: #6B5800; border: 1px solid #E8D87A; }
+  .doc-badge--expired { background: #FBE5E5; color: #A02323; border: 1px solid #F0B8B8; }
+
   /* ── Profil grid ─────────────────────────────────────────────────────────────── */
   .profil-grid {
     display: grid;
@@ -986,6 +1063,79 @@ const spacesMapJson = JSON.stringify(
       </div>`;
   }
 
+  // ── Chargement des documents professionnels ──────────────────────────────────
+  async function loadDocuments(userId: string) {
+    const { data: docs } = await supabase
+      .from('documents')
+      .select('type, file_name, status, expires_at, uploaded_at')
+      .eq('user_id', userId);
+
+    const diplome   = docs?.find((d: any) => d.type === 'diplome');
+    const assurance = docs?.find((d: any) => d.type === 'assurance');
+
+    // ── Diplôme ──
+    const diplomeLabel = document.getElementById('doc-diplome-label') as HTMLElement;
+    const diplomeBadge = document.getElementById('doc-diplome-badge') as HTMLElement;
+    if (diplome) {
+      diplomeLabel.textContent = diplome.file_name;
+      diplomeBadge.className   = 'doc-badge doc-badge--ok';
+      diplomeBadge.textContent = diplome.status === 'verifie' ? '✓ Vérifié' : '✓ Fourni';
+    } else {
+      diplomeLabel.textContent = 'Non fourni';
+      diplomeBadge.className   = 'doc-badge doc-badge--missing';
+      diplomeBadge.textContent = '⚠ Manquant';
+    }
+
+    // ── Assurance RC Pro ──
+    const assuranceLabel = document.getElementById('doc-assurance-label') as HTMLElement;
+    const assuranceBadge = document.getElementById('doc-assurance-badge') as HTMLElement;
+    if (assurance) {
+      const today   = new Date();
+      const expires = assurance.expires_at ? new Date(assurance.expires_at) : null;
+      const isExpired = expires && expires < today;
+      const expiresSoon = expires && !isExpired &&
+        (expires.getTime() - today.getTime()) < 30 * 24 * 60 * 60 * 1000; // 30 jours
+
+      let labelText = assurance.file_name;
+      if (expires) {
+        const fmt = expires.toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' });
+        labelText += ` — expire le ${fmt}`;
+      }
+      assuranceLabel.textContent = labelText;
+
+      if (isExpired) {
+        assuranceBadge.className   = 'doc-badge doc-badge--expired';
+        assuranceBadge.textContent = '✕ Expirée';
+      } else if (expiresSoon) {
+        assuranceBadge.className   = 'doc-badge doc-badge--missing';
+        assuranceBadge.textContent = '⚠ Expire bientôt';
+      } else {
+        assuranceBadge.className   = 'doc-badge doc-badge--ok';
+        assuranceBadge.textContent = assurance.status === 'verifie' ? '✓ Vérifiée' : '✓ Fournie';
+      }
+    } else {
+      assuranceLabel.textContent = 'Non fournie';
+      assuranceBadge.className   = 'doc-badge doc-badge--missing';
+      assuranceBadge.textContent = '⚠ Manquante';
+    }
+
+    // ── Badge nav + alertes ──
+    const bothPresent = !!diplome && !!assurance;
+    const badgeDocs = document.getElementById('badge-docs') as HTMLElement;
+    if (badgeDocs && bothPresent) badgeDocs.style.display = '';
+
+    const alertEl = document.getElementById('docs-alert') as HTMLElement;
+    const okEl    = document.getElementById('docs-ok')    as HTMLElement;
+    if (alertEl) alertEl.style.display = bothPresent ? 'none' : 'block';
+    if (okEl)    okEl.style.display    = bothPresent ? 'block' : 'none';
+
+    // ── Stat visibilité (overview) — mise à jour si docs complets ──
+    const statVis = document.getElementById('stat-visibilite') as HTMLElement;
+    if (statVis && bothPresent) {
+      statVis.innerHTML += '<br><span style="font-size:0.75rem;color:#2D6E3F;">📄 Docs vérifiés</span>';
+    }
+  }
+
   // ── Dashboard Praticien ───────────────────────────────────────────────────────
   async function loadPraticien(session: any, profile: any) {
     pratEl.style.display = 'block';
@@ -997,6 +1147,10 @@ const spacesMapJson = JSON.stringify(
     if (!localStorage.getItem('mobss_tour_dashboard')) {
       setTimeout(function() { if (window.startTour) window.startTour(window._dashTourSteps, 'mobss_tour_dashboard'); }, 1200);
     }
+    // ───────────────────────────────────────────────────────────────────────
+
+    // ── Chargement des documents ───────────────────────────────────────────
+    loadDocuments(session.user.id);
     // ───────────────────────────────────────────────────────────────────────
 
     const prenom = profile?.prenom || session.user.email?.split('@')[0] || 'vous';
