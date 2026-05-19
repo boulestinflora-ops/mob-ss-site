@@ -1,0 +1,271 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Profil praticien — MOB'SS"
+  description="Consultez le profil d'un praticien du sport ou de la santé inscrit sur MOB'SS."
+  currentPage=""
+>
+
+<!-- État chargement -->
+<div id="profile-loading" style="text-align:center;padding:100px 24px;color:var(--color-text-soft);">
+  <div style="font-size:2rem;margin-bottom:12px;">⏳</div>
+  <p>Chargement du profil…</p>
+</div>
+
+<!-- Profil introuvable -->
+<div id="profile-notfound" style="display:none;text-align:center;padding:100px 24px;">
+  <div style="font-size:3rem;margin-bottom:16px;">🔍</div>
+  <h1 style="font-size:1.5rem;margin-bottom:8px;">Profil introuvable</h1>
+  <p style="color:var(--color-text-soft);margin-bottom:24px;">Ce profil n'existe pas ou n'est plus disponible.</p>
+  <a href="/annuaire" class="btn btn--primary">Voir l'annuaire →</a>
+</div>
+
+<!-- Profil chargé -->
+<div id="profile-content" style="display:none;">
+
+  <!-- Fil d'Ariane -->
+  <div class="container" style="padding-top:24px;">
+    <p style="color:var(--color-text-soft);font-size:0.9rem;">
+      <a href="/annuaire" style="color:var(--color-text-soft);">Annuaire</a>
+      <span style="margin:0 6px;">→</span>
+      <span id="bc-name">Profil</span>
+    </p>
+  </div>
+
+  <section class="section" style="padding-top:20px;">
+    <div class="container" style="max-width:860px;">
+      <div class="profile-layout">
+
+        <!-- Colonne principale -->
+        <div>
+
+          <!-- Carte identité -->
+          <div class="panel profile-hero">
+            <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;">
+              <div id="prof-avatar" style="width:80px;height:80px;border-radius:18px;background:var(--color-primary);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.8rem;flex-shrink:0;">?</div>
+              <div style="flex:1;min-width:0;">
+                <h1 id="prof-nom" style="font-size:1.6rem;margin-bottom:4px;">—</h1>
+                <p id="prof-specialite" style="color:var(--color-primary);font-weight:600;font-size:1rem;margin:0 0 8px;">—</p>
+                <div style="display:flex;gap:12px;flex-wrap:wrap;font-size:0.88rem;color:var(--color-text-soft);">
+                  <span id="prof-ville-chip" style="display:none;">📍 <span id="prof-ville">—</span></span>
+                  <span id="prof-remp-badge" style="display:none;background:#E8F4EA;color:#2D6E3F;padding:3px 10px;border-radius:20px;font-size:0.8rem;font-weight:600;">🔄 Disponible pour remplacement</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bio -->
+          <div class="panel" id="prof-bio-panel" style="display:none;margin-top:20px;">
+            <h3 style="font-size:1rem;margin-bottom:10px;">À propos</h3>
+            <p id="prof-bio" style="color:var(--color-text-soft);font-size:0.92rem;line-height:1.7;margin:0;"></p>
+          </div>
+
+          <!-- Informations de contact (visibles uniquement si connecté) -->
+          <div class="panel" id="prof-contact-panel" style="margin-top:20px;">
+            <h3 style="font-size:1rem;margin-bottom:14px;">Contact</h3>
+            <div id="prof-contact-auth" style="display:none;flex-direction:column;gap:10px;">
+              <div id="prof-email-row" style="display:none;align-items:center;gap:10px;">
+                <span style="font-size:1.1rem;">📧</span>
+                <a id="prof-email" href="#" style="color:var(--color-primary);font-weight:600;word-break:break-all;">—</a>
+              </div>
+              <div id="prof-tel-row" style="display:none;align-items:center;gap:10px;">
+                <span style="font-size:1.1rem;">📱</span>
+                <a id="prof-tel" href="#" style="color:var(--color-primary);font-weight:600;">—</a>
+              </div>
+            </div>
+            <div id="prof-contact-anon" style="text-align:center;padding:16px 0;">
+              <p style="color:var(--color-text-soft);font-size:0.9rem;margin-bottom:16px;">
+                🔐 Connectez-vous pour accéder aux coordonnées de ce praticien.
+              </p>
+              <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+                <a href="/connexion" class="btn btn--primary">Se connecter</a>
+                <a href="/inscription" class="btn btn--outline">S'inscrire</a>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Colonne latérale -->
+        <aside>
+
+          <!-- CTA principal -->
+          <div class="panel" style="background:var(--color-primary);border:none;color:#fff;text-align:center;padding:24px 20px;">
+            <div style="font-size:2rem;margin-bottom:10px;">🤝</div>
+            <h3 style="color:#fff;margin-bottom:8px;">Proposer un espace</h3>
+            <p style="color:rgba(255,255,255,0.85);font-size:0.88rem;margin-bottom:16px;">
+              Vous avez un espace disponible ? Proposez-le à ce praticien.
+            </p>
+            <a id="cta-espace" href="/deposer-annonce" class="btn btn--cream btn--block">Déposer mon espace →</a>
+          </div>
+
+          <!-- Remplacement -->
+          <div class="panel" id="panel-remp" style="display:none;margin-top:16px;">
+            <div style="display:flex;align-items:flex-start;gap:12px;">
+              <span style="font-size:1.4rem;flex-shrink:0;">🔄</span>
+              <div>
+                <strong style="display:block;font-size:0.92rem;margin-bottom:4px;">Disponible pour remplacements</strong>
+                <p style="margin:0;font-size:0.82rem;color:var(--color-text-soft);">Ce praticien peut assurer des remplacements ponctuels.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Retour annuaire -->
+          <div class="panel" style="margin-top:16px;text-align:center;background:var(--color-bg-alt);border:none;">
+            <p style="color:var(--color-text-soft);font-size:0.85rem;margin-bottom:12px;">Découvrez d'autres praticiens</p>
+            <a href="/annuaire" class="btn btn--outline btn--block">← Voir l'annuaire</a>
+          </div>
+
+        </aside>
+      </div>
+    </div>
+  </section>
+</div>
+
+</BaseLayout>
+
+<style>
+  .profile-layout {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 24px;
+    align-items: start;
+  }
+  .profile-hero {
+    padding: 28px;
+  }
+  @media (max-width: 760px) {
+    .profile-layout {
+      grid-template-columns: 1fr;
+    }
+    .profile-layout aside {
+      order: -1;
+    }
+  }
+</style>
+
+<script>
+  import { supabase } from '../../lib/supabase';
+
+  const params  = new URLSearchParams(window.location.search);
+  const id      = params.get('id');
+
+  const loadingEl = document.getElementById('profile-loading') as HTMLElement;
+  const notFoundEl= document.getElementById('profile-notfound') as HTMLElement;
+  const contentEl = document.getElementById('profile-content') as HTMLElement;
+
+  function avatarColor(initials: string): string {
+    const colors = ['#C44B2B','#1A6B5A','#2B5CA8','#7B3FA0','#B85C1A','#1A6B3C'];
+    let hash = 0;
+    for (const c of initials) hash = (hash * 31 + c.charCodeAt(0)) & 0xffff;
+    return colors[hash % colors.length];
+  }
+
+  async function loadProfile() {
+    if (!id) {
+      loadingEl.style.display  = 'none';
+      notFoundEl.style.display = 'block';
+      return;
+    }
+
+    try {
+      const { data: profile, error } = await supabase
+        .from('profiles')
+        .select('id, prenom, nom, specialite, ville, bio, telephone, visible_annuaire, disponible_remplacement, role')
+        .eq('id', id)
+        .eq('role', 'praticien')
+        .eq('visible_annuaire', true)
+        .single();
+
+      if (error || !profile) {
+        loadingEl.style.display  = 'none';
+        notFoundEl.style.display = 'block';
+        return;
+      }
+
+      // Mise à jour du titre de la page
+      const prenom = profile.prenom || 'Praticien';
+      const nom    = profile.nom    || '';
+      const full   = `${prenom} ${nom}`.trim();
+      document.title = `${full} — ${profile.specialite || 'Praticien'} — MOB'SS`;
+
+      // Fil d'Ariane
+      (document.getElementById('bc-name') as HTMLElement).textContent = full;
+
+      // Avatar
+      const initiales = ((prenom[0] || '') + (nom[0] || '')).toUpperCase() || '?';
+      const avatarEl  = document.getElementById('prof-avatar') as HTMLElement;
+      avatarEl.textContent = initiales;
+      avatarEl.style.background = avatarColor(initiales);
+
+      // Infos principales
+      (document.getElementById('prof-nom')       as HTMLElement).textContent = full;
+      (document.getElementById('prof-specialite')as HTMLElement).textContent = profile.specialite || 'Praticien';
+
+      if (profile.ville) {
+        (document.getElementById('prof-ville')      as HTMLElement).textContent = profile.ville;
+        (document.getElementById('prof-ville-chip') as HTMLElement).style.display = 'inline';
+      }
+
+      if (profile.disponible_remplacement) {
+        (document.getElementById('prof-remp-badge') as HTMLElement).style.display = 'inline';
+        (document.getElementById('panel-remp')      as HTMLElement).style.display = 'block';
+      }
+
+      // Bio
+      if (profile.bio) {
+        (document.getElementById('prof-bio')      as HTMLElement).textContent  = profile.bio;
+        (document.getElementById('prof-bio-panel')as HTMLElement).style.display = 'block';
+      }
+
+      // Contact — visible uniquement si connecté
+      const { data: { session } } = await supabase.auth.getSession();
+      const contactAuth = document.getElementById('prof-contact-auth') as HTMLElement;
+      const contactAnon = document.getElementById('prof-contact-anon') as HTMLElement;
+
+      if (session?.user) {
+        contactAnon.style.display = 'none';
+        contactAuth.style.display = 'flex';
+
+        if (session.user.email) {
+          // On peut afficher l'email de cet utilisateur si on le récupère
+          // On re-fetch avec l'email depuis auth (non disponible publiquement)
+          // On affiche le téléphone s'il est renseigné
+        }
+
+        if (profile.telephone) {
+          const telRow = document.getElementById('prof-tel-row') as HTMLElement;
+          const telEl  = document.getElementById('prof-tel')     as HTMLAnchorElement;
+          telEl.textContent = profile.telephone;
+          telEl.href = `tel:${profile.telephone.replace(/\s/g, '')}`;
+          telRow.style.display = 'flex';
+        }
+
+        // Note : l'email public n'est pas dans profiles (sécurité).
+        // On affiche un message de contact via la plateforme
+        if (!profile.telephone) {
+          contactAuth.innerHTML = `
+            <p style="color:var(--color-text-soft);font-size:0.9rem;margin:0;">
+              Ce praticien n'a pas renseigné de coordonnées publiques.<br>
+              <a href="/contact" style="color:var(--color-primary);">Contactez l'équipe MOB'SS</a> pour faciliter la mise en relation.
+            </p>`;
+        }
+      } else {
+        contactAnon.style.display = 'block';
+        contactAuth.style.display = 'none';
+      }
+
+      // Affichage
+      loadingEl.style.display = 'none';
+      contentEl.style.display = 'block';
+
+    } catch (e) {
+      loadingEl.style.display  = 'none';
+      notFoundEl.style.display = 'block';
+    }
+  }
+
+  loadProfile();
+</script>

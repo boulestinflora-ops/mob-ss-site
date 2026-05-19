@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+# Pages privées — ne pas indexer
+Disallow: /dashboard
+Disallow: /completer-profil
+Disallow: /deposer-annonce
+
+Sitemap: https://project-ysntr.vercel.app/sitemap.xml

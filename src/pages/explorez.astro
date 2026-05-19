@@ -4,7 +4,6 @@ import SpaceCard from '../components/SpaceCard.astro';
 import Icon from '../components/Icon.astro';
 import spaces from '../data/spaces.json';
 
-// Listes pour les filtres
 const regions = [...new Set(spaces.map(s => s.region))].sort();
 const types   = [...new Set(spaces.map(s => s.type))].sort();
 ---
@@ -14,7 +13,6 @@ const types   = [...new Set(spaces.map(s => s.type))].sort();
   description="Trouvez un espace gratuit pour exercer votre activité de sport ou de santé en Normandie — mis à disposition par des collectivités et entreprises."
   currentPage="explorez"
 >
-
   <!-- Hero -->
   <section class="explore-hero">
     <div class="container">
@@ -133,50 +131,112 @@ const types   = [...new Set(spaces.map(s => s.type))].sort();
         </p>
       </div>
 
-      <!-- ===== COLONNE DROITE : carte ===== -->
+      <!-- Bouton visite guidée flottant -->
+      <button class="tour-fab" id="tour-fab-explorez" onclick="window.startTour(window._exploreTourSteps,'mobss_tour_explorez')" aria-label="Lancer la visite guidée">
+        🗺️ Visite guidée
+      </button>
+
+      <!-- ===== COLONNE DROITE : placeholder carte ===== -->
       <div class="explore-map-col">
         <div class="explore-map-sticky">
-          <div id="map"></div>
+          <div class="map-placeholder">
+            <div class="map-placeholder__inner">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
+                <circle cx="12" cy="9" r="2.5"/>
+              </svg>
+              <p class="map-placeholder__title">Carte interactive</p>
+              <p class="map-placeholder__sub">🚧 En cours de développement</p>
+            </div>
+          </div>
         </div>
       </div>
 
     </div>
   </section>
 
+
 </BaseLayout>
 
-<!-- Leaflet CSS + JS (UMD — charge window.L) -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<script is:inline src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<!-- Étapes de la visite guidée + auto-lancement (is:inline = exécution immédiate, pas de bundling) -->
+<script is:inline>
+  window._exploreTourSteps = [
+    {
+      target: null,
+      emoji: '🗺️',
+      title: 'Bienvenue sur la page Explorez !',
+      content: 'Cette page vous permet de trouver un espace disponible pour exercer votre activité. Laissez-nous vous guider en quelques étapes.',
+    },
+    {
+      target: '.search-card',
+      emoji: '🔍',
+      title: 'La barre de recherche',
+      content: "Tapez une ville, un code postal ou une région pour filtrer les espaces disponibles. Vous pouvez aussi filtrer par type d'espace (cabinet, salle de sport…)",
+      position: 'bottom',
+    },
+    {
+      target: '.filters-bar-panel',
+      emoji: '⚙️',
+      title: 'Filtres avancés',
+      content: 'Cliquez sur "Affiner la recherche" pour accéder à des filtres supplémentaires : région, type de propriétaire, équipements disponibles (PMR, vestiaires, Wi-Fi…)',
+      position: 'bottom',
+    },
+    {
+      target: '.listing-grid',
+      emoji: '🏠',
+      title: 'Les espaces disponibles',
+      content: 'Chaque carte présente un espace : type, localisation, équipements. Cliquez sur une carte pour voir tous les détails et envoyer une demande.',
+      position: 'right',
+    },
+    {
+      target: '.map-placeholder',
+      emoji: '📍',
+      title: 'La carte interactive',
+      content: 'Une carte des espaces sera bientôt disponible pour visualiser les offres près de chez vous. Elle est en cours de développement !',
+      position: 'left',
+    },
+  ];
+
+  // Auto-lancement à la 1ère visite
+  // On utilise window.load pour être sûr que tout est prêt (DOM + scripts)
+  window.addEventListener('load', function () {
+    if (!localStorage.getItem('mobss_tour_explorez')) {
+      setTimeout(function () {
+        if (typeof window.startTour === 'function') {
+          window.startTour(window._exploreTourSteps, 'mobss_tour_explorez');
+        }
+      }, 600);
+    }
+  });
+</script>
 
 <script>
-// ─── Données des espaces (Normandie — à titre d'exemple) ──────────────────────
+// ─── Données des espaces (pour les filtres) ───────────────────────────────────
 const SPACES = [
-  { id: "salle-mairie-caen",     title: "Salle polyvalente — Mairie de Caen", city: "Caen",                   department: "14", region: "Normandie", type: "Salle communale",     host: "collectivite", lat: 49.18, lng: -0.37, tags: ["50 m²","PMR","Vestiaires"] },
-  { id: "cabinet-rouen-centre",  title: "Cabinet partagé — Centre-ville",     city: "Rouen",                  department: "76", region: "Normandie", type: "Cabinet paramédical", host: "entreprise",   lat: 49.44, lng: 1.09,  tags: ["18 m²","Table de massage","PMR"] },
-  { id: "studio-cherbourg",      title: "Studio bien-être — Cherbourg",       city: "Cherbourg-en-Cotentin",  department: "50", region: "Normandie", type: "Studio bien-être",    host: "collectivite", lat: 49.64, lng: -1.62, tags: ["22 m²","Tapis fournis","Wi-Fi"] },
-  { id: "salle-sport-le-havre",  title: "Espace sport — Les Docks",           city: "Le Havre",               department: "76", region: "Normandie", type: "Salle de sport",      host: "entreprise",   lat: 49.49, lng: 0.11,  tags: ["80 m²","Matériel inclus","Parking"] },
-  { id: "salle-bayeux",          title: "Salle culturelle — Centre Bayeux",   city: "Bayeux",                 department: "14", region: "Normandie", type: "Salle communale",     host: "collectivite", lat: 49.27, lng: -0.70, tags: ["45 m²","PMR","Sonorisation"] },
-  { id: "cabinet-evreux",        title: "Cabinet ostéopathie — Évreux",       city: "Évreux",                 department: "27", region: "Normandie", type: "Cabinet paramédical", host: "entreprise",   lat: 49.02, lng: 1.15,  tags: ["20 m²","Table de massage","Wi-Fi"] },
-  { id: "studio-yoga-alencon",   title: "Studio yoga — Centre-ville",         city: "Alençon",                department: "61", region: "Normandie", type: "Studio bien-être",    host: "collectivite", lat: 48.43, lng: 0.09,  tags: ["30 m²","Tapis fournis","PMR"] },
-  { id: "salle-omnisports-dieppe", title: "Salle omnisports — Dieppe",        city: "Dieppe",                 department: "76", region: "Normandie", type: "Salle de sport",      host: "collectivite", lat: 49.92, lng: 1.08,  tags: ["120 m²","Vestiaires","PMR"] },
+  { id: "salle-mairie-caen",       city: "Caen",                  department: "14", region: "Normandie", type: "Salle communale",     host: "collectivite", tags: ["50 m²","PMR","Vestiaires"] },
+  { id: "cabinet-rouen-centre",    city: "Rouen",                 department: "76", region: "Normandie", type: "Cabinet paramédical", host: "entreprise",   tags: ["18 m²","Table de massage","PMR"] },
+  { id: "studio-cherbourg",        city: "Cherbourg-en-Cotentin", department: "50", region: "Normandie", type: "Studio bien-être",    host: "collectivite", tags: ["22 m²","Tapis fournis","Wi-Fi"] },
+  { id: "salle-sport-le-havre",    city: "Le Havre",              department: "76", region: "Normandie", type: "Salle de sport",      host: "entreprise",   tags: ["80 m²","Matériel inclus","Parking"] },
+  { id: "salle-bayeux",            city: "Bayeux",                department: "14", region: "Normandie", type: "Salle communale",     host: "collectivite", tags: ["45 m²","PMR","Sonorisation"] },
+  { id: "cabinet-evreux",          city: "Évreux",                department: "27", region: "Normandie", type: "Cabinet paramédical", host: "entreprise",   tags: ["20 m²","Table de massage","Wi-Fi"] },
+  { id: "studio-yoga-alencon",     city: "Alençon",               department: "61", region: "Normandie", type: "Studio bien-être",    host: "collectivite", tags: ["30 m²","Tapis fournis","PMR"] },
+  { id: "salle-omnisports-dieppe", city: "Dieppe",                department: "76", region: "Normandie", type: "Salle de sport",      host: "collectivite", tags: ["120 m²","Vestiaires","PMR"] },
 ];
 
-// ─── Restaurer la recherche depuis sessionStorage ──────────────────────────────
+// ─── Restaurer la recherche depuis sessionStorage ─────────────────────────────
 (function restoreSearch() {
   const loc    = sessionStorage.getItem('search_loc')    || '';
   const metier = sessionStorage.getItem('search_metier') || '';
   const locInput = document.getElementById('filter-loc') as HTMLInputElement | null;
   if (locInput) {
-    if (loc)    locInput.value = loc;
+    if (loc)         locInput.value = loc;
     else if (metier) locInput.value = metier;
   }
 })();
 
-// ─── Toggle filtres avancés ────────────────────────────────────────────────────
+// ─── Toggle filtres avancés ───────────────────────────────────────────────────
 const toggleBtn   = document.getElementById('filters-toggle');
 const filtersBody = document.getElementById('filters-bar-body');
-
 toggleBtn?.addEventListener('click', () => {
   const isOpen = toggleBtn.getAttribute('aria-expanded') === 'true';
   toggleBtn.setAttribute('aria-expanded', String(!isOpen));
@@ -185,155 +245,108 @@ toggleBtn?.addEventListener('click', () => {
   if (chevron) chevron.style.transform = isOpen ? '' : 'rotate(180deg)';
 });
 
-// ─── Carte Leaflet (window.L via UMD) ─────────────────────────────────────────
-const L = (window as any).L;
+// ─── Filtres liste ────────────────────────────────────────────────────────────
+const grid         = document.getElementById('listing-grid') as HTMLElement;
+const noResults    = document.getElementById('no-results')   as HTMLElement;
+const resultsCount = document.getElementById('results-count') as HTMLElement;
+const cards        = Array.from(grid.querySelectorAll('article.space-card')) as HTMLElement[];
 
-if (!L) {
-  console.warn('Leaflet non disponible');
-} else {
-  // Centre sur la Normandie
-  const map = L.map('map', { zoomControl: true, scrollWheelZoom: false }).setView([49.1, -0.2], 7);
-
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-    maxZoom: 18,
-  }).addTo(map);
-
-  // Icône personnalisée
-  const defaultIcon = L.divIcon({
-    className: '',
-    html: `<div class="map-marker"></div>`,
-    iconSize: [28, 28],
-    iconAnchor: [14, 28],
-    popupAnchor: [0, -30],
-  });
-  const activeIcon = L.divIcon({
-    className: '',
-    html: `<div class="map-marker map-marker--active"></div>`,
-    iconSize: [32, 32],
-    iconAnchor: [16, 32],
-    popupAnchor: [0, -34],
-  });
-
-  // Création des marqueurs
-  const markers: Record<string, any> = {};
-  SPACES.forEach(space => {
-    const marker = L.marker([space.lat, space.lng], { icon: defaultIcon })
-      .addTo(map)
-      .bindPopup(`
-        <div class="map-popup">
-          <strong>${space.title}</strong>
-          <span>${space.city} · ${space.department}</span>
-          <a href="/annonce/${space.id}">Voir l'espace →</a>
-        </div>
-      `, { maxWidth: 200 });
-    markers[space.id] = marker;
-  });
-
-  // ─── Filtres ────────────────────────────────────────────────────────────────
-  const grid         = document.getElementById('listing-grid') as HTMLElement;
-  const noResults    = document.getElementById('no-results')   as HTMLElement;
-  const resultsCount = document.getElementById('results-count') as HTMLElement;
-  const cards        = Array.from(grid.querySelectorAll('article.space-card')) as HTMLElement[];
-
-  function getActiveFilters() {
-    return {
-      loc:    (document.getElementById('filter-loc')    as HTMLInputElement | null)?.value.toLowerCase().trim() || '',
-      type:   (document.getElementById('filter-type')   as HTMLSelectElement | null)?.value || '',
-      region: (document.getElementById('filter-region-h') as HTMLSelectElement | null)?.value || '',
-      host:   (document.getElementById('filter-host-h') as HTMLSelectElement | null)?.value  || '',
-      equip:  Array.from(document.querySelectorAll('.filter-equip:checked')).map((cb: any) => cb.value as string),
-    };
-  }
-
-  function applyFilters() {
-    const f = getActiveFilters();
-    let visible = 0;
-
-    SPACES.forEach((space, i) => {
-      const card = cards[i];
-      if (!card) return;
-
-      const locMatch    = !f.loc    || space.city.toLowerCase().includes(f.loc) || space.region.toLowerCase().includes(f.loc) || space.department.includes(f.loc);
-      const typeMatch   = !f.type   || space.type === f.type;
-      const regionMatch = !f.region || space.region === f.region;
-      const hostMatch   = !f.host   || space.host === f.host;
-      const equipMatch  = f.equip.length === 0 || f.equip.every((eq: string) =>
-        space.tags.some((tag: string) => tag.toLowerCase().includes(eq.toLowerCase()))
-      );
-
-      const show = locMatch && typeMatch && regionMatch && hostMatch && equipMatch;
-      card.style.display = show ? '' : 'none';
-
-      const marker = markers[space.id];
-      if (marker) {
-        if (show) { marker.addTo(map); } else { marker.remove(); }
-      }
-      if (show) visible++;
-    });
-
-    if (resultsCount) resultsCount.textContent = `${visible} espace${visible > 1 ? 's' : ''}`;
-    if (noResults)    noResults.style.display = visible === 0 ? 'block' : 'none';
-    if (grid)         grid.style.display      = visible === 0 ? 'none'  : '';
-  }
-
-  // Listeners filtres
-  ['filter-loc', 'filter-type', 'filter-region-h', 'filter-host-h'].forEach(id => {
-    document.getElementById(id)?.addEventListener('input', applyFilters);
-    document.getElementById(id)?.addEventListener('change', applyFilters);
-  });
-  document.querySelectorAll('.filter-equip')
-    .forEach(el => el.addEventListener('change', applyFilters));
-
-  document.getElementById('search-btn')?.addEventListener('click', applyFilters);
-
-  document.getElementById('reset-filters')?.addEventListener('click', () => {
-    (document.getElementById('filter-loc')      as HTMLInputElement | null) && ((document.getElementById('filter-loc') as HTMLInputElement).value = '');
-    (document.getElementById('filter-type')     as HTMLSelectElement | null) && ((document.getElementById('filter-type') as HTMLSelectElement).value = '');
-    (document.getElementById('filter-region-h') as HTMLSelectElement | null) && ((document.getElementById('filter-region-h') as HTMLSelectElement).value = '');
-    (document.getElementById('filter-host-h')   as HTMLSelectElement | null) && ((document.getElementById('filter-host-h') as HTMLSelectElement).value = '');
-    document.querySelectorAll('.filter-equip').forEach((cb: any) => { cb.checked = false; });
-    applyFilters();
-  });
-
-  // ─── Hover carte <-> marqueur ────────────────────────────────────────────────
-  cards.forEach((card, i) => {
-    const space = SPACES[i];
-    if (!space) return;
-    card.addEventListener('mouseenter', () => {
-      markers[space.id]?.setIcon(activeIcon);
-      markers[space.id]?.openPopup();
-    });
-    card.addEventListener('mouseleave', () => {
-      markers[space.id]?.setIcon(defaultIcon);
-      markers[space.id]?.closePopup();
-    });
-  });
-
-  // ─── Pré-remplissage depuis les query params de l'accueil ─────────────────
-  const params = new URLSearchParams(window.location.search);
-  const metier = params.get('metier')?.trim() || '';
-  const loc    = params.get('loc')?.trim()    || '';
-  const type   = params.get('type')?.trim()   || '';
-
-  const locInput   = document.getElementById('filter-loc')  as HTMLInputElement  | null;
-  const typeSelect = document.getElementById('filter-type') as HTMLSelectElement | null;
-  let changed = false;
-
-  if (loc && locInput)    { locInput.value = loc;     changed = true; }
-  if (metier && locInput && !locInput.value) { locInput.value = metier; changed = true; }
-  if (type && typeSelect) {
-    const match = Array.from(typeSelect.options).find(o =>
-      o.value.toLowerCase().includes(type.toLowerCase()) ||
-      o.text.toLowerCase().includes(type.toLowerCase())
-    );
-    if (match) { typeSelect.value = match.value; changed = true; }
-  }
-  if (changed) applyFilters();
+function getActiveFilters() {
+  return {
+    loc:    (document.getElementById('filter-loc')      as HTMLInputElement  | null)?.value.toLowerCase().trim() || '',
+    type:   (document.getElementById('filter-type')     as HTMLSelectElement | null)?.value || '',
+    region: (document.getElementById('filter-region-h') as HTMLSelectElement | null)?.value || '',
+    host:   (document.getElementById('filter-host-h')   as HTMLSelectElement | null)?.value || '',
+    equip:  Array.from(document.querySelectorAll('.filter-equip:checked')).map((cb: any) => cb.value as string),
+  };
 }
+
+function applyFilters() {
+  const f = getActiveFilters();
+  let visible = 0;
+  SPACES.forEach((space, i) => {
+    const card = cards[i];
+    if (!card) return;
+    const show =
+      (!f.loc    || space.city.toLowerCase().includes(f.loc) || space.region.toLowerCase().includes(f.loc) || space.department.includes(f.loc)) &&
+      (!f.type   || space.type === f.type) &&
+      (!f.region || space.region === f.region) &&
+      (!f.host   || space.host === f.host) &&
+      (f.equip.length === 0 || f.equip.every((eq: string) => space.tags.some((tag: string) => tag.toLowerCase().includes(eq.toLowerCase()))));
+    card.style.display = show ? '' : 'none';
+    if (show) visible++;
+  });
+  if (resultsCount) resultsCount.textContent = `${visible} espace${visible > 1 ? 's' : ''}`;
+  if (noResults)    noResults.style.display = visible === 0 ? 'block' : 'none';
+  if (grid)         grid.style.display      = visible === 0 ? 'none'  : '';
+}
+
+['filter-loc', 'filter-type', 'filter-region-h', 'filter-host-h'].forEach(id => {
+  document.getElementById(id)?.addEventListener('input', applyFilters);
+  document.getElementById(id)?.addEventListener('change', applyFilters);
+});
+document.querySelectorAll('.filter-equip').forEach(el => el.addEventListener('change', applyFilters));
+document.getElementById('search-btn')?.addEventListener('click', applyFilters);
+document.getElementById('reset-filters')?.addEventListener('click', () => {
+  (document.getElementById('filter-loc')      as HTMLInputElement  | null) && ((document.getElementById('filter-loc')      as HTMLInputElement).value  = '');
+  (document.getElementById('filter-type')     as HTMLSelectElement | null) && ((document.getElementById('filter-type')     as HTMLSelectElement).value = '');
+  (document.getElementById('filter-region-h') as HTMLSelectElement | null) && ((document.getElementById('filter-region-h') as HTMLSelectElement).value = '');
+  (document.getElementById('filter-host-h')   as HTMLSelectElement | null) && ((document.getElementById('filter-host-h')   as HTMLSelectElement).value = '');
+  document.querySelectorAll('.filter-equip').forEach((cb: any) => { cb.checked = false; });
+  applyFilters();
+});
+
+// ─── Pré-remplissage depuis les query params de l'accueil ─────────────────────
+const params = new URLSearchParams(window.location.search);
+const metier = params.get('metier')?.trim() || '';
+const loc    = params.get('loc')?.trim()    || '';
+const type   = params.get('type')?.trim()   || '';
+const locInput   = document.getElementById('filter-loc')  as HTMLInputElement  | null;
+const typeSelect = document.getElementById('filter-type') as HTMLSelectElement | null;
+let changed = false;
+if (loc && locInput)                       { locInput.value = loc;    changed = true; }
+if (metier && locInput && !locInput.value) { locInput.value = metier; changed = true; }
+if (type && typeSelect) {
+  const match = Array.from(typeSelect.options).find(o =>
+    o.value.toLowerCase().includes(type.toLowerCase()) || o.text.toLowerCase().includes(type.toLowerCase())
+  );
+  if (match) { typeSelect.value = match.value; changed = true; }
+}
+if (changed) applyFilters();
 </script>
 
 <style>
+  /* ── Placeholder carte ─────────────────────────────────────────────────────── */
+  .map-placeholder {
+    width: 100%;
+    height: calc(100vh - var(--header-h, 88px) - 80px);
+    min-height: 400px;
+    border-radius: var(--radius-md);
+    border: 2px dashed var(--color-border);
+    background: var(--color-bg-soft);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .map-placeholder__inner {
+    text-align: center;
+    color: var(--color-text-soft);
+  }
+  .map-placeholder__inner svg {
+    color: var(--color-border);
+    margin-bottom: 12px;
+  }
+  .map-placeholder__title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-text);
+    margin: 0 0 6px;
+  }
+  .map-placeholder__sub {
+    font-size: 0.88rem;
+    margin: 0;
+  }
+
   /* ── Tiroir filtres horizontal ─────────────────────────────────────────────── */
   .filters-bar-panel {
     background: #fff;

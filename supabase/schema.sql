@@ -137,7 +137,38 @@ COMMENT ON COLUMN public.contact_messages.traite IS 'Marquer comme traité depui
 
 
 -- ═══════════════════════════════════════════════════════════════════════
--- 5. POLITIQUES RLS (Row Level Security)
+-- 5. TABLE ANNONCES (espaces déposés par les hôtes)
+-- ═══════════════════════════════════════════════════════════════════════
+
+CREATE TABLE IF NOT EXISTS public.annonces (
+  id            uuid        DEFAULT gen_random_uuid() PRIMARY KEY,
+  host_id       uuid        REFERENCES auth.users(id) ON DELETE CASCADE,
+  titre         text        NOT NULL,
+  type          text        NOT NULL,                -- salle-communale | cabinet | studio | salle-sport | entreprise | exterieur
+  adresse       text        NOT NULL,
+  cp            text        NOT NULL,
+  ville         text        NOT NULL,
+  description   text,
+  superficie    integer,                             -- en m²
+  capacite      integer,
+  equipements   text[]      DEFAULT '{}',            -- liste des équipements cochés
+  jours         text[]      DEFAULT '{}',            -- jours de disponibilité
+  heure_debut   text,                                -- ex: "08:00"
+  heure_fin     text,                                -- ex: "19:00"
+  tarif_type    text        DEFAULT 'gratuit',       -- gratuit | payant
+  tarif         text,                                -- ex: "15 €/h"
+  notes_dispo   text,                                -- notes libres sur les disponibilités
+  statut        text        DEFAULT 'en_attente',    -- en_attente | actif | inactif | refuse
+  created_at    timestamptz DEFAULT now()
+);
+
+COMMENT ON TABLE  public.annonces         IS 'Espaces mis à disposition par les hôtes (collectivités, entreprises)';
+COMMENT ON COLUMN public.annonces.statut  IS 'en_attente (modération) | actif | inactif | refuse';
+COMMENT ON COLUMN public.annonces.host_id IS 'Référence vers auth.users (hôte propriétaire)';
+
+
+-- ═══════════════════════════════════════════════════════════════════════
+-- 6. POLITIQUES RLS (Row Level Security)
 -- ═══════════════════════════════════════════════════════════════════════
 -- RLS protège vos données : chaque règle définit qui peut lire/écrire quoi.
 -- Sans RLS, n'importe qui pourrait lire ou modifier toutes les données.
@@ -180,6 +211,40 @@ CREATE POLICY "Voir ses propres demandes"
   ON public.demandes
   FOR SELECT
   USING (auth.uid() = user_id);
+
+
+-- ── Annonces ──────────────────────────────────────────────────────────
+
+ALTER TABLE public.annonces ENABLE ROW LEVEL SECURITY;
+
+-- Les annonces actives sont visibles par tout le monde
+DROP POLICY IF EXISTS "Lecture publique annonces actives" ON public.annonces;
+CREATE POLICY "Lecture publique annonces actives"
+  ON public.annonces
+  FOR SELECT
+  USING (statut = 'actif' OR auth.uid() = host_id);
+
+-- Un hôte connecté peut créer une annonce
+DROP POLICY IF EXISTS "Hôte peut créer une annonce" ON public.annonces;
+CREATE POLICY "Hôte peut créer une annonce"
+  ON public.annonces
+  FOR INSERT
+  WITH CHECK (auth.uid() = host_id);
+
+-- Un hôte peut modifier ses propres annonces
+DROP POLICY IF EXISTS "Hôte peut modifier ses annonces" ON public.annonces;
+CREATE POLICY "Hôte peut modifier ses annonces"
+  ON public.annonces
+  FOR UPDATE
+  USING (auth.uid() = host_id)
+  WITH CHECK (auth.uid() = host_id);
+
+-- Un hôte peut supprimer ses propres annonces
+DROP POLICY IF EXISTS "Hôte peut supprimer ses annonces" ON public.annonces;
+CREATE POLICY "Hôte peut supprimer ses annonces"
+  ON public.annonces
+  FOR DELETE
+  USING (auth.uid() = host_id);
 
 
 -- ── Contact messages ───────────────────────────────────────────────────

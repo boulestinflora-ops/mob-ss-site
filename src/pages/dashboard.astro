@@ -403,6 +403,11 @@ const spacesMapJson = JSON.stringify(
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 21h18"/><path d="M5 21V8l7-5 7 5v13"/></svg>
           Mes espaces
         </button>
+        <button class="dash-nav-btn" data-section="hote-demandes">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+          Demandes reçues
+          <span id="hote-badge-pending" style="display:none;background:var(--color-primary);color:#fff;border-radius:20px;padding:1px 7px;font-size:0.72rem;font-weight:700;margin-left:auto;">0</span>
+        </button>
         <a href="/annuaire" class="dash-nav-btn" style="text-decoration:none;">
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
           Trouver un praticien
@@ -496,6 +501,24 @@ const spacesMapJson = JSON.stringify(
         </div>
       </div>
 
+      <!-- Demandes reçues hôte -->
+      <div class="dash-section" id="hote-demandes" style="display:none;">
+        <div class="panel">
+          <div class="panel__head">
+            <h3>Demandes reçues</h3>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button class="hote-dem-filter btn btn--primary" data-filter="all" style="font-size:0.85rem;padding:7px 16px;">Toutes</button>
+              <button class="hote-dem-filter btn btn--outline" data-filter="en_attente" style="font-size:0.85rem;padding:7px 16px;">⏳ En attente</button>
+              <button class="hote-dem-filter btn btn--outline" data-filter="acceptee" style="font-size:0.85rem;padding:7px 16px;">✅ Acceptées</button>
+              <button class="hote-dem-filter btn btn--outline" data-filter="refusee" style="font-size:0.85rem;padding:7px 16px;">❌ Refusées</button>
+            </div>
+          </div>
+          <div id="hote-demandes-list">
+            <p style="color:var(--color-text-soft);text-align:center;padding:48px;">Chargement…</p>
+          </div>
+        </div>
+      </div>
+
       <!-- Impact territorial hôte -->
       <div class="dash-section" id="hote-impact" style="display:none;">
         <div class="panel" style="margin-bottom:24px;">
@@ -582,6 +605,13 @@ const spacesMapJson = JSON.stringify(
     </div>
   </div>
 </div><!-- /dash-hote -->
+
+<!-- Bouton visite guidée flottant (affiché uniquement quand l'utilisateur est connecté) -->
+<button class="tour-fab" id="tour-fab-dash" style="display:none;"
+  onclick="window.startTour(window._dashTourSteps,'mobss_tour_dashboard')"
+  aria-label="Lancer la visite guidée du tableau de bord">
+  🧭 Visite guidée
+</button>
 
 </BaseLayout>
 
@@ -831,6 +861,51 @@ const spacesMapJson = JSON.stringify(
   }
 </style>
 
+<!-- Étapes de la visite guidée dashboard (is:inline = exécution immédiate) -->
+<script is:inline>
+  window._dashTourSteps = [
+    {
+      target: null,
+      emoji: '🧭',
+      title: 'Bienvenue dans votre tableau de bord !',
+      content: "C'est votre espace personnel MOB'SS. Il s'adapte à votre rôle : praticien ou hôte. On vous explique tout !",
+    },
+    {
+      target: '.dash-side',
+      emoji: '🗂️',
+      title: 'Votre menu de navigation',
+      content: "La barre latérale vous permet de passer d'une section à l'autre : Vue d'ensemble, vos demandes d'espace, et votre profil.",
+      position: 'right',
+    },
+    {
+      target: '#overview',
+      emoji: '📊',
+      title: "Vue d'ensemble",
+      content: "Retrouvez ici un résumé de votre activité : nombre de demandes envoyées, statut de votre profil, et vos dernières demandes en un coup d'œil.",
+      position: 'top',
+    },
+    {
+      target: '.dash-side__user',
+      emoji: '👤',
+      title: 'Votre profil',
+      content: "Complétez votre profil pour apparaître dans l'annuaire des praticiens et être contacté par des hôtes pour des remplacements.",
+      position: 'right',
+    },
+    {
+      target: null,
+      emoji: '🏠',
+      title: 'Vous êtes aussi hôte ?',
+      content: "Si vous proposez un espace (salle, cabinet…), vous pouvez déposer une annonce depuis la section \"Déposer un espace\". Vos demandes reçues apparaîtront dans votre espace hôte.",
+    },
+    {
+      target: null,
+      emoji: '✅',
+      title: 'Vous êtes prêt !',
+      content: "Vous connaissez maintenant l'essentiel de MOB'SS. N'hésitez pas à relancer cette visite via le bouton 🧭 en bas à droite à tout moment.",
+    },
+  ];
+</script>
+
 <script>
   import { supabase } from '../lib/supabase';
 
@@ -915,6 +990,14 @@ const spacesMapJson = JSON.stringify(
   async function loadPraticien(session: any, profile: any) {
     pratEl.style.display = 'block';
     initNav(pratEl);
+
+    // ── Visite guidée ──────────────────────────────────────────────────────
+    const fabDash = document.getElementById('tour-fab-dash') as HTMLElement;
+    if (fabDash) fabDash.style.display = '';
+    if (!localStorage.getItem('mobss_tour_dashboard')) {
+      setTimeout(function() { if (window.startTour) window.startTour(window._dashTourSteps, 'mobss_tour_dashboard'); }, 1200);
+    }
+    // ───────────────────────────────────────────────────────────────────────
 
     const prenom = profile?.prenom || session.user.email?.split('@')[0] || 'vous';
     const nom    = profile?.nom    || '';
@@ -1095,6 +1178,14 @@ const spacesMapJson = JSON.stringify(
     hoteEl.style.display = 'block';
     initNav(hoteEl);
 
+    // ── Visite guidée ──────────────────────────────────────────────────────
+    const fabDash = document.getElementById('tour-fab-dash') as HTMLElement;
+    if (fabDash) fabDash.style.display = '';
+    if (!localStorage.getItem('mobss_tour_dashboard')) {
+      setTimeout(function() { if (window.startTour) window.startTour(window._dashTourSteps, 'mobss_tour_dashboard'); }, 1200);
+    }
+    // ───────────────────────────────────────────────────────────────────────
+
     const prenom    = profile?.prenom || session.user.email?.split('@')[0] || 'vous';
     const initiales = ((profile?.prenom?.[0] || '') + (profile?.nom?.[0] || '')).toUpperCase() || '?';
     const roleLabel = profile?.role === 'entreprise' ? 'Entreprise' : 'Collectivité';
@@ -1132,6 +1223,150 @@ const spacesMapJson = JSON.stringify(
       await supabase.auth.signOut();
       window.location.href = '/';
     });
+
+    // ── Demandes reçues hôte ──────────────────────────────────────────────────
+    let allHoteDemandes: any[] = [];
+    let annoncesMap: Record<string, string> = {};
+
+    async function loadHoteDemandes() {
+      const listEl = document.getElementById('hote-demandes-list') as HTMLElement;
+      try {
+        // 1. Récupère les espaces de cet hôte
+        const { data: annonces, error: errA } = await supabase
+          .from('annonces')
+          .select('id, titre')
+          .eq('host_id', session.user.id);
+
+        if (errA || !annonces || annonces.length === 0) {
+          listEl.innerHTML = `
+            <div style="text-align:center;padding:48px 24px;">
+              <div style="font-size:2.5rem;margin-bottom:12px;">📭</div>
+              <h3 style="margin-bottom:8px;">Aucun espace référencé</h3>
+              <p style="color:var(--color-text-soft);font-size:0.9rem;margin-bottom:20px;max-width:360px;margin-left:auto;margin-right:auto;">
+                Déposez un espace pour commencer à recevoir des demandes de praticiens.
+              </p>
+              <a href="/deposer-annonce" class="btn btn--primary">Déposer un espace →</a>
+            </div>`;
+          return;
+        }
+
+        // Construire la map id → titre pour l'affichage
+        annonces.forEach((a: any) => { annoncesMap[a.id] = a.titre || a.id; });
+        const spaceIds = annonces.map((a: any) => a.id);
+
+        // 2. Récupère les demandes pour ces espaces
+        const { data: demandes, error: errD } = await supabase
+          .from('demandes')
+          .select('*')
+          .in('space_id', spaceIds)
+          .order('created_at', { ascending: false });
+
+        if (errD) throw errD;
+        allHoteDemandes = demandes || [];
+
+        // Met à jour le badge dans la sidebar
+        const pending = allHoteDemandes.filter(d => d.statut === 'en_attente').length;
+        const badgeEl = document.getElementById('hote-badge-pending') as HTMLElement;
+        if (pending > 0) {
+          badgeEl.textContent = String(pending);
+          badgeEl.style.display = 'inline';
+        }
+
+        renderHoteDemandes(allHoteDemandes, 'all');
+      } catch (e) {
+        listEl.innerHTML = `<p style="color:#991B1B;padding:24px;text-align:center;">⚠️ Erreur de chargement. Réessayez plus tard.</p>`;
+      }
+    }
+
+    function renderHoteDemRow(d: any): string {
+      const spaceName = annoncesMap[d.space_id] || d.space_id || 'Espace';
+      const horaire   = d.heure_debut && d.heure_fin ? ` · ${d.heure_debut}–${d.heure_fin}` : '';
+      const recur     = d.recurrence && d.recurrence !== 'Une seule fois' ? ` · ${d.recurrence}` : '';
+      const praticien = d.praticien_nom || d.user_email || 'Praticien';
+      const actions   = d.statut === 'en_attente'
+        ? `<div style="display:flex;gap:8px;flex-shrink:0;">
+             <button class="btn btn--outline hote-action-btn" data-id="${d.id}" data-action="acceptee"
+               style="font-size:0.8rem;padding:6px 12px;color:#065F46;border-color:#6EE7B7;">
+               ✅ Accepter
+             </button>
+             <button class="btn btn--outline hote-action-btn" data-id="${d.id}" data-action="refusee"
+               style="font-size:0.8rem;padding:6px 12px;color:#991B1B;border-color:#FCA5A5;">
+               ❌ Refuser
+             </button>
+           </div>`
+        : '';
+      return `
+        <div class="dem-row" data-id="${d.id}" data-statut="${d.statut}">
+          <div style="flex:1;min-width:0;">
+            <strong style="display:block;font-size:0.9rem;">${spaceName}</strong>
+            <span style="font-size:0.8rem;color:var(--color-text-soft);">
+              👤 ${praticien} · ${fmtDate(d.date)}${horaire}${recur}
+            </span>
+            ${d.message ? `<p style="margin:6px 0 0;font-size:0.82rem;color:var(--color-text-soft);font-style:italic;">"${d.message}"</p>` : ''}
+          </div>
+          ${statutBadge(d.statut)}
+          ${actions}
+        </div>`;
+    }
+
+    function renderHoteDemandes(data: any[], filter: string) {
+      const listEl   = document.getElementById('hote-demandes-list') as HTMLElement;
+      const filtered = filter === 'all' ? data : data.filter(d => d.statut === filter);
+      if (filtered.length === 0) {
+        listEl.innerHTML = `<p style="color:var(--color-text-soft);text-align:center;padding:48px;">
+          ${filter === 'all' ? 'Aucune demande reçue pour le moment.' : 'Aucune demande dans cette catégorie.'}
+        </p>`;
+        return;
+      }
+      listEl.innerHTML = filtered.map(renderHoteDemRow).join('');
+      // Attacher les boutons Accepter/Refuser
+      listEl.querySelectorAll<HTMLButtonElement>('.hote-action-btn').forEach(btn => {
+        btn.addEventListener('click', () => updateHoteDemandeStatut(btn.dataset.id!, btn.dataset.action as string));
+      });
+    }
+
+    async function updateHoteDemandeStatut(id: string, statut: string) {
+      const row = document.querySelector(`.dem-row[data-id="${id}"]`) as HTMLElement;
+      if (row) {
+        // Désactiver les boutons pendant la mise à jour
+        row.querySelectorAll('button').forEach(b => { (b as HTMLButtonElement).disabled = true; });
+      }
+      try {
+        const { error } = await supabase
+          .from('demandes')
+          .update({ statut })
+          .eq('id', id);
+        if (error) throw error;
+        // Met à jour localement
+        const idx = allHoteDemandes.findIndex(d => d.id === id);
+        if (idx !== -1) allHoteDemandes[idx].statut = statut;
+        // Recalcule badge
+        const pending = allHoteDemandes.filter(d => d.statut === 'en_attente').length;
+        const badgeEl = document.getElementById('hote-badge-pending') as HTMLElement;
+        badgeEl.textContent = String(pending);
+        badgeEl.style.display = pending > 0 ? 'inline' : 'none';
+        // Re-render la liste avec le filtre actif
+        const activeFilter = (hoteEl.querySelector('.hote-dem-filter.btn--primary') as HTMLElement)?.dataset.filter || 'all';
+        renderHoteDemandes(allHoteDemandes, activeFilter);
+      } catch {
+        if (row) row.querySelectorAll('button').forEach(b => { (b as HTMLButtonElement).disabled = false; });
+        alert('⚠️ Erreur lors de la mise à jour. Réessayez.');
+      }
+    }
+
+    // Filtres
+    hoteEl.querySelectorAll<HTMLElement>('.hote-dem-filter').forEach(btn => {
+      btn.addEventListener('click', () => {
+        hoteEl.querySelectorAll('.hote-dem-filter').forEach(b => {
+          b.classList.remove('btn--primary'); b.classList.add('btn--outline');
+        });
+        btn.classList.add('btn--primary'); btn.classList.remove('btn--outline');
+        renderHoteDemandes(allHoteDemandes, btn.dataset.filter!);
+      });
+    });
+
+    // Charger les demandes dès l'initialisation
+    loadHoteDemandes();
   }
 
   // ── Point d'entrée ────────────────────────────────────────────────────────────

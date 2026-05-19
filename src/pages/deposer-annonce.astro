@@ -1,21 +1,20 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-// Types d'espaces (modifiables sans toucher au code)
 const spaceTypes = [
-  { icon: "🏛️", title: "Salle communale", desc: "Mairie, polyvalente", value: "salle-communale", selected: true },
-  { icon: "🩺", title: "Cabinet", desc: "Paramédical, médical", value: "cabinet" },
-  { icon: "🧘", title: "Studio", desc: "Yoga, bien-être", value: "studio" },
-  { icon: "🏋️", title: "Salle de sport", desc: "Box, dojo, fitness", value: "salle-sport" },
-  { icon: "🏢", title: "Espace entreprise", desc: "Salle de réunion", value: "entreprise" },
-  { icon: "🌳", title: "Espace extérieur", desc: "Jardin, plateforme", value: "exterieur" }
+  { icon: "🏛️", title: "Salle communale",   desc: "Mairie, polyvalente",   value: "salle-communale", selected: true },
+  { icon: "🩺", title: "Cabinet",            desc: "Paramédical, médical",  value: "cabinet" },
+  { icon: "🧘", title: "Studio",             desc: "Yoga, bien-être",       value: "studio" },
+  { icon: "🏋️", title: "Salle de sport",    desc: "Box, dojo, fitness",    value: "salle-sport" },
+  { icon: "🏢", title: "Espace entreprise",  desc: "Salle de réunion",      value: "entreprise" },
+  { icon: "🌳", title: "Espace extérieur",   desc: "Jardin, plateforme",    value: "exterieur" }
 ];
 
-const steps = [
-  { num: 1, label: "Type & lieu", active: true },
-  { num: 2, label: "Description", active: true },
-  { num: 3, label: "Disponibilités", active: false },
-  { num: 4, label: "Récurrence", active: false }
+const equipements = [
+  "Table de massage", "Tapis / matériel yoga", "Vestiaires",
+  "Douches", "Wi-Fi", "Parking",
+  "Climatisation", "Sonorisation", "Projecteur / écran",
+  "Cuisine / espace pause", "Salle d'attente", "Accès PMR"
 ];
 ---
 
@@ -28,19 +27,31 @@ const steps = [
       <div class="text-center" style="margin-bottom:32px;">
         <span class="section__eyebrow">Hôte d'espace</span>
         <h1>Déposez votre annonce</h1>
-        <p style="color:var(--color-text-soft);">Référencez votre lieu en 5 minutes. Vous pourrez le modifier à tout moment.</p>
+        <p style="color:var(--color-text-soft);">Référencez votre lieu en quelques minutes. Vous pourrez le modifier à tout moment.</p>
       </div>
 
-      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:32px;">
-        {steps.map(step => (
-          <div style="text-align:center;">
-            <div style={`width:36px;height:36px;border-radius:50%;background:${step.active ? 'var(--color-primary)' : 'var(--color-bg-alt)'};color:${step.active ? '#fff' : 'var(--color-text-soft)'};display:flex;align-items:center;justify-content:center;margin:0 auto 6px;font-weight:700;${!step.active ? 'border:1px solid var(--color-border);' : ''}`}>{step.num}</div>
-            <span style={`font-size:0.85rem;font-weight:${step.active ? '600' : '400'};color:${step.active ? 'var(--color-text)' : 'var(--color-text-soft)'};`}>{step.label}</span>
-          </div>
-        ))}
+      <!-- Indicateur d'étapes -->
+      <div id="steps-indicator" style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:32px;">
+        <div class="step-dot" data-step="1">
+          <div class="step-dot__circle is-active">1</div>
+          <span class="step-dot__label is-active">Type & lieu</span>
+        </div>
+        <div class="step-dot" data-step="2">
+          <div class="step-dot__circle">2</div>
+          <span class="step-dot__label">Description</span>
+        </div>
+        <div class="step-dot" data-step="3">
+          <div class="step-dot__circle">3</div>
+          <span class="step-dot__label">Disponibilités</span>
+        </div>
+        <div class="step-dot" data-step="4">
+          <div class="step-dot__circle">4</div>
+          <span class="step-dot__label">Confirmation</span>
+        </div>
       </div>
 
-      <div class="form-card">
+      <!-- ── ÉTAPE 1 : Type & lieu ── -->
+      <div class="form-card step-panel" id="step-1">
         <h2 style="font-size:1.2rem;font-family:var(--font-body);margin-bottom:20px;">Type d'espace</h2>
 
         <div class="role-picker role-picker--3col">
@@ -65,7 +76,7 @@ const steps = [
         <div class="field-row">
           <div class="field">
             <label for="cp">Code postal *</label>
-            <input id="cp" type="text" placeholder="45170" autocomplete="postal-code" />
+            <input id="cp" type="text" placeholder="45170" autocomplete="postal-code" maxlength="5" />
           </div>
           <div class="field">
             <label for="ville">Ville *</label>
@@ -73,90 +84,460 @@ const steps = [
           </div>
         </div>
 
-        <h2 style="font-size:1.2rem;font-family:var(--font-body);margin:32px 0 20px;">Photos</h2>
-
-        <div style="border:2px dashed var(--color-border);border-radius:var(--radius-md);padding:40px;text-align:center;background:var(--color-bg-alt);">
-          <svg aria-hidden="true" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="1.5" style="margin:0 auto 12px;display:block;">
-            <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-5-5L5 21"/>
-          </svg>
-          <strong>Glissez vos photos ici ou cliquez pour parcourir</strong>
-          <p style="color:var(--color-text-soft);font-size:0.9rem;margin:4px 0 12px;">JPG, PNG · 5 Mo max par image · 3 photos minimum</p>
-          <button type="button" class="btn btn--outline">Parcourir</button>
-        </div>
-
-        <!-- Message de validation -->
-        <div id="step-msg" style="display:none;padding:14px 18px;border-radius:var(--radius-md);margin-top:16px;font-size:0.95rem;"></div>
-
+        <div id="msg-1" class="step-msg" style="display:none;"></div>
         <div style="display:flex;justify-content:space-between;margin-top:32px;">
           <a href="/" class="btn btn--ghost">← Annuler</a>
-          <button id="btn-next" class="btn btn--primary">Étape suivante →</button>
+          <button class="btn btn--primary btn-next" data-from="1">Étape suivante →</button>
         </div>
       </div>
+
+      <!-- ── ÉTAPE 2 : Description ── -->
+      <div class="form-card step-panel" id="step-2" style="display:none;">
+        <h2 style="font-size:1.2rem;font-family:var(--font-body);margin-bottom:20px;">Décrivez votre espace</h2>
+
+        <div class="field">
+          <label for="titre">Nom de l'espace *</label>
+          <input id="titre" type="text" placeholder="Ex : Salle polyvalente — Mairie de Caen" maxlength="80" />
+          <p class="form-help">Ce nom sera affiché dans les résultats de recherche.</p>
+        </div>
+
+        <div class="field">
+          <label for="description">Description *</label>
+          <textarea id="description" rows="4" placeholder="Décrivez l'espace : caractéristiques, ambiance, configuration, ce qui le rend adapté aux praticiens…" style="resize:vertical;"></textarea>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="superficie">Superficie (m²) *</label>
+            <input id="superficie" type="number" placeholder="30" min="5" max="5000" />
+          </div>
+          <div class="field">
+            <label for="capacite">Capacité max. (pers.)</label>
+            <input id="capacite" type="number" placeholder="10" min="1" max="500" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Équipements disponibles</label>
+          <div class="equipements-grid">
+            {equipements.map(eq => (
+              <label class="equip-option">
+                <input type="checkbox" name="equipements" value={eq} />
+                <span>{eq}</span>
+              </label>
+            ))}
+          </div>
+        </div>
+
+        <div id="msg-2" class="step-msg" style="display:none;"></div>
+        <div style="display:flex;justify-content:space-between;margin-top:32px;">
+          <button class="btn btn--ghost btn-prev" data-to="1">← Retour</button>
+          <button class="btn btn--primary btn-next" data-from="2">Étape suivante →</button>
+        </div>
+      </div>
+
+      <!-- ── ÉTAPE 3 : Disponibilités ── -->
+      <div class="form-card step-panel" id="step-3" style="display:none;">
+        <h2 style="font-size:1.2rem;font-family:var(--font-body);margin-bottom:20px;">Disponibilités &amp; tarif</h2>
+
+        <div class="field">
+          <label>Jours disponibles *</label>
+          <div class="jours-grid">
+            {['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche'].map(j => (
+              <label class="jour-option">
+                <input type="checkbox" name="jours" value={j} />
+                <span>{j.slice(0,3)}</span>
+              </label>
+            ))}
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="heure-debut">Heure d'ouverture *</label>
+            <input id="heure-debut" type="time" value="08:00" />
+          </div>
+          <div class="field">
+            <label for="heure-fin">Heure de fermeture *</label>
+            <input id="heure-fin" type="time" value="19:00" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Type de mise à disposition *</label>
+          <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:6px;">
+            <label class="tarif-radio">
+              <input type="radio" name="tarif-type" value="gratuit" checked />
+              <div class="tarif-radio__inner">
+                <strong>🎁 Gratuit</strong>
+                <span>Mise à disposition sans contrepartie financière</span>
+              </div>
+            </label>
+            <label class="tarif-radio">
+              <input type="radio" name="tarif-type" value="payant" />
+              <div class="tarif-radio__inner">
+                <strong>💶 Payant</strong>
+                <span>Location avec tarif horaire ou journalier</span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <div class="field" id="field-tarif" style="display:none;">
+          <label for="tarif">Tarif indicatif</label>
+          <input id="tarif" type="text" placeholder="Ex : 15 €/h · 80 €/journée" />
+          <p class="form-help">Ce tarif est indicatif. Le détail sera précisé lors de la mise en relation.</p>
+        </div>
+
+        <div class="field">
+          <label for="notes-dispo">Notes sur les disponibilités</label>
+          <textarea id="notes-dispo" rows="2" placeholder="Ex : fermé en août, disponible sur réservation uniquement…" style="resize:vertical;"></textarea>
+        </div>
+
+        <div id="msg-3" class="step-msg" style="display:none;"></div>
+        <div style="display:flex;justify-content:space-between;margin-top:32px;">
+          <button class="btn btn--ghost btn-prev" data-to="2">← Retour</button>
+          <button class="btn btn--primary btn-next" data-from="3">Étape suivante →</button>
+        </div>
+      </div>
+
+      <!-- ── ÉTAPE 4 : Confirmation ── -->
+      <div class="form-card step-panel" id="step-4" style="display:none;">
+        <div style="text-align:center;padding:16px 0 24px;">
+          <div style="font-size:2.5rem;margin-bottom:12px;">✅</div>
+          <h2 style="font-size:1.35rem;font-family:var(--font-body);margin-bottom:8px;">Récapitulatif de votre annonce</h2>
+          <p style="color:var(--color-text-soft);">Vérifiez les informations avant de publier.</p>
+        </div>
+
+        <div id="recap" style="background:var(--color-bg-alt);border:1px solid var(--color-border);border-radius:var(--radius-md);padding:20px 24px;display:flex;flex-direction:column;gap:12px;margin-bottom:24px;"></div>
+
+        <div style="background:var(--color-cream-soft);border-radius:var(--radius-md);padding:16px 20px;margin-bottom:24px;font-size:0.9rem;">
+          <strong>📋 Prochaine étape</strong>
+          <p style="margin:6px 0 0;color:var(--color-text-soft);">
+            Après publication, votre annonce sera examinée par notre équipe sous 48h. Vous recevrez un email de confirmation. Les praticiens pourront alors vous contacter directement.
+          </p>
+        </div>
+
+        <div id="msg-4" class="step-msg" style="display:none;"></div>
+        <div style="display:flex;justify-content:space-between;margin-top:8px;">
+          <button class="btn btn--ghost btn-prev" data-to="3">← Retour</button>
+          <button id="btn-publish" class="btn btn--primary btn--lg">🚀 Publier mon annonce</button>
+        </div>
+      </div>
+
+      <!-- ── SUCCÈS ── -->
+      <div id="step-success" style="display:none;text-align:center;padding:60px 24px;">
+        <div style="font-size:3.5rem;margin-bottom:20px;">🎉</div>
+        <h2 style="font-family:var(--font-display);font-size:1.8rem;margin-bottom:12px;">Annonce publiée !</h2>
+        <p style="color:var(--color-text-soft);font-size:1rem;max-width:480px;margin:0 auto 28px;">
+          Votre espace est maintenant en cours de validation. Vous recevrez un email de confirmation dans les 48h.
+        </p>
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+          <a href="/dashboard" class="btn btn--primary">Voir mon tableau de bord →</a>
+          <a href="/explorez" class="btn btn--outline">Voir les espaces</a>
+        </div>
+      </div>
+
     </div>
   </section>
 </BaseLayout>
 
+<style>
+  .step-dot { text-align: center; }
+  .step-dot__circle {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: var(--color-bg-alt);
+    color: var(--color-text-soft);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 6px;
+    font-weight: 700;
+    border: 1px solid var(--color-border);
+    font-size: 0.95rem;
+    transition: background 0.2s, color 0.2s;
+  }
+  .step-dot__circle.is-active  { background: var(--color-primary); color: #fff; border-color: var(--color-primary); }
+  .step-dot__circle.is-done    { background: #D1FAE5; color: #065F46; border-color: #6EE7B7; }
+  .step-dot__label {
+    font-size: 0.82rem; font-weight: 400; color: var(--color-text-soft);
+  }
+  .step-dot__label.is-active { font-weight: 600; color: var(--color-text); }
+
+  .step-msg {
+    padding: 14px 18px;
+    border-radius: var(--radius-md);
+    margin-top: 16px;
+    font-size: 0.92rem;
+  }
+  .step-msg--error   { background: #FBE5E5; color: #A02323; border: 1px solid #F0B8B8; }
+  .step-msg--success { background: #E8F4EA; color: #2D6E3F; border: 1px solid #B8DBC0; }
+
+  /* Équipements */
+  .equipements-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 8px;
+    margin-top: 8px;
+  }
+  .equip-option {
+    display: flex; align-items: center; gap: 8px;
+    padding: 9px 12px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-size: 0.88rem;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .equip-option:hover { border-color: var(--color-primary); background: var(--color-cream-soft); }
+  .equip-option input:checked ~ span { font-weight: 600; color: var(--color-primary); }
+  .equip-option:has(input:checked) { border-color: var(--color-primary); background: var(--color-cream-soft); }
+
+  /* Jours */
+  .jours-grid {
+    display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px;
+  }
+  .jour-option {
+    display: flex; flex-direction: column; align-items: center;
+    cursor: pointer;
+  }
+  .jour-option input { display: none; }
+  .jour-option span {
+    width: 48px; height: 48px;
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.82rem; font-weight: 600;
+    transition: all 0.15s;
+  }
+  .jour-option:hover span { border-color: var(--color-primary); background: var(--color-cream-soft); }
+  .jour-option:has(input:checked) span { background: var(--color-primary); color: #fff; border-color: var(--color-primary); }
+
+  /* Tarif radio */
+  .tarif-radio { cursor: pointer; flex: 1; min-width: 200px; }
+  .tarif-radio input { display: none; }
+  .tarif-radio__inner {
+    display: flex; flex-direction: column; gap: 4px;
+    padding: 14px 16px;
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--radius-md);
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .tarif-radio__inner strong { font-size: 0.95rem; }
+  .tarif-radio__inner span   { font-size: 0.82rem; color: var(--color-text-soft); }
+  .tarif-radio:has(input:checked) .tarif-radio__inner { border-color: var(--color-primary); background: var(--color-cream-soft); }
+  .tarif-radio:hover .tarif-radio__inner { border-color: var(--color-primary); }
+
+  /* Récap */
+  .recap-row { display: flex; gap: 12px; align-items: flex-start; font-size: 0.9rem; }
+  .recap-row__label { min-width: 140px; color: var(--color-text-soft); font-size: 0.82rem; flex-shrink: 0; }
+  .recap-row__value { font-weight: 600; }
+</style>
+
 <script>
-  // ─── Vérification de la session — redirection si non connecté ────────────────
   import { supabase } from '../lib/supabase';
+
+  // ─── Auth check ───────────────────────────────────────────────────────────────
+  let currentUserId = '';
   supabase.auth.getSession().then(({ data: { session } }) => {
     if (!session?.user) {
       window.location.href = '/inscription?role=collectivite&redirect=deposer-annonce';
+      return;
     }
+    currentUserId = session.user.id;
   });
 
-  // ─── Sélection du type d'espace ──────────────────────────────────────────────
+  // ─── Sélection type d'espace ──────────────────────────────────────────────────
   document.querySelectorAll<HTMLElement>('.role-option').forEach(label => {
     label.addEventListener('click', () => {
-      // Désélectionne tout
       document.querySelectorAll('.role-option').forEach(l => l.classList.remove('is-selected'));
-      // Sélectionne le cliqué
       label.classList.add('is-selected');
-      const radio = label.querySelector<HTMLInputElement>('input[type="radio"]');
-      if (radio) radio.checked = true;
+      (label.querySelector<HTMLInputElement>('input[type="radio"]'))!.checked = true;
     });
   });
 
-  // ─── Bouton "Étape suivante" ──────────────────────────────────────────────────
-  const btnNext = document.getElementById('btn-next') as HTMLButtonElement | null;
-  const stepMsg = document.getElementById('step-msg') as HTMLDivElement | null;
-
-  btnNext?.addEventListener('click', () => {
-    const adresse = (document.getElementById('adresse') as HTMLInputElement)?.value.trim();
-    const ville   = (document.getElementById('ville')   as HTMLInputElement)?.value.trim();
-    const cp      = (document.getElementById('cp')      as HTMLInputElement)?.value.trim();
-    const type    = document.querySelector<HTMLInputElement>('input[name="space-type"]:checked')?.value;
-
-    // Validation du premier écran
-    if (!type) {
-      showStepMsg('error', 'Veuillez sélectionner un type d\'espace.');
-      return;
-    }
-    if (!adresse || !ville || !cp) {
-      showStepMsg('error', 'Veuillez renseigner l\'adresse complète (adresse, code postal, ville).');
-      return;
-    }
-
-    // La suite du formulaire (étapes 2–4) sera disponible au lancement
-    showStepMsg('info',
-      '✓ Première étape enregistrée ! Le dépôt complet d\'annonce sera disponible dès l\'ouverture de la plateforme. Votre demande a bien été notée.'
-    );
-    btnNext.style.display = 'none';
+  // ─── Tarif conditionnel ───────────────────────────────────────────────────────
+  document.querySelectorAll<HTMLInputElement>('input[name="tarif-type"]').forEach(radio => {
+    radio.addEventListener('change', () => {
+      const fieldTarif = document.getElementById('field-tarif') as HTMLElement;
+      fieldTarif.style.display = radio.value === 'payant' ? '' : 'none';
+    });
   });
 
-  function showStepMsg(type: 'error' | 'info', text: string) {
-    if (!stepMsg) return;
-    stepMsg.style.display = 'block';
-    stepMsg.textContent   = text;
-    if (type === 'info') {
-      stepMsg.style.background = '#E8F4EA';
-      stepMsg.style.color      = '#2D6E3F';
-      stepMsg.style.border     = '1px solid #B8DBC0';
-    } else {
-      stepMsg.style.background = '#FBE5E5';
-      stepMsg.style.color      = '#A02323';
-      stepMsg.style.border     = '1px solid #F0B8B8';
-    }
-    stepMsg.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  // ─── Helpers messages ─────────────────────────────────────────────────────────
+  function showMsg(id: string, type: 'error' | 'success', text: string) {
+    const el = document.getElementById(id) as HTMLElement;
+    el.className = `step-msg step-msg--${type}`;
+    el.style.display = 'block';
+    el.textContent   = text;
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
+  function hideMsg(id: string) {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  }
+
+  // ─── Navigation entre étapes ──────────────────────────────────────────────────
+  function goToStep(n: number) {
+    document.querySelectorAll('.step-panel').forEach(p => ((p as HTMLElement).style.display = 'none'));
+    const panel = document.getElementById(`step-${n}`) as HTMLElement;
+    if (panel) { panel.style.display = ''; window.scrollTo({ top: 0, behavior: 'smooth' }); }
+
+    // Indicateur
+    document.querySelectorAll<HTMLElement>('.step-dot').forEach(dot => {
+      const s = Number(dot.dataset.step);
+      const circle = dot.querySelector('.step-dot__circle') as HTMLElement;
+      const label  = dot.querySelector('.step-dot__label')  as HTMLElement;
+      circle.classList.toggle('is-active', s === n);
+      circle.classList.toggle('is-done',   s < n);
+      label.classList.toggle('is-active',  s === n);
+    });
+  }
+
+  // ─── Validation étape 1 ──────────────────────────────────────────────────────
+  function validateStep1(): boolean {
+    const type    = document.querySelector<HTMLInputElement>('input[name="space-type"]:checked')?.value;
+    const adresse = (document.getElementById('adresse') as HTMLInputElement).value.trim();
+    const cp      = (document.getElementById('cp')      as HTMLInputElement).value.trim();
+    const ville   = (document.getElementById('ville')   as HTMLInputElement).value.trim();
+    if (!type)                    { showMsg('msg-1', 'error', 'Veuillez sélectionner un type d\'espace.'); return false; }
+    if (!adresse || !ville || !cp){ showMsg('msg-1', 'error', 'Veuillez renseigner l\'adresse complète.'); return false; }
+    if (!/^\d{5}$/.test(cp))      { showMsg('msg-1', 'error', 'Le code postal doit contenir 5 chiffres.'); return false; }
+    hideMsg('msg-1'); return true;
+  }
+
+  // ─── Validation étape 2 ──────────────────────────────────────────────────────
+  function validateStep2(): boolean {
+    const titre       = (document.getElementById('titre')       as HTMLInputElement).value.trim();
+    const description = (document.getElementById('description') as HTMLTextAreaElement).value.trim();
+    const superficie  = (document.getElementById('superficie')  as HTMLInputElement).value.trim();
+    if (!titre)       { showMsg('msg-2', 'error', 'Le nom de l\'espace est requis.'); return false; }
+    if (!description) { showMsg('msg-2', 'error', 'La description est requise.'); return false; }
+    if (!superficie)  { showMsg('msg-2', 'error', 'La superficie est requise.'); return false; }
+    hideMsg('msg-2'); return true;
+  }
+
+  // ─── Validation étape 3 ──────────────────────────────────────────────────────
+  function validateStep3(): boolean {
+    const jours = Array.from(document.querySelectorAll<HTMLInputElement>('input[name="jours"]:checked')).map(c => c.value);
+    const hDeb  = (document.getElementById('heure-debut') as HTMLInputElement).value;
+    const hFin  = (document.getElementById('heure-fin')   as HTMLInputElement).value;
+    if (jours.length === 0) { showMsg('msg-3', 'error', 'Sélectionnez au moins un jour de disponibilité.'); return false; }
+    if (!hDeb || !hFin)     { showMsg('msg-3', 'error', 'Les heures d\'ouverture et fermeture sont requises.'); return false; }
+    if (hDeb >= hFin)       { showMsg('msg-3', 'error', 'L\'heure d\'ouverture doit être avant l\'heure de fermeture.'); return false; }
+    hideMsg('msg-3'); return true;
+  }
+
+  // ─── Recap étape 4 ───────────────────────────────────────────────────────────
+  function buildRecap() {
+    const type       = document.querySelector<HTMLInputElement>('input[name="space-type"]:checked')?.value || '';
+    const adresse    = (document.getElementById('adresse') as HTMLInputElement).value.trim();
+    const cp         = (document.getElementById('cp')      as HTMLInputElement).value.trim();
+    const ville      = (document.getElementById('ville')   as HTMLInputElement).value.trim();
+    const titre      = (document.getElementById('titre')       as HTMLInputElement).value.trim();
+    const description= (document.getElementById('description') as HTMLTextAreaElement).value.trim();
+    const superficie = (document.getElementById('superficie')  as HTMLInputElement).value.trim();
+    const equips     = Array.from(document.querySelectorAll<HTMLInputElement>('input[name="equipements"]:checked')).map(c => c.value);
+    const jours      = Array.from(document.querySelectorAll<HTMLInputElement>('input[name="jours"]:checked')).map(c => c.value);
+    const hDeb       = (document.getElementById('heure-debut') as HTMLInputElement).value;
+    const hFin       = (document.getElementById('heure-fin')   as HTMLInputElement).value;
+    const tarifType  = document.querySelector<HTMLInputElement>('input[name="tarif-type"]:checked')?.value || 'gratuit';
+    const tarif      = (document.getElementById('tarif')       as HTMLInputElement).value.trim();
+
+    const rows: [string, string][] = [
+      ['Type',          type.replace(/-/g, ' ')],
+      ['Adresse',       `${adresse}, ${cp} ${ville}`],
+      ['Nom',           titre],
+      ['Description',   description.length > 100 ? description.slice(0, 100) + '…' : description],
+      ['Superficie',    `${superficie} m²`],
+      ['Équipements',   equips.length ? equips.join(', ') : 'Aucun renseigné'],
+      ['Jours',         jours.join(', ')],
+      ['Horaires',      `${hDeb} – ${hFin}`],
+      ['Mise à dispo',  tarifType === 'gratuit' ? '🎁 Gratuit' : `💶 Payant${tarif ? ` — ${tarif}` : ''}`],
+    ];
+
+    const recapEl = document.getElementById('recap') as HTMLElement;
+    recapEl.innerHTML = rows.map(([label, val]) =>
+      `<div class="recap-row">
+        <span class="recap-row__label">${label}</span>
+        <span class="recap-row__value">${val}</span>
+      </div>`
+    ).join('');
+  }
+
+  // ─── Boutons suivant ─────────────────────────────────────────────────────────
+  document.querySelectorAll<HTMLButtonElement>('.btn-next').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const from = Number(btn.dataset.from);
+      let valid = false;
+      if (from === 1) valid = validateStep1();
+      if (from === 2) valid = validateStep2();
+      if (from === 3) valid = validateStep3();
+      if (!valid) return;
+      if (from === 3) buildRecap();
+      goToStep(from + 1);
+    });
+  });
+
+  // ─── Boutons retour ───────────────────────────────────────────────────────────
+  document.querySelectorAll<HTMLButtonElement>('.btn-prev').forEach(btn => {
+    btn.addEventListener('click', () => goToStep(Number(btn.dataset.to)));
+  });
+
+  // ─── Publication ─────────────────────────────────────────────────────────────
+  document.getElementById('btn-publish')?.addEventListener('click', async () => {
+    const btn = document.getElementById('btn-publish') as HTMLButtonElement;
+    btn.disabled    = true;
+    btn.textContent = 'Publication…';
+
+    const type       = document.querySelector<HTMLInputElement>('input[name="space-type"]:checked')?.value || '';
+    const adresse    = (document.getElementById('adresse')     as HTMLInputElement).value.trim();
+    const cp         = (document.getElementById('cp')          as HTMLInputElement).value.trim();
+    const ville      = (document.getElementById('ville')       as HTMLInputElement).value.trim();
+    const titre      = (document.getElementById('titre')       as HTMLInputElement).value.trim();
+    const description= (document.getElementById('description') as HTMLTextAreaElement).value.trim();
+    const superficie = Number((document.getElementById('superficie') as HTMLInputElement).value) || null;
+    const capacite   = Number((document.getElementById('capacite')   as HTMLInputElement).value) || null;
+    const equips     = Array.from(document.querySelectorAll<HTMLInputElement>('input[name="equipements"]:checked')).map(c => c.value);
+    const jours      = Array.from(document.querySelectorAll<HTMLInputElement>('input[name="jours"]:checked')).map(c => c.value);
+    const hDeb       = (document.getElementById('heure-debut')  as HTMLInputElement).value;
+    const hFin       = (document.getElementById('heure-fin')    as HTMLInputElement).value;
+    const tarifType  = document.querySelector<HTMLInputElement>('input[name="tarif-type"]:checked')?.value || 'gratuit';
+    const tarif      = (document.getElementById('tarif')        as HTMLInputElement).value.trim();
+    const notes      = (document.getElementById('notes-dispo')  as HTMLTextAreaElement).value.trim();
+
+    try {
+      const { error } = await supabase.from('annonces').insert({
+        host_id:      currentUserId,
+        titre,
+        type,
+        adresse,
+        cp,
+        ville,
+        description,
+        superficie,
+        capacite,
+        equipements:  equips,
+        jours,
+        heure_debut:  hDeb,
+        heure_fin:    hFin,
+        tarif_type:   tarifType,
+        tarif:        tarif || null,
+        notes_dispo:  notes || null,
+        statut:       'en_attente',
+      });
+
+      if (error) throw error;
+
+      // Succès
+      document.getElementById('step-4')!.style.display    = 'none';
+      document.getElementById('steps-indicator')!.style.display = 'none';
+      document.getElementById('step-success')!.style.display   = '';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    } catch (e: any) {
+      btn.disabled    = false;
+      btn.textContent = '🚀 Publier mon annonce';
+      showMsg('msg-4', 'error', `⚠️ Erreur : ${e?.message || 'Impossible de publier. Réessayez ou contactez le support.'}`);
+    }
+  });
 </script>

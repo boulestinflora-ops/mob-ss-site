@@ -156,6 +156,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 -->
 <script>
   import { supabase } from '../lib/supabase';
+  import { showMessage as _showMsg, validateEmail, validatePassword } from '../lib/forms';
 
   // ─── Pré-sélection du rôle via ?role= dans l'URL ─────────────────────────────
   const params = new URLSearchParams(window.location.search);
@@ -241,12 +242,17 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         showMessage('error', 'Veuillez sélectionner votre profil (Praticien, Collectivité ou Entreprise).');
         return;
       }
+      if (!validateEmail(email)) {
+        showMessage('error', 'Adresse email invalide. Vérifiez le format (ex : vous@exemple.fr).');
+        return;
+      }
       if (mdp !== mdp2) {
         showMessage('error', 'Les deux mots de passe ne correspondent pas.');
         return;
       }
-      if (mdp.length < 8) {
-        showMessage('error', 'Le mot de passe doit faire au moins 8 caractères.');
+      const pwdCheck = validatePassword(mdp);
+      if (!pwdCheck.valid) {
+        showMessage('error', `Mot de passe invalide : ${pwdCheck.error}`);
         return;
       }
 

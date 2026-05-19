@@ -76,28 +76,15 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
 <script>
   import { supabase } from '../lib/supabase';
+  import { showMessage, hideMessage, markError, clearErrors, validateEmail } from '../lib/forms';
 
   const messageBox  = document.getElementById('login-message') as HTMLDivElement;
   const viewLogin   = document.getElementById('view-login') as HTMLDivElement;
   const viewReset   = document.getElementById('view-reset') as HTMLDivElement;
 
-  // ─── Utilitaires d'affichage ──────────────────────────────────────────────────
-  function showMsg(type: 'success' | 'error', text: string) {
-    messageBox.style.display = 'block';
-    messageBox.textContent   = text;
-    if (type === 'success') {
-      messageBox.style.background = '#E8F4EA';
-      messageBox.style.color      = '#2D6E3F';
-      messageBox.style.border     = '1px solid #B8DBC0';
-    } else {
-      messageBox.style.background = '#FBE5E5';
-      messageBox.style.color      = '#A02323';
-      messageBox.style.border     = '1px solid #F0B8B8';
-    }
-    messageBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }
-
-  function hideMsg() { messageBox.style.display = 'none'; }
+  // Alias courts pour ce fichier
+  function showMsg(type: 'success' | 'error', text: string) { showMessage(messageBox, type, text); }
+  function hideMsg() { hideMessage(messageBox); }
 
   // ─── Bascule entre les deux vues ──────────────────────────────────────────────
   document.getElementById('show-reset')?.addEventListener('click', () => {
@@ -122,7 +109,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       const email = (document.getElementById('email') as HTMLInputElement).value.trim();
       const mdp   = (document.getElementById('mdp')   as HTMLInputElement).value;
 
-      if (!email || !mdp) { showMsg('error', 'Email et mot de passe sont obligatoires.'); return; }
+      clearErrors('email', 'mdp');
+      let hasError = false;
+      if (!email)             { markError('email', 'L\'email est requis.'); hasError = true; }
+      else if (!validateEmail(email)) { markError('email', 'Adresse email invalide.'); hasError = true; }
+      if (!mdp)               { markError('mdp', 'Le mot de passe est requis.'); hasError = true; }
+      if (hasError) return;
 
       const btn = loginForm.querySelector('button[type="submit"]') as HTMLButtonElement;
       btn.disabled    = true;

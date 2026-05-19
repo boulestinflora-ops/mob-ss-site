@@ -54,6 +54,13 @@ const BETA_MODE = true;
   <!-- Noindex bêta — RETIRER cette ligne au lancement officiel (mettre BETA_MODE = false) -->
   {BETA_MODE && <meta name="robots" content="noindex, nofollow" />}
 
+  <!-- Moteur de visite guidée — chargé en premier pour être disponible partout -->
+  <script src="/scripts/tour.js" is:inline></script>
+
+  <!-- Slot optionnel pour les pages qui ont besoin d'injecter dans <head>
+       (ex : Leaflet CSS/JS pour la page Explorez) -->
+  <slot name="head" />
+
   <!-- Police : DM Sans — chargée sans bloquer le rendu -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
