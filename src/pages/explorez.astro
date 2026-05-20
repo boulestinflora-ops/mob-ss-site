@@ -1,8 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import SpaceCard from '../components/SpaceCard.astro';
 import Icon from '../components/Icon.astro';
-import spaces from '../data/spaces.json';
 
 const ALL_REGIONS = [
   "Auvergne-Rhône-Alpes","Bourgogne-Franche-Comté","Bretagne",
@@ -11,7 +9,10 @@ const ALL_REGIONS = [
   "Normandie","Nouvelle-Aquitaine","Occitanie","Pays de la Loire",
   "Provence-Alpes-Côte d'Azur"
 ];
-const types = [...new Set((spaces as any[]).map(s => s.type))].sort();
+const SPACE_TYPES = [
+  "Salle communale","Cabinet paramédical","Studio bien-être",
+  "Salle de sport","Espace entreprise","Espace extérieur"
+];
 ---
 
 <BaseLayout
@@ -40,7 +41,7 @@ const types = [...new Set((spaces as any[]).map(s => s.type))].sort();
           <Icon name="search" width={20} height={20} />
           <select id="filter-type">
             <option value="">Tous les types d'espace</option>
-            {types.map(t => <option value={t}>{t}</option>)}
+            {SPACE_TYPES.map(t => <option value={t}>{t}</option>)}
           </select>
         </div>
         <button type="button" class="btn btn--cream" id="search-btn">Rechercher</button>
@@ -200,10 +201,10 @@ const types = [...new Set((spaces as any[]).map(s => s.type))].sort();
     </div>
   </div>
 
-  <!-- Note exemples -->
-  <div class="container" style="margin-top:8px;">
+  <!-- Note démo (visible uniquement quand aucune annonce réelle n'est publiée) -->
+  <div class="container" style="margin-top:8px;display:none;" id="demo-note">
     <p style="font-size:0.82rem;color:var(--color-text-soft);font-style:italic;">
-      ℹ️ Les espaces ci-dessous sont présentés à titre d'exemple pour illustrer le fonctionnement de la plateforme. Les annonces réelles seront disponibles dès l'ouverture.
+      ℹ️ Les espaces ci-dessous sont présentés à titre d'exemple. Les annonces réelles s'afficheront dès que des hôtes auront publié leurs espaces.
     </p>
   </div>
 
@@ -217,7 +218,7 @@ const types = [...new Set((spaces as any[]).map(s => s.type))].sort();
         <!-- En-tête résultats -->
         <div class="listing-results__head" style="margin-bottom:16px;">
           <p style="margin:0;color:var(--color-text-soft);">
-            <strong id="results-count" style="color:var(--color-text);">{spaces.length} espaces</strong> correspondent à votre recherche
+            <strong id="results-count" style="color:var(--color-text);">… espaces</strong> correspondent à votre recherche
           </p>
           <select id="sort-select" style="padding:8px 12px;border-radius:var(--radius-pill);border:1px solid var(--color-border);font-family:inherit;font-size:0.9rem;background:var(--color-bg);">
             <option value="pertinence">Trier : pertinence</option>
@@ -230,10 +231,14 @@ const types = [...new Set((spaces as any[]).map(s => s.type))].sort();
           </select>
         </div>
 
-        <!-- Grille -->
-        <div class="listing-grid" id="listing-grid">
-          {spaces.map(space => <SpaceCard {...space} />)}
+        <!-- État chargement -->
+        <div id="spaces-loading" style="text-align:center;padding:60px 24px;color:var(--color-text-soft);">
+          <div style="font-size:2rem;margin-bottom:10px;">⏳</div>
+          <p>Chargement des espaces…</p>
         </div>
+
+        <!-- Grille (remplie dynamiquement) -->
+        <div class="listing-grid" id="listing-grid" style="display:none;"></div>
 
         <p id="no-results" style="display:none;text-align:center;color:var(--color-text-soft);padding:40px 0;">
           Aucun espace ne correspond à ces critères. Essayez d'élargir votre recherche.
@@ -320,10 +325,12 @@ const types = [...new Set((spaces as any[]).map(s => s.type))].sort();
 </script>
 
 <script>
+import { supabase } from '../lib/supabase';
+
 // ══════════════════════════════════════════════════════════════════════════════
-//  Données des espaces — enrichies avec coordonnées, superficie, tarif, jours
+//  Données DÉMO — utilisées quand aucune annonce n'est encore publiée
 // ══════════════════════════════════════════════════════════════════════════════
-const SPACES = [
+const DEMO_SPACES = [
   {
     id: "salle-mairie-caen", city: "Caen", lat: 49.1829, lng: 0.3707,
     department: "14", region: "Normandie", type: "Salle communale", host: "collectivite",
@@ -484,14 +491,102 @@ function haversine(lat1:number, lng1:number, lat2:number, lng2:number): number {
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
+//  Mapping DB → format interne
+// ══════════════════════════════════════════════════════════════════════════════
+function esc(str: string): string {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+function mapSpace(row: any) {
+  return {
+    id:          row.id,
+    title:       row.titre || 'Espace disponible',
+    city:        row.ville || '',
+    department:  row.departement || '',
+    region:      row.region || '',
+    type:        row.type_espace || '',
+    host:        row.profiles?.role || 'collectivite',
+    tags:        Array.isArray(row.equipements)       ? row.equipements       : [],
+    jours:       Array.isArray(row.jours_disponibles) ? row.jours_disponibles : [],
+    superficie:  row.superficie  || 0,
+    capacite:    row.capacite    || 0,
+    tarif_type:  row.tarif_type  || 'gratuit',
+    lat:         row.lat || 0,
+    lng:         row.lng || 0,
+    photos:      Array.isArray(row.photos) ? row.photos : [],
+  };
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+//  Construction d'une carte HTML (reproduit SpaceCard.astro côté client)
+// ══════════════════════════════════════════════════════════════════════════════
+const GRADIENTS    = ['from-cream','from-pink','from-green','from-blue','from-yellow','from-teal','from-rose','from-orange'];
+const GRADIENT_CSS: Record<string,string> = {
+  'from-cream':  'linear-gradient(135deg,var(--color-cream) 0%,#E8C99A 100%)',
+  'from-pink':   'linear-gradient(135deg,#E8C0B5,#D88E80)',
+  'from-green':  'linear-gradient(135deg,#C8D6C5,#9DB59A)',
+  'from-blue':   'linear-gradient(135deg,#D8DDF0,#A5B0DC)',
+  'from-yellow': 'linear-gradient(135deg,#F0E0BE,#D8B968)',
+  'from-teal':   'linear-gradient(135deg,#D9E6E2,#7FAA9F)',
+  'from-rose':   'linear-gradient(135deg,#EAD4DA,#C786A0)',
+  'from-orange': 'linear-gradient(135deg,#F0DCC8,#C99876)',
+};
+const TYPE_ICONS: Record<string,string> = {
+  'Salle communale':    '🏛️',
+  'Cabinet paramédical':'🩺',
+  'Studio bien-être':   '🧘',
+  'Salle de sport':     '🏋️',
+  'Espace entreprise':  '🏢',
+  'Espace extérieur':   '🌳',
+};
+
+function buildSpaceCard(space: any): string {
+  let h = 0;
+  for (let i = 0; i < space.id.length; i++) h = space.id.charCodeAt(i) + ((h << 5) - h);
+  const gradient = GRADIENTS[Math.abs(h) % GRADIENTS.length];
+  const bgStyle  = GRADIENT_CSS[gradient];
+  const icon     = TYPE_ICONS[space.type] || '🏠';
+  const photo    = space.photos?.[0] || '';
+  const tagsHTML = (space.tags as string[]).slice(0,4).map(t => `<span class="tag">${esc(t)}</span>`).join('');
+
+  return `
+    <article class="space-card">
+      <div class="space-card__media" style="${photo ? '' : `background:${bgStyle};`}">
+        ${photo
+          ? `<img src="${esc(photo)}" alt="${esc(space.title)}" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;" />`
+          : `<span aria-hidden="true" style="font-size:3rem;">${icon}</span>`}
+        <span class="space-card__badge">${esc(space.type)}</span>
+        <button class="space-card__fav" aria-label="Ajouter aux favoris" data-space-id="${esc(space.id)}">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+          </svg>
+        </button>
+      </div>
+      <div class="space-card__body">
+        <p class="space-card__loc">${esc(space.city)} · ${esc(space.department)}</p>
+        <h3>${esc(space.title)}</h3>
+        <div class="space-card__meta">${tagsHTML}</div>
+        <div class="space-card__footer">
+          <span class="badge--gratuit">🤝 Mise à disposition gracieuse</span>
+          <a href="/annonce/${esc(space.id)}" class="btn btn--ghost">Voir →</a>
+        </div>
+      </div>
+    </article>`;
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
 //  Éléments DOM
 // ══════════════════════════════════════════════════════════════════════════════
-const grid          = document.getElementById('listing-grid')   as HTMLElement;
-const noResults     = document.getElementById('no-results')     as HTMLElement;
-const resultsCount  = document.getElementById('results-count')  as HTMLElement;
-const filterSummary = document.getElementById('filters-summary')as HTMLElement;
-const activeBadge   = document.getElementById('filters-active-count') as HTMLElement;
-const cards         = Array.from(grid.querySelectorAll('article.space-card')) as HTMLElement[];
+const grid          = document.getElementById('listing-grid')        as HTMLElement;
+const loadingEl     = document.getElementById('spaces-loading')      as HTMLElement;
+const noResults     = document.getElementById('no-results')          as HTMLElement;
+const resultsCount  = document.getElementById('results-count')       as HTMLElement;
+const filterSummary = document.getElementById('filters-summary')     as HTMLElement;
+const activeBadge   = document.getElementById('filters-active-count')as HTMLElement;
+const demoNoteEl    = document.getElementById('demo-note')           as HTMLElement;
+
+let allSpaces: ReturnType<typeof mapSpace>[] = [];
 
 // ── Restaurer depuis sessionStorage ─────────────────────────────────────────
 const locInput   = document.getElementById('filter-loc')  as HTMLInputElement;
@@ -590,54 +685,34 @@ function getActiveFilters() {
   };
 }
 
-// ── Application des filtres ──────────────────────────────────────────────────
+// ── Application des filtres (data-driven : re-render la grille) ──────────────
 function applyFilters() {
-  const f = getActiveFilters();
-  let visible = 0;
-  const sort  = (document.getElementById('sort-select') as HTMLSelectElement).value;
-  let visibleSpaces: typeof SPACES = [];
+  const f    = getActiveFilters();
+  const sort = (document.getElementById('sort-select') as HTMLSelectElement).value;
 
-  SPACES.forEach((space, i) => {
-    const card = cards[i];
-    if (!card) return;
-
-    // Localisation texte
+  let filtered = allSpaces.filter(space => {
     const matchLoc = !f.loc ||
       space.city.toLowerCase().includes(f.loc) ||
       space.region.toLowerCase().includes(f.loc) ||
       space.department.includes(f.loc);
-
-    // Type
-    const matchType = !f.type || space.type === f.type;
-
-    // Région
-    const matchRegion = !f.region || space.region === f.region;
-
-    // Département
-    const matchDept = !f.dept || space.department === f.dept;
-
-    // Hôte
-    const matchHost = !f.host || space.host === f.host;
-
-    // Tarif
-    const matchTarif = !f.tarif || space.tarif_type === f.tarif;
-
-    // Capacité
+    const matchType     = !f.type   || space.type      === f.type;
+    const matchRegion   = !f.region || space.region    === f.region;
+    const matchDept     = !f.dept   || space.department === f.dept;
+    const matchHost     = !f.host   || space.host      === f.host;
+    const matchTarif    = !f.tarif  || space.tarif_type === f.tarif;
     const matchCapacite = !f.capacite ||
-      (f.capacite === 1  && space.capacite <= 2) ||
-      (f.capacite === 5  && space.capacite <= 5) ||
-      (f.capacite === 10 && space.capacite <= 10) ||
-      (f.capacite === 20 && space.capacite <= 20) ||
+      (f.capacite === 1   && space.capacite <= 2)  ||
+      (f.capacite === 5   && space.capacite <= 5)  ||
+      (f.capacite === 10  && space.capacite <= 10) ||
+      (f.capacite === 20  && space.capacite <= 20) ||
       (f.capacite === 999 && space.capacite > 20);
 
-    // Superficie
     let matchSup = true;
-    if (f.superficie === '25')  matchSup = space.superficie < 25;
-    else if (f.superficie === '50')  matchSup = space.superficie >= 25 && space.superficie < 50;
-    else if (f.superficie === '100') matchSup = space.superficie >= 50 && space.superficie < 100;
+    if      (f.superficie === '25')  matchSup = space.superficie < 25;
+    else if (f.superficie === '50')  matchSup = space.superficie >= 25  && space.superficie < 50;
+    else if (f.superficie === '100') matchSup = space.superficie >= 50  && space.superficie < 100;
     else if (f.superficie === '999') matchSup = space.superficie >= 100;
 
-    // Distance
     let matchDist = true;
     if (refCoords && f.distance > 0) {
       const km = haversine(refCoords.lat, refCoords.lng, space.lat, space.lng);
@@ -647,43 +722,36 @@ function applyFilters() {
       (space as any)._dist = null;
     }
 
-    // Équipements (tous cochés doivent être présents)
     const matchEquip = f.equip.length === 0 ||
       f.equip.every(eq => space.tags.some(tag => tag.toLowerCase().includes(eq.toLowerCase())));
-
-    // Jours (au moins un jour coché doit être disponible)
     const matchJours = f.jours.length === 0 ||
       f.jours.some(j => space.jours.includes(j));
 
-    const show = matchLoc && matchType && matchRegion && matchDept &&
-                 matchHost && matchTarif && matchCapacite && matchSup &&
-                 matchDist && matchEquip && matchJours;
-
-    card.style.display = show ? '' : 'none';
-    if (show) { visible++; visibleSpaces.push(space); }
+    return matchLoc && matchType && matchRegion && matchDept &&
+           matchHost && matchTarif && matchCapacite && matchSup &&
+           matchDist && matchEquip && matchJours;
   });
 
   // ── Tri ───────────────────────────────────────────────────────────────────
   if (sort !== 'pertinence') {
-    const sorted = [...visibleSpaces].sort((a, b) => {
-      if (sort === 'distance')       return ((a as any)._dist ?? 999) - ((b as any)._dist ?? 999);
-      if (sort === 'superficie-desc')return b.superficie - a.superficie;
-      if (sort === 'superficie-asc') return a.superficie - b.superficie;
-      if (sort === 'gratuit')        return a.tarif_type === 'gratuit' ? -1 : 1;
-      if (sort === 'host-collec')    return a.host === 'collectivite' ? -1 : 1;
-      if (sort === 'host-entrep')    return a.host === 'entreprise' ? -1 : 1;
+    filtered = [...filtered].sort((a, b) => {
+      if (sort === 'distance')        return ((a as any)._dist ?? 999) - ((b as any)._dist ?? 999);
+      if (sort === 'superficie-desc') return b.superficie - a.superficie;
+      if (sort === 'superficie-asc')  return a.superficie - b.superficie;
+      if (sort === 'gratuit')         return a.tarif_type === 'gratuit' ? -1 : 1;
+      if (sort === 'host-collec')     return a.host === 'collectivite' ? -1 : 1;
+      if (sort === 'host-entrep')     return a.host === 'entreprise'   ? -1 : 1;
       return 0;
-    });
-    sorted.forEach(space => {
-      const idx = SPACES.indexOf(space);
-      if (cards[idx]) grid.appendChild(cards[idx]);
     });
   }
 
-  // ── Compteur et résumé ────────────────────────────────────────────────────
+  // ── Re-render la grille ───────────────────────────────────────────────────
+  const visible = filtered.length;
+  grid.innerHTML = filtered.map(buildSpaceCard).join('');
+
   if (resultsCount) resultsCount.textContent = `${visible} espace${visible !== 1 ? 's' : ''}`;
-  if (noResults)    noResults.style.display = visible === 0 ? 'block' : 'none';
-  if (grid)         grid.style.display      = visible === 0 ? 'none'  : '';
+  if (noResults)    noResults.style.display  = visible === 0 ? 'block' : 'none';
+  if (grid)         grid.style.display       = visible === 0 ? 'none'  : '';
 
   // Badge filtres actifs
   const activeCount = countActiveFilters(f);
@@ -694,13 +762,13 @@ function applyFilters() {
 
   // Résumé textuel
   const parts: string[] = [];
-  if (f.region)    parts.push(f.region);
-  if (f.dept)      parts.push(`Dép. ${f.dept}`);
-  if (f.tarif)     parts.push(f.tarif === 'gratuit' ? 'Gratuit' : 'Payant');
-  if (f.distance)  parts.push(`≤ ${f.distance} km`);
-  if (f.equip.length)  parts.push(`${f.equip.length} équipement${f.equip.length>1?'s':''}`);
-  if (f.jours.length)  parts.push(`${f.jours.length} jour${f.jours.length>1?'s':''}`);
-  if (filterSummary) filterSummary.textContent = parts.length ? parts.join(' · ') : '';
+  if (f.region)        parts.push(f.region);
+  if (f.dept)          parts.push(`Dép. ${f.dept}`);
+  if (f.tarif)         parts.push(f.tarif === 'gratuit' ? 'Gratuit' : 'Payant');
+  if (f.distance)      parts.push(`≤ ${f.distance} km`);
+  if (f.equip.length)  parts.push(`${f.equip.length} équipement${f.equip.length > 1 ? 's' : ''}`);
+  if (f.jours.length)  parts.push(`${f.jours.length} jour${f.jours.length > 1 ? 's' : ''}`);
+  if (filterSummary)   filterSummary.textContent = parts.length ? parts.join(' · ') : '';
 }
 
 function countActiveFilters(f: ReturnType<typeof getActiveFilters>): number {
@@ -740,28 +808,68 @@ document.getElementById('reset-filters')?.addEventListener('click', () => {
   distSlider.value = '50'; distVal.textContent = '50 km'; distSlider.disabled = true;
   distHint.textContent = 'Entrez une ville pour activer le filtre par distance.';
   distHint.style.color = 'var(--color-text-soft)';
-  document.querySelectorAll('.filter-equip,.filter-jour') .forEach((cb:any) => { cb.checked = false; });
+  document.querySelectorAll('.filter-equip,.filter-jour').forEach((cb:any) => { cb.checked = false; });
   (document.querySelector('.filter-sup[value=""]') as HTMLInputElement).checked = true;
-  // Remettre les cartes en ordre original
-  SPACES.forEach((_, i) => { if (cards[i]) grid.appendChild(cards[i]); });
   applyFilters();
 });
 
 // ── Pré-remplissage depuis query params ──────────────────────────────────────
-const params = new URLSearchParams(window.location.search);
-const qLoc   = params.get('loc')?.trim()    || '';
-const qMetier= params.get('metier')?.trim() || '';
-const qType  = params.get('type')?.trim()   || '';
-let changed  = false;
-if (qLoc    && locInput)   { locInput.value = qLoc;    changed = true; }
-if (qMetier && !qLoc && locInput) { locInput.value = qMetier; changed = true; }
+const params  = new URLSearchParams(window.location.search);
+const qLoc    = params.get('loc')?.trim()    || '';
+const qMetier = params.get('metier')?.trim() || '';
+const qType   = params.get('type')?.trim()   || '';
+if (qLoc    && locInput)        locInput.value  = qLoc;
+if (qMetier && !qLoc && locInput) locInput.value = qMetier;
 if (qType   && typeSelect) {
   const match = Array.from(typeSelect.options).find(o =>
     o.value.toLowerCase().includes(qType.toLowerCase()) ||
     o.text.toLowerCase().includes(qType.toLowerCase()));
-  if (match) { typeSelect.value = match.value; changed = true; }
+  if (match) typeSelect.value = match.value;
 }
-if (changed) applyFilters();
+
+// ══════════════════════════════════════════════════════════════════════════════
+//  Chargement depuis Supabase
+// ══════════════════════════════════════════════════════════════════════════════
+async function loadSpaces() {
+  loadingEl.style.display = 'block';
+  grid.style.display      = 'none';
+  noResults.style.display = 'none';
+
+  try {
+    const { data, error } = await supabase
+      .from('annonces')
+      .select(`
+        id, titre, type_espace, ville, region, departement,
+        superficie, capacite, tarif_type, equipements,
+        jours_disponibles, lat, lng, photos,
+        profiles:user_id ( role )
+      `)
+      .eq('status', 'publie')
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+
+    allSpaces = (data || []).map(mapSpace);
+
+    // Si aucune annonce publiée → afficher les données démo
+    if (allSpaces.length === 0) {
+      allSpaces = DEMO_SPACES;
+      if (demoNoteEl) demoNoteEl.style.display = 'block';
+    } else {
+      if (demoNoteEl) demoNoteEl.style.display = 'none';
+    }
+  } catch (e) {
+    console.error('Erreur chargement espaces :', e);
+    allSpaces = DEMO_SPACES;
+    if (demoNoteEl) demoNoteEl.style.display = 'block';
+  }
+
+  loadingEl.style.display = 'none';
+  applyFilters();
+}
+
+// Lancement au chargement de la page
+loadSpaces();
 </script>
 
 <style>
