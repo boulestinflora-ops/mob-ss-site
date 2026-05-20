@@ -336,6 +336,13 @@ const equipements = [
 <script>
   import { supabase } from '../lib/supabase';
 
+  // ─── Gestion expiration de session ────────────────────────────────────────────
+  supabase.auth.onAuthStateChange((event) => {
+    if (event === 'SIGNED_OUT') {
+      window.location.href = '/connexion';
+    }
+  });
+
   // ─── Auth check ───────────────────────────────────────────────────────────────
   let currentUserId = '';
   supabase.auth.getSession().then(async ({ data: { session } }) => {

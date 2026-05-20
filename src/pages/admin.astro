@@ -195,6 +195,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     setTimeout(() => { msgEl.style.display = 'none'; }, 4000);
   }
 
+  // ─── Gestion expiration de session ────────────────────────────────────────────
+  supabase.auth.onAuthStateChange((event) => {
+    if (event === 'SIGNED_OUT') {
+      window.location.href = '/connexion';
+    }
+  });
+
   // ─── Vérification session + droits admin ─────────────────────────────────────
   const { data: { session } } = await supabase.auth.getSession();
   loadingEl.style.display = 'none';

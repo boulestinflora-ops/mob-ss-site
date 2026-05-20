@@ -69,6 +69,28 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             </button>
           </div>
         </div>
+
+        <!-- Vue : renvoi de l'email de confirmation -->
+        <div id="view-resend" style="display:none;">
+          <h2 style="font-size:1.15rem;font-family:var(--font-body);margin-bottom:8px;">Renvoyer l'email de confirmation</h2>
+          <p style="color:var(--color-text-soft);font-size:0.95rem;margin-bottom:20px;">
+            Votre email n'a pas encore été confirmé. Entrez votre adresse et nous vous renvoyons le lien.
+          </p>
+
+          <form id="resend-form" novalidate>
+            <div class="field">
+              <label for="resend-email">Email</label>
+              <input id="resend-email" type="email" required autocomplete="email" placeholder="vous@exemple.fr" />
+            </div>
+            <button type="submit" class="btn btn--primary btn--block">Renvoyer l'email</button>
+          </form>
+
+          <div style="text-align:center;margin-top:16px;">
+            <button type="button" id="back-login-resend" style="background:none;border:none;color:var(--color-primary);font-size:0.9rem;cursor:pointer;">
+              ← Retour à la connexion
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -79,25 +101,24 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   import { showMessage, hideMessage, markError, clearErrors, validateEmail } from '../lib/forms';
 
   const messageBox  = document.getElementById('login-message') as HTMLDivElement;
-  const viewLogin   = document.getElementById('view-login') as HTMLDivElement;
-  const viewReset   = document.getElementById('view-reset') as HTMLDivElement;
+  const viewLogin   = document.getElementById('view-login')   as HTMLDivElement;
+  const viewReset   = document.getElementById('view-reset')   as HTMLDivElement;
+  const viewResend  = document.getElementById('view-resend')  as HTMLDivElement;
 
   // Alias courts pour ce fichier
   function showMsg(type: 'success' | 'error', text: string) { showMessage(messageBox, type, text); }
   function hideMsg() { hideMessage(messageBox); }
 
-  // ─── Bascule entre les deux vues ──────────────────────────────────────────────
-  document.getElementById('show-reset')?.addEventListener('click', () => {
+  function showView(view: HTMLDivElement) {
     hideMsg();
-    viewLogin.style.display = 'none';
-    viewReset.style.display = '';
-  });
+    [viewLogin, viewReset, viewResend].forEach(v => v.style.display = 'none');
+    view.style.display = '';
+  }
 
-  document.getElementById('back-login')?.addEventListener('click', () => {
-    hideMsg();
-    viewReset.style.display = 'none';
-    viewLogin.style.display = '';
-  });
+  // ─── Bascule entre les vues ───────────────────────────────────────────────────
+  document.getElementById('show-reset')?.addEventListener('click', () => showView(viewReset));
+  document.getElementById('back-login')?.addEventListener('click', () => showView(viewLogin));
+  document.getElementById('back-login-resend')?.addEventListener('click', () => showView(viewLogin));
 
   // ─── Connexion ────────────────────────────────────────────────────────────────
   const loginForm = document.getElementById('login-form') as HTMLFormElement;
@@ -129,7 +150,15 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         if (error.message.includes('Invalid login credentials') || error.message.includes('invalid_credentials')) {
           showMsg('error', 'Email ou mot de passe incorrect.');
         } else if (error.message.includes('Email not confirmed')) {
-          showMsg('error', "Confirmez d'abord votre email. Vérifiez votre boîte de réception.");
+          // Pré-remplir le champ email dans la vue "renvoyer" et afficher celle-ci
+          const resendEmailInput = document.getElementById('resend-email') as HTMLInputElement;
+          if (resendEmailInput) resendEmailInput.value = email;
+          showView(viewResend);
+          showMessage(
+            document.getElementById('login-message') as HTMLDivElement,
+            'error',
+            "Votre email n'a pas encore été confirmé. Renvoyez le lien ci-dessous."
+          );
         } else {
           showMsg('error', `Erreur : ${error.message}`);
         }
@@ -166,6 +195,36 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       } else {
         showMsg('success', `✓ Email envoyé à ${email}. Vérifiez votre boîte de réception (et vos spams).`);
         resetForm.reset();
+      }
+    });
+  }
+
+  // ─── Renvoi de l'email de confirmation ───────────────────────────────────────
+  const resendForm = document.getElementById('resend-form') as HTMLFormElement;
+  if (resendForm) {
+    resendForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const email = (document.getElementById('resend-email') as HTMLInputElement).value.trim();
+      if (!email) { showMsg('error', 'Entrez votre adresse email.'); return; }
+
+      const btn = resendForm.querySelector('button[type="submit"]') as HTMLButtonElement;
+      btn.disabled    = true;
+      btn.textContent = 'Envoi…';
+
+      const { error } = await supabase.auth.resend({
+        type: 'signup',
+        email,
+        options: { emailRedirectTo: `${window.location.origin}/completer-profil` },
+      });
+
+      btn.disabled    = false;
+      btn.textContent = 'Renvoyer l\'email';
+
+      if (error) {
+        showMsg('error', `Erreur : ${error.message}`);
+      } else {
+        showMsg('success', `✓ Email de confirmation renvoyé à ${email}. Vérifiez vos spams si besoin.`);
       }
     });
   }
