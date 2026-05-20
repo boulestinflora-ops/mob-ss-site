@@ -216,6 +216,16 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         </span>
         ${p.ville ? `<p style="margin:0;font-size:0.88rem;color:var(--color-text-soft);">📍 ${esc(p.ville)}</p>` : ''}
         ${p.bio ? `<p style="margin:0;font-size:0.88rem;color:var(--color-text-soft);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;">${esc(p.bio)}</p>` : ''}
+        ${isLoggedIn
+          ? `<div style="display:flex;flex-direction:column;gap:4px;margin-top:4px;padding-top:10px;border-top:1px solid var(--color-border);">
+               ${p.email    ? `<a href="mailto:${esc(p.email)}" onclick="event.stopPropagation();" style="font-size:0.85rem;color:var(--color-primary);text-decoration:none;">📧 ${esc(p.email)}</a>` : ''}
+               ${p.telephone ? `<a href="tel:${esc(p.telephone)}" onclick="event.stopPropagation();" style="font-size:0.85rem;color:var(--color-primary);text-decoration:none;">📞 ${esc(p.telephone)}</a>` : ''}
+               ${!p.email && !p.telephone ? `<span style="font-size:0.82rem;color:var(--color-text-soft);font-style:italic;">Coordonnées non renseignées</span>` : ''}
+             </div>`
+          : `<div style="margin-top:8px;padding:8px 12px;background:var(--color-cream-soft);border-radius:var(--radius-sm);font-size:0.82rem;color:var(--color-text-soft);">
+               🔒 <a href="/connexion" onclick="event.stopPropagation();" style="color:var(--color-primary);font-weight:600;">Connectez-vous</a> pour voir les coordonnées
+             </div>`
+        }
         <span style="font-size:0.82rem;color:var(--color-primary);font-weight:600;margin-top:4px;">Voir le profil →</span>
       </a>
     `;
@@ -223,16 +233,21 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
   // ── Données ──────────────────────────────────────────────────────────────────
   let allProfiles: any[] = [];
+  let isLoggedIn = false;
 
   async function load() {
     loadingEl.style.display = 'block';
     gridEl.style.display    = 'none';
     emptyEl.style.display   = 'none';
 
+    // Vérifie si l'utilisateur est connecté (pour afficher les contacts)
+    const { data: { session } } = await supabase.auth.getSession();
+    isLoggedIn = !!session?.user;
+
     try {
       const { data, error } = await supabase
         .from('profiles')
-        .select('id, prenom, nom, specialite, ville, bio')
+        .select('id, prenom, nom, specialite, ville, bio, email, telephone')
         .eq('disponible_remplacement', true)
         .eq('visible_annuaire', true)
         .not('prenom', 'is', null)

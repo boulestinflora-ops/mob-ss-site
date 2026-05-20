@@ -434,6 +434,12 @@ const spacesMapJson = JSON.stringify(
               <a href="/completer-profil" style="display:inline-block;margin-top:10px;" class="btn btn--primary btn--sm">Ajouter mes documents →</a>
             </div>
 
+            <!-- Alerte si un document est refusé -->
+            <div id="docs-refused" style="display:none;background:#FBE5E5;border:1px solid #F0B8B8;border-radius:var(--radius-md);padding:16px 20px;font-size:0.9rem;color:#A02323;">
+              ✕ <strong>Un document a été refusé.</strong> Consultez le motif indiqué ci-dessus et déposez un nouveau fichier depuis votre profil.
+              <a href="/completer-profil" style="display:inline-block;margin-top:10px;" class="btn btn--sm" style="background:#A02323;color:#fff;">Mettre à jour mes documents →</a>
+            </div>
+
             <!-- Confirmation si tout est ok -->
             <div id="docs-ok" style="display:none;background:#E8F4EA;border:1px solid #B8DBC0;border-radius:var(--radius-md);padding:16px 20px;font-size:0.9rem;color:#2D6E3F;">
               ✅ <strong>Dossier complet.</strong> Vos deux documents sont enregistrés. L'équipe MOB'SS peut les vérifier à tout moment.
@@ -1623,7 +1629,7 @@ const spacesMapJson = JSON.stringify(
   async function loadDocuments(userId: string) {
     const { data: docs } = await supabase
       .from('documents')
-      .select('type, file_name, status, expires_at, uploaded_at')
+      .select('type, file_name, status, status_note, expires_at, uploaded_at')
       .eq('user_id', userId);
 
     const diplome   = docs?.find((d: any) => d.type === 'diplome');
@@ -1633,9 +1639,19 @@ const spacesMapJson = JSON.stringify(
     const diplomeLabel = document.getElementById('doc-diplome-label') as HTMLElement;
     const diplomeBadge = document.getElementById('doc-diplome-badge') as HTMLElement;
     if (diplome) {
-      diplomeLabel.textContent = diplome.file_name;
-      diplomeBadge.className   = 'doc-badge doc-badge--ok';
-      diplomeBadge.textContent = diplome.status === 'verifie' ? '✓ Vérifié' : '✓ Fourni';
+      let labelText = diplome.file_name;
+      if (diplome.status === 'refuse' && diplome.status_note) labelText += ` — ${diplome.status_note}`;
+      diplomeLabel.textContent = labelText;
+      if (diplome.status === 'verifie') {
+        diplomeBadge.className   = 'doc-badge doc-badge--ok';
+        diplomeBadge.textContent = '✓ Vérifié';
+      } else if (diplome.status === 'refuse') {
+        diplomeBadge.className   = 'doc-badge doc-badge--expired';
+        diplomeBadge.textContent = '✕ Refusé';
+      } else {
+        diplomeBadge.className   = 'doc-badge doc-badge--missing';
+        diplomeBadge.textContent = '⏳ En vérification';
+      }
     } else {
       diplomeLabel.textContent = 'Non fourni';
       diplomeBadge.className   = 'doc-badge doc-badge--missing';
@@ -1665,9 +1681,16 @@ const spacesMapJson = JSON.stringify(
       } else if (expiresSoon) {
         assuranceBadge.className   = 'doc-badge doc-badge--missing';
         assuranceBadge.textContent = '⚠ Expire bientôt';
-      } else {
+      } else if (assurance.status === 'verifie') {
         assuranceBadge.className   = 'doc-badge doc-badge--ok';
-        assuranceBadge.textContent = assurance.status === 'verifie' ? '✓ Vérifiée' : '✓ Fournie';
+        assuranceBadge.textContent = '✓ Vérifiée';
+      } else if (assurance.status === 'refuse') {
+        assuranceBadge.className   = 'doc-badge doc-badge--expired';
+        assuranceBadge.textContent = '✕ Refusée';
+        if (assurance.status_note) assuranceLabel.textContent += ` — ${assurance.status_note}`;
+      } else {
+        assuranceBadge.className   = 'doc-badge doc-badge--missing';
+        assuranceBadge.textContent = '⏳ En vérification';
       }
     } else {
       assuranceLabel.textContent = 'Non fournie';
@@ -1676,14 +1699,43 @@ const spacesMapJson = JSON.stringify(
     }
 
     // ── Badge nav + alertes ──
-    const bothPresent = !!diplome && !!assurance;
-    const badgeDocs = document.getElementById('badge-docs') as HTMLElement;
-    if (badgeDocs && bothPresent) badgeDocs.style.display = '';
+    const bothPresent  = !!diplome && !!assurance;
+    const anyRefused   = diplome?.status === 'refuse' || assurance?.status === 'refuse';
+    const bothVerified = diplome?.status === 'verifie' && assurance?.status === 'verifie';
+    const badgeDocs    = document.getElementById('badge-docs') as HTMLElement;
 
-    const alertEl = document.getElementById('docs-alert') as HTMLElement;
-    const okEl    = document.getElementById('docs-ok')    as HTMLElement;
-    if (alertEl) alertEl.style.display = bothPresent ? 'none' : 'block';
-    if (okEl)    okEl.style.display    = bothPresent ? 'block' : 'none';
+    if (badgeDocs && bothPresent) {
+      badgeDocs.style.display = '';
+      if (anyRefused) {
+        badgeDocs.style.background = '#FBE5E5';
+        badgeDocs.style.color      = '#A02323';
+        badgeDocs.style.borderColor= '#F0B8B8';
+        badgeDocs.textContent      = '✕';
+      } else if (bothVerified) {
+        badgeDocs.style.background = '#E8F4EA';
+        badgeDocs.style.color      = '#2D6E3F';
+        badgeDocs.style.borderColor= '#B8DBC0';
+        badgeDocs.textContent      = '✓';
+      } else {
+        badgeDocs.style.background = '#FFF8E1';
+        badgeDocs.style.color      = '#92400E';
+        badgeDocs.style.borderColor= '#F59E0B';
+        badgeDocs.textContent      = '⏳';
+      }
+    }
+
+    const alertEl  = document.getElementById('docs-alert') as HTMLElement;
+    const okEl     = document.getElementById('docs-ok')    as HTMLElement;
+    const refusedEl = document.getElementById('docs-refused') as HTMLElement | null;
+
+    if (alertEl)   alertEl.style.display   = bothPresent ? 'none' : 'block';
+    if (refusedEl) refusedEl.style.display = anyRefused  ? 'block' : 'none';
+    if (okEl) {
+      okEl.style.display = bothPresent && !anyRefused ? 'block' : 'none';
+      okEl.innerHTML = bothVerified
+        ? '✅ <strong>Dossier vérifié.</strong> Vos deux documents ont été validés par l\'équipe MOB\'SS.'
+        : '📋 <strong>Documents reçus.</strong> Vos documents sont en cours de vérification par l\'équipe MOB\'SS.';
+    }
 
     // ── Stat visibilité (overview) — mise à jour si docs complets ──
     const statVis = document.getElementById('stat-visibilite') as HTMLElement;
@@ -2490,6 +2542,18 @@ const spacesMapJson = JSON.stringify(
         .single();
 
       loadingEl.style.display = 'none';
+
+      // Lien admin discret — visible uniquement pour les admins dans leur propre dashboard
+      const ADMIN_EMAILS = ['boulestinflora@gmail.com'];
+      if (ADMIN_EMAILS.includes(session.user.email ?? '')) {
+        const adminLink = document.createElement('a');
+        adminLink.href  = '/admin';
+        adminLink.textContent = '⚙️ Administration';
+        adminLink.style.cssText = 'display:block;text-align:center;font-size:0.8rem;color:var(--color-text-soft);margin-top:16px;text-decoration:none;opacity:0.6;';
+        adminLink.onmouseenter = () => { adminLink.style.opacity = '1'; };
+        adminLink.onmouseleave = () => { adminLink.style.opacity = '0.6'; };
+        document.querySelector('.dash-sidebar')?.appendChild(adminLink);
+      }
 
       if (profile?.role === 'collectivite' || profile?.role === 'entreprise') {
         loadHote(session, profile);
