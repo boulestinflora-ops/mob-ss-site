@@ -170,7 +170,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 <script>
   import { supabase } from '../lib/supabase';
 
-  const ADMIN_EMAILS = ['boulestinflora@gmail.com']; // ← ajouter d'autres admins ici
+  // ── URL de l'Edge Function ────────────────────────────────────────────────────
+  // La fonction admin-documents tourne côté serveur avec service_role → bypass RLS
+  const ADMIN_EMAILS = ['boulestinflora@gmail.com']; // garde-fou côté client en plus
+  const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL as string;
+  const EDGE_URL     = `${SUPABASE_URL}/functions/v1/admin-documents`;
 
   const loadingEl = document.getElementById('admin-loading') as HTMLElement;
   const deniedEl  = document.getElementById('admin-denied')  as HTMLElement;
@@ -180,6 +184,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
   let allDocs: any[] = [];
   let currentFilter = 'fourni';
+  let accessToken   = '';
 
   function showMsg(type: 'success'|'error', text: string) {
     msgEl.style.display = 'block';
@@ -197,33 +202,27 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   if (!session?.user || !ADMIN_EMAILS.includes(session.user.email ?? '')) {
     deniedEl.style.display = 'block';
   } else {
+    accessToken = session.access_token;
     panelEl.style.display = 'block';
     await loadDocs();
   }
 
-  // ─── Chargement des documents ────────────────────────────────────────────────
+  // ─── Chargement des documents via Edge Function (bypass RLS) ─────────────────
   async function loadDocs() {
-    // On utilise la vue documents_admin (service role requis côté Supabase)
-    // Fallback : jointure directe depuis les documents
-    const { data, error } = await supabase
-      .from('documents')
-      .select(`
-        id, type, file_name, file_path, mime_type,
-        status, status_note, expires_at,
-        ai_analyse, ai_analyse_at, uploaded_at,
-        user_id,
-        profiles:user_id ( prenom, nom, specialite, rpps_numero, rpps_verifie )
-      `)
-      .order('uploaded_at', { ascending: false });
+    listEl.innerHTML = `<p style="text-align:center;color:var(--color-text-soft);padding:40px;">Chargement…</p>`;
+    try {
+      const res = await fetch(EDGE_URL, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      const payload = await res.json();
+      if (!res.ok) throw new Error(payload.error ?? `HTTP ${res.status}`);
 
-    if (error) {
-      listEl.innerHTML = `<p style="color:#A02323;">Erreur de chargement : ${error.message}</p>`;
-      return;
+      allDocs = payload.data ?? [];
+      updateStats();
+      renderDocs();
+    } catch (e: any) {
+      listEl.innerHTML = `<p style="color:#A02323;">Erreur de chargement : ${e.message}</p>`;
     }
-
-    allDocs = data ?? [];
-    updateStats();
-    renderDocs();
   }
 
   function updateStats() {
@@ -327,13 +326,19 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   }
 
   async function updateStatus(docId: string, status: string, note = '') {
-    const { error } = await supabase
-      .from('documents')
-      .update({ status, status_note: note || null, updated_at: new Date().toISOString() })
-      .eq('id', docId);
-
-    if (error) {
-      showMsg('error', `Erreur : ${error.message}`);
+    try {
+      const res = await fetch(EDGE_URL, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ docId, status, note }),
+      });
+      const payload = await res.json();
+      if (!res.ok) throw new Error(payload.error ?? `HTTP ${res.status}`);
+    } catch (e: any) {
+      showMsg('error', `Erreur : ${e.message}`);
       return;
     }
     showMsg('success', status === 'verifie' ? '✅ Document validé.' : status === 'refuse' ? '❌ Document refusé.' : '↩ Remis en attente.');
