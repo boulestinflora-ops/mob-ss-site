@@ -7,7 +7,7 @@ const navLinks = [
   { href: '/comment-ca-marche', label: 'Comment ça marche', key: 'comment' },
   { href: '/contact', label: 'Contact', key: 'contact' }
 ];
-// Annuaire et Remplacements sont ajoutés dynamiquement par JS selon le rôle connecté
+// Annuaire et Remplacements sont visibles pour tous (état actif géré par JS)
 ---
 
 <header class="site-header">
@@ -30,9 +30,9 @@ const navLinks = [
         </a>
       ))}
 
-      <!-- Liens conditionnels injectés par JS quand connecté -->
-      <a href="/annuaire" id="nav-annuaire" style="display:none;white-space:nowrap;">Annuaire</a>
-      <a href="/remplacements" id="nav-remplacements" style="display:none;white-space:nowrap;">Remplacements</a>
+      <!-- Annuaire et Remplacements — visibles pour tous, le JS gère uniquement l'état actif -->
+      <a href="/annuaire" id="nav-annuaire" style="white-space:nowrap;">Annuaire</a>
+      <a href="/remplacements" id="nav-remplacements" style="white-space:nowrap;">Remplacements</a>
 
       <!-- Actions mobile -->
       <div class="nav__mobile-actions">
@@ -225,19 +225,10 @@ const navLinks = [
         if (avatar) avatar.textContent = initiales;
         if (nameEl) nameEl.textContent = prenom;
 
-        // Annuaire + Remplacements : visibles pour praticien et hôte
-        const role = profile.role;
-        if (role === 'praticien' || role === 'collectivite' || role === 'entreprise') {
-          const navAnn  = document.getElementById('nav-annuaire');
-          const navRemp = document.getElementById('nav-remplacements');
-          if (navAnn)  navAnn.style.display  = 'inline';
-          if (navRemp) navRemp.style.display = 'inline';
-
-          // Active state selon l'URL courante
-          const path = window.location.pathname;
-          if (path.startsWith('/annuaire'))      navAnn?.classList.add('is-active');
-          if (path.startsWith('/remplacements')) navRemp?.classList.add('is-active');
-        }
+        // Active state sur Annuaire / Remplacements selon l'URL courante
+        const path = window.location.pathname;
+        if (path.startsWith('/annuaire'))      document.getElementById('nav-annuaire')?.classList.add('is-active');
+        if (path.startsWith('/remplacements')) document.getElementById('nav-remplacements')?.classList.add('is-active');
 
         // Praticien : cacher "Déposer un espace"
         if (role === 'praticien') {

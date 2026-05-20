@@ -20,15 +20,16 @@ import steps from '../data/steps.json';
     <div class="container hero__content">
       <h1>Des espaces gratuits<br />pour exercer,&nbsp;partout.</h1>
       <p class="lead">
-        Les collectivités et entreprises mettent gracieusement leurs locaux à disposition
-        des professionnels du sport et de la santé.
+        Collectivités et entreprises ouvrent leurs locaux aux professionnels
+        du sport et de la santé — sans frais, en quelques clics.
       </p>
       <div class="hero__cta">
-        <a href="/inscription?role=praticien" class="btn btn--cream btn--lg">Je veux exercer</a>
-        <a href="/inscription?role=collectivite" class="btn btn--outline btn--lg">
-          Je propose un espace
+        <a href="/explorez" class="btn btn--cream btn--lg">Trouver un espace →</a>
+        <a href="/inscription?role=collectivite" class="btn btn--hero-host btn--lg">
+          Proposer un local
         </a>
       </div>
+      <p class="hero__reassurance">Gratuit · Sans engagement · 100&nbsp;% en ligne</p>
     </div>
   </section>
 
@@ -116,8 +117,9 @@ import steps from '../data/steps.json';
       <div class="steps">
         {steps.map(step => <Step {...step} />)}
       </div>
-      <div class="text-center mt-32">
-        <a href="/comment-ca-marche" class="btn btn--primary">Voir le détail du fonctionnement</a>
+      <div class="text-center mt-32" style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
+        <a href="/explorez" class="btn btn--primary btn--lg">Chercher un espace maintenant</a>
+        <a href="/comment-ca-marche" class="btn btn--ghost" style="font-size:0.95rem;">En savoir plus →</a>
       </div>
     </div>
   </section>
@@ -176,16 +178,29 @@ import steps from '../data/steps.json';
     </div>
   </section>
 
-  <!-- CTA FINAL -->
-  <section class="section" style="background: var(--color-primary); color: #fff; padding:80px 0;">
-    <div class="container text-center">
-      <h2 style="color: #fff;">Prêt à rejoindre le mouvement&nbsp;?</h2>
-      <p style="font-size: 1.1rem; color: rgba(255,255,255,0.9); max-width: 600px; margin: 0 auto 28px;">
-        Praticien, collectivité ou entreprise — créez votre compte gratuit en moins de 3 minutes.
-      </p>
-      <div class="flex gap-12 justify-center" style="flex-wrap: wrap;">
-        <a href="/inscription" class="btn btn--cream btn--lg">Créer mon compte</a>
-        <a href="/comment-ca-marche" class="btn btn--outline btn--lg">Découvrir la démarche</a>
+  <!-- CTA FINAL — double audience -->
+  <section class="section cta-final-section" style="padding:80px 0;">
+    <div class="container">
+      <div class="cta-final-grid">
+
+        <!-- Praticien -->
+        <div class="cta-final-card cta-final-card--praticien">
+          <span class="cta-final-card__eyebrow">Vous êtes praticien</span>
+          <h2 class="cta-final-card__title">Trouvez un espace dès aujourd'hui</h2>
+          <p class="cta-final-card__desc">Kinésithérapeute, coach, ostéopathe… accédez à des locaux adaptés, sans frais de location, près de chez vous.</p>
+          <a href="/explorez" class="btn btn--cream btn--lg">Parcourir les espaces →</a>
+          <p class="cta-final-card__sub">Inscription gratuite · 2 min</p>
+        </div>
+
+        <!-- Hôte -->
+        <div class="cta-final-card cta-final-card--hote">
+          <span class="cta-final-card__eyebrow">Vous avez un espace</span>
+          <h2 class="cta-final-card__title">Donnez vie à vos locaux inutilisés</h2>
+          <p class="cta-final-card__desc">Collectivité, entreprise, association — vos salles inoccupées peuvent accueillir des professionnels de santé et générer un impact local concret.</p>
+          <a href="/inscription?role=collectivite" class="btn btn--primary btn--lg">Déposer un espace →</a>
+          <p class="cta-final-card__sub">Gratuit · Accompagnement inclus</p>
+        </div>
+
       </div>
     </div>
   </section>
@@ -332,6 +347,83 @@ import steps from '../data/steps.json';
     flex-shrink: 0;
   }
 
+  /* Hero — ligne de réassurance sous les CTA */
+  .hero__reassurance {
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.72);
+    margin-top: 14px;
+    letter-spacing: 0.04em;
+  }
+
+  /* Bouton hôte dans le hero — blanc/translucide pour contraste sur fond primary */
+  .btn--hero-host {
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+    border: 1.5px solid rgba(255,255,255,0.5);
+    backdrop-filter: blur(4px);
+  }
+  .btn--hero-host:hover {
+    background: rgba(255,255,255,0.25);
+    color: #fff;
+    border-color: rgba(255,255,255,0.8);
+  }
+
+  /* CTA final — double carte côte à côte */
+  .cta-final-section {
+    background: var(--color-bg-soft);
+  }
+  .cta-final-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+  .cta-final-card {
+    border-radius: var(--radius-lg);
+    padding: 48px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .cta-final-card--praticien {
+    background: var(--color-text);
+    color: #fff;
+  }
+  .cta-final-card--hote {
+    background: var(--color-cream);
+    color: var(--color-text);
+  }
+  .cta-final-card__eyebrow {
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    opacity: 0.65;
+  }
+  .cta-final-card--praticien .cta-final-card__eyebrow { color: var(--color-cream); }
+  .cta-final-card--hote      .cta-final-card__eyebrow { color: var(--color-primary); }
+  .cta-final-card__title {
+    font-family: var(--font-display);
+    font-size: clamp(1.4rem, 2.5vw, 1.9rem);
+    line-height: 1.15;
+    margin: 0;
+  }
+  .cta-final-card--praticien .cta-final-card__title { color: #fff; }
+  .cta-final-card--hote      .cta-final-card__title { color: var(--color-text); }
+  .cta-final-card__desc {
+    font-size: 0.96rem;
+    line-height: 1.6;
+    margin: 0;
+    flex: 1;
+  }
+  .cta-final-card--praticien .cta-final-card__desc { color: rgba(255,255,255,0.8); }
+  .cta-final-card--hote      .cta-final-card__desc { color: var(--color-text-soft); }
+  .cta-final-card__sub {
+    font-size: 0.82rem;
+    margin: 0;
+    opacity: 0.6;
+  }
+  .cta-final-card .btn { align-self: flex-start; }
+
   /* Responsive */
   @media (max-width: 860px) {
     .explication-grid {
@@ -356,6 +448,12 @@ import steps from '../data/steps.json';
     }
     .search-fields-row {
       grid-template-columns: 1fr;
+    }
+    .cta-final-grid {
+      grid-template-columns: 1fr;
+    }
+    .cta-final-card {
+      padding: 36px 28px;
     }
   }
 </style>
