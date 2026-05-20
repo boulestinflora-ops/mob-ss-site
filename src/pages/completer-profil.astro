@@ -246,7 +246,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
                 <span>PDF, JPG ou PNG — 10 Mo max</span>
               </div>
             </label>
-            <div id="status-diplome" class="doc-status" style="display:none;"></div>
+            <div id="status-diplome" class="doc-status" role="status" aria-live="polite" aria-atomic="true" style="display:none;"></div>
           </div>
 
           <!-- Zone upload : Assurance RC Pro -->
@@ -271,7 +271,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
               <input type="date" id="assurance-expiry" style="max-width:220px;" />
               <p class="form-help">Vous recevrez un rappel avant l'échéance.</p>
             </div>
-            <div id="status-assurance" class="doc-status" style="display:none;"></div>
+            <div id="status-assurance" class="doc-status" role="status" aria-live="polite" aria-atomic="true" style="display:none;"></div>
           </div>
 
           <!-- Note légale -->
@@ -759,115 +759,4 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           if (a?.conforme === true) {
             (zone.querySelector('.upload-zone__text span') as HTMLElement).textContent = '✅ Document analysé — conforme';
             statusEl.className   = 'doc-status doc-status--ok';
-            const msgs = [`✅ "${file.name}" enregistré et analysé.`];
-            if (a.assureur)        msgs.push(`Assureur : ${a.assureur}`);
-            if (a.date_fin)        msgs.push(`Expire le : ${new Date(a.date_fin).toLocaleDateString('fr-FR')}`);
-            if (a.intitule)        msgs.push(`Diplôme : ${a.intitule}`);
-            if (a.anomalies?.length) msgs.push(`Attention : ${a.anomalies.join(', ')}`);
-            statusEl.textContent = msgs.join(' · ');
-          } else if (a?.conforme === false) {
-            (zone.querySelector('.upload-zone__text span') as HTMLElement).textContent = '⚠️ Document enregistré — à vérifier';
-            statusEl.className   = 'doc-status doc-status--error';
-            const anomalies = a.anomalies?.length ? a.anomalies.join(', ') : 'Document non reconnu ou illisible';
-            statusEl.textContent = `⚠️ "${file.name}" enregistré mais l'analyse signale : ${anomalies}`;
-          } else {
-            // Clé API absente → pas d'analyse, mais upload OK
-            (zone.querySelector('.upload-zone__text span') as HTMLElement).textContent = 'Document enregistré avec succès';
-            statusEl.className   = 'doc-status doc-status--ok';
-            statusEl.textContent = `✓ "${file.name}" enregistré. (Analyse IA non activée)`;
-          }
-        } catch {
-          (zone.querySelector('.upload-zone__text span') as HTMLElement).textContent = 'Document enregistré avec succès';
-          statusEl.className   = 'doc-status doc-status--ok';
-          statusEl.textContent = `✓ "${file.name}" enregistré.`;
-        }
-      } else {
-        (zone.querySelector('.upload-zone__text span') as HTMLElement).textContent = 'Document enregistré avec succès';
-        statusEl.className   = 'doc-status doc-status--ok';
-        statusEl.textContent = `✓ "${file.name}" enregistré.`;
-      }
-    });
-  }
-
-  setupUploadZone('zone-diplome',   'file-diplome',   'status-diplome',   'diplome');
-  setupUploadZone('zone-assurance', 'file-assurance', 'status-assurance', 'assurance');
-
-  // Bouton "Passer" → aller au dashboard sans documents
-  document.getElementById('docs-skip-btn')?.addEventListener('click', () => {
-    window.location.href = '/dashboard';
-  });
-
-  // Bouton "Enregistrer les documents" → aller au dashboard
-  document.getElementById('docs-save-btn')?.addEventListener('click', () => {
-    const diplomeOk   = document.getElementById('zone-diplome')?.classList.contains('upload-zone--done');
-    const assuranceOk = document.getElementById('zone-assurance')?.classList.contains('upload-zone--done');
-
-    if (!diplomeOk && !assuranceOk) {
-      showMsg(docsMsgBox, 'error', 'Ajoutez au moins un document, ou cliquez sur « Ignorer pour l\'instant ».');
-      return;
-    }
-
-    showMsg(docsMsgBox, 'success', '✓ Documents enregistrés ! Redirection vers votre tableau de bord…');
-    setTimeout(() => { window.location.href = '/dashboard'; }, 1500);
-  });
-
-  // ─── Formulaire reset password (mode PASSWORD_RECOVERY) ───────────────────────
-  const resetForm = document.getElementById('cp-reset-form') as HTMLFormElement;
-  if (resetForm) {
-    resetForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const mdp  = (document.getElementById('reset-mdp')  as HTMLInputElement).value;
-      const mdp2 = (document.getElementById('reset-mdp2') as HTMLInputElement).value;
-      const btn  = document.getElementById('reset-btn')   as HTMLButtonElement;
-
-      if (!mdp || mdp.length < 8) {
-        showMsg(resetMsgBox, 'error', 'Le mot de passe doit faire au moins 8 caractères.');
-        return;
-      }
-      if (mdp !== mdp2) {
-        showMsg(resetMsgBox, 'error', 'Les deux mots de passe ne correspondent pas.');
-        return;
-      }
-
-      btn.disabled    = true;
-      btn.textContent = 'Enregistrement…';
-
-      const { error } = await supabase.auth.updateUser({ password: mdp });
-
-      if (error) {
-        showMsg(resetMsgBox, 'error', `Erreur : ${error.message}`);
-        btn.disabled    = false;
-        btn.textContent = 'Enregistrer le mot de passe';
-        return;
-      }
-
-      showMsg(resetMsgBox, 'success', '✓ Mot de passe mis à jour ! Redirection vers votre tableau de bord…');
-      setTimeout(() => { window.location.href = '/dashboard'; }, 1500);
-    });
-  }
-
-  // ─── Renvoi du magic link ──────────────────────────────────────────────────────
-  const relinkBtn = document.getElementById('relink-btn') as HTMLButtonElement;
-  if (relinkBtn) {
-    relinkBtn.addEventListener('click', async () => {
-      const email = (document.getElementById('relink-email') as HTMLInputElement).value.trim();
-      const msgEl = document.getElementById('relink-msg') as HTMLElement;
-      if (!email) { msgEl.textContent = 'Entrez votre email.'; return; }
-
-      relinkBtn.disabled    = true;
-      relinkBtn.textContent = 'Envoi…';
-
-      const { error } = await supabase.auth.signInWithOtp({
-        email,
-        options: { emailRedirectTo: `${window.location.origin}/completer-profil` },
-      });
-
-      relinkBtn.disabled    = false;
-      relinkBtn.textContent = 'Recevoir un nouveau lien';
-
-      msgEl.textContent = error
-        ? `Erreur : ${error.message}`
-        : `✓ Lien envoyé à ${email} — vérifiez vos emails.`;
-    });
-  }
-</script>
+            const msgs = [`✅ "${file.name}" enregis

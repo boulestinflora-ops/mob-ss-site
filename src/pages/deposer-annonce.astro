@@ -84,7 +84,7 @@ const equipements = [
           </div>
         </div>
 
-        <div id="msg-1" class="step-msg" style="display:none;"></div>
+        <div id="msg-1" class="step-msg" role="status" aria-live="polite" aria-atomic="true" style="display:none;"></div>
         <div style="display:flex;justify-content:space-between;margin-top:32px;">
           <a href="/" class="btn btn--ghost">← Annuler</a>
           <button class="btn btn--primary btn-next" data-from="1">Étape suivante →</button>
@@ -129,7 +129,7 @@ const equipements = [
           </div>
         </div>
 
-        <div id="msg-2" class="step-msg" style="display:none;"></div>
+        <div id="msg-2" class="step-msg" role="status" aria-live="polite" aria-atomic="true" style="display:none;"></div>
         <div style="display:flex;justify-content:space-between;margin-top:32px;">
           <button class="btn btn--ghost btn-prev" data-to="1">← Retour</button>
           <button class="btn btn--primary btn-next" data-from="2">Étape suivante →</button>
@@ -194,7 +194,7 @@ const equipements = [
           <textarea id="notes-dispo" rows="2" placeholder="Ex : fermé en août, disponible sur réservation uniquement…" style="resize:vertical;"></textarea>
         </div>
 
-        <div id="msg-3" class="step-msg" style="display:none;"></div>
+        <div id="msg-3" class="step-msg" role="status" aria-live="polite" aria-atomic="true" style="display:none;"></div>
         <div style="display:flex;justify-content:space-between;margin-top:32px;">
           <button class="btn btn--ghost btn-prev" data-to="2">← Retour</button>
           <button class="btn btn--primary btn-next" data-from="3">Étape suivante →</button>
@@ -218,7 +218,7 @@ const equipements = [
           </p>
         </div>
 
-        <div id="msg-4" class="step-msg" style="display:none;"></div>
+        <div id="msg-4" class="step-msg" role="status" aria-live="polite" aria-atomic="true" style="display:none;"></div>
         <div style="display:flex;justify-content:space-between;margin-top:8px;">
           <button class="btn btn--ghost btn-prev" data-to="3">← Retour</button>
           <button id="btn-publish" class="btn btn--primary btn--lg">🚀 Publier mon annonce</button>
@@ -526,37 +526,4 @@ const equipements = [
 
     try {
       const { error } = await supabase.from('annonces').insert({
-        host_id:      currentUserId,
-        titre,
-        type,
-        adresse,
-        cp,
-        ville,
-        description,
-        superficie,
-        capacite,
-        equipements:  equips,
-        jours,
-        heure_debut:  hDeb,
-        heure_fin:    hFin,
-        tarif_type:   tarifType,
-        tarif:        tarif || null,
-        notes_dispo:  notes || null,
-        statut:       'en_attente',
-      });
-
-      if (error) throw error;
-
-      // Succès
-      document.getElementById('step-4')!.style.display    = 'none';
-      document.getElementById('steps-indicator')!.style.display = 'none';
-      document.getElementById('step-success')!.style.display   = '';
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-
-    } catch (e: any) {
-      btn.disabled    = false;
-      btn.textContent = '🚀 Publier mon annonce';
-      showMsg('msg-4', 'error', `⚠️ Erreur : ${e?.message || 'Impossible de publier. Réessayez ou contactez le support.'}`);
-    }
-  });
-</script>
+       

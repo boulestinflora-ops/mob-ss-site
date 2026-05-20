@@ -37,12 +37,12 @@ import faq from '../data/faq.json';
 
       <!-- Onglets -->
       <div class="tabs ccm-tabs" role="tablist" style="justify-content:center;flex-wrap:wrap;border-bottom:none;gap:12px;">
-        <button class="btn btn--cream ccm-tab-btn" data-tab="prat" aria-selected="true">Je suis praticien·ne</button>
-        <button class="btn btn--outline ccm-tab-btn" data-tab="hote" aria-selected="false">J'ai un espace à proposer</button>
+        <button id="ccm-tab-prat" class="btn btn--cream ccm-tab-btn" role="tab" data-tab="prat" aria-selected="true" aria-controls="tab-prat" tabindex="0">Je suis praticien·ne</button>
+        <button id="ccm-tab-hote" class="btn btn--outline ccm-tab-btn" role="tab" data-tab="hote" aria-selected="false" aria-controls="tab-hote" tabindex="-1">J'ai un espace à proposer</button>
       </div>
 
       <!-- Panneau praticien -->
-      <div class="ccm-panel" id="tab-prat" style="margin-top:40px;">
+      <div class="ccm-panel" id="tab-prat" role="tabpanel" aria-labelledby="ccm-tab-prat" tabindex="0" style="margin-top:40px;">
         <div class="grid grid--2" style="gap:48px;align-items:center;">
           <div>
             <h2>Praticiens du sport et de la santé</h2>
@@ -70,7 +70,7 @@ import faq from '../data/faq.json';
       </div>
 
       <!-- Panneau hôte -->
-      <div class="ccm-panel" id="tab-hote" style="margin-top:40px;display:none;">
+      <div class="ccm-panel" id="tab-hote" role="tabpanel" aria-labelledby="ccm-tab-hote" tabindex="0" style="margin-top:40px;display:none;">
         <div class="grid grid--2" style="gap:48px;align-items:center;">
           <div>
             <h2>Collectivités et entreprises</h2>
@@ -158,27 +158,5 @@ import faq from '../data/faq.json';
 
 <script>
   // ─── Onglets Comment ça marche ───────────────────────────────────────────────
-  const tabBtns  = document.querySelectorAll('.ccm-tab-btn');
-  const panels   = document.querySelectorAll('.ccm-panel');
-
-  tabBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const target = (btn as HTMLElement).dataset.tab;
-
-      // Boutons
-      tabBtns.forEach(b => {
-        b.classList.remove('btn--cream');
-        b.classList.add('btn--outline');
-        b.setAttribute('aria-selected', 'false');
-      });
-      btn.classList.add('btn--cream');
-      btn.classList.remove('btn--outline');
-      btn.setAttribute('aria-selected', 'true');
-
-      // Panneaux
-      panels.forEach(panel => {
-        (panel as HTMLElement).style.display = (panel as HTMLElement).id === `tab-${target}` ? '' : 'none';
-      });
-    });
-  });
-</script>
+  const tabBtns  = Array.from(document.querySelectorAll<HTMLElement>('.ccm-tab-btn'));
+  const panels   = document.querySelector

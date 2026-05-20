@@ -183,6 +183,3 @@
   };
 
   window._tourNext  = nextStep;
-  window._tourPrev  = prevStep;
-  window._tourClose = closeTour;
-})();

@@ -345,20 +345,4 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       const payload = await res.json();
       if (!res.ok) throw new Error(payload.error ?? `HTTP ${res.status}`);
     } catch (e: any) {
-      showMsg('error', `Erreur : ${e.message}`);
-      return;
-    }
-    showMsg('success', status === 'verifie' ? '✅ Document validé.' : status === 'refuse' ? '❌ Document refusé.' : '↩ Remis en attente.');
-    await loadDocs();
-  }
-
-  // ─── Boutons de filtre ────────────────────────────────────────────────────────
-  document.querySelectorAll('.admin-filter-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.admin-filter-btn').forEach(b => b.classList.remove('is-active'));
-      btn.classList.add('is-active');
-      currentFilter = (btn as HTMLElement).dataset.filter ?? 'fourni';
-      renderDocs();
-    });
-  });
-</script>
+      showMsg('error
