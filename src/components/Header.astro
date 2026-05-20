@@ -22,6 +22,9 @@ const navLinks = [
       <span aria-hidden="true"></span>
     </button>
 
+    <!-- Backdrop mobile (overlay sombre derrière le menu ouvert) -->
+    <div class="nav-backdrop" id="nav-backdrop" aria-hidden="true"></div>
+
     <!-- Navigation -->
     <nav class="nav" id="main-nav" aria-label="Navigation principale" style="justify-content:center;">
       {navLinks.map(link => (

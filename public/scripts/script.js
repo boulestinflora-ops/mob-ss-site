@@ -7,37 +7,42 @@
 
   // ----- Menu mobile -----
   const menuToggle = document.querySelector('.menu-toggle');
-  const nav = document.querySelector('#main-nav');
+  const nav        = document.querySelector('#main-nav');
+  const backdrop   = document.querySelector('#nav-backdrop');
+
+  function openNav() {
+    nav.classList.add('is-open');
+    backdrop && backdrop.classList.add('is-open');
+    menuToggle.setAttribute('aria-expanded', 'true');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeNav() {
+    nav.classList.remove('is-open');
+    backdrop && backdrop.classList.remove('is-open');
+    menuToggle.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+  }
+
   if (menuToggle && nav) {
     menuToggle.addEventListener('click', () => {
-      const open = nav.classList.toggle('is-open');
-      menuToggle.setAttribute('aria-expanded', String(open));
+      nav.classList.contains('is-open') ? closeNav() : openNav();
     });
 
     // Fermer le menu si on clique sur un lien
     nav.querySelectorAll('a').forEach(link => {
-      link.addEventListener('click', () => {
-        nav.classList.remove('is-open');
-        menuToggle.setAttribute('aria-expanded', 'false');
-      });
+      link.addEventListener('click', closeNav);
     });
 
     // Fermer avec la touche Échap
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && nav.classList.contains('is-open')) {
-        nav.classList.remove('is-open');
-        menuToggle.setAttribute('aria-expanded', 'false');
+        closeNav();
         menuToggle.focus();
       }
     });
 
-    // Fermer si clic en dehors
-    document.addEventListener('click', (e) => {
-      if (!nav.classList.contains('is-open')) return;
-      if (nav.contains(e.target) || menuToggle.contains(e.target)) return;
-      nav.classList.remove('is-open');
-      menuToggle.setAttribute('aria-expanded', 'false');
-    });
+    // Fermer si clic sur le backdrop
+    backdrop && backdrop.addEventListener('click', closeNav);
   }
 
   // ----- Onglets capsule (Comment ça marche) avec ARIA -----

@@ -251,14 +251,34 @@ p  { margin: 0 0 1em; }
   width: 22px; height: 2px;
   background: var(--color-primary);
   position: relative;
+  transition: background 0.2s ease;
 }
 .menu-toggle span::before,
 .menu-toggle span::after {
   content: ""; position: absolute; left: 0; right: 0;
   height: 2px; background: var(--color-primary);
+  transition: transform 0.25s ease, top 0.25s ease;
 }
 .menu-toggle span::before { top: -7px; }
 .menu-toggle span::after  { top:  7px; }
+
+/* Hamburger → X quand ouvert */
+.menu-toggle[aria-expanded="true"] span { background: transparent; }
+.menu-toggle[aria-expanded="true"] span::before { top: 0; transform: rotate(45deg); }
+.menu-toggle[aria-expanded="true"] span::after  { top: 0; transform: rotate(-45deg); }
+
+/* Backdrop mobile */
+.nav-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(31,21,24,0.45);
+  z-index: 98;
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  animation: fadeIn 0.2s ease;
+}
+.nav-backdrop.is-open { display: block; }
 
 /* ---------- Buttons ---------- */
 .btn {
@@ -620,6 +640,8 @@ p  { margin: 0 0 1em; }
 .space-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
 .space-card__media {
   height: 200px;
+  aspect-ratio: 4 / 3;
+  max-height: 220px;
   background: linear-gradient(135deg, var(--color-cream) 0%, #E8C99A 100%);
   position: relative;
   display: flex; align-items: center; justify-content: center;
@@ -1284,7 +1306,7 @@ p  { margin: 0 0 1em; }
     box-shadow: var(--shadow-md);
     z-index: 99;
   }
-  .nav.is-open { display: flex; }
+  .nav.is-open { display: flex; animation: navSlideDown 0.22s ease; }
   .nav a { padding: 12px 0; }
 
   /* Header : masque les boutons secondaires, garde S'inscrire + avatar */
@@ -1304,7 +1326,7 @@ p  { margin: 0 0 1em; }
   /* Explorez */
   .explore-container { grid-template-columns: 1fr; }
   .explore-map-col   { position: static; order: -1; }
-  #map { height: 300px; min-height: 300px; }
+  #map { height: 280px; min-height: 280px; }
 
   /* Dashboard */
   .dash-layout { grid-template-columns: 1fr; }
@@ -1383,6 +1405,19 @@ p  { margin: 0 0 1em; }
   .btn--lg { padding: 14px 20px; font-size: 1rem; }
   .tabs button { font-size: 0.88rem; padding: 10px 14px; }
   .dev-banner { font-size: 0.8rem; line-height: 1.4; }
+  /* iOS : éviter le zoom automatique sur focus des inputs */
+  input, select, textarea { font-size: 16px !important; }
+  /* Carte Leaflet moins haute sur mobile */
+  #map { height: 220px; min-height: 220px; }
+}
+
+/* ─── 375px — iPhone SE ─────────────────────────────────────── */
+@media (max-width: 390px) {
+  /* Supprimer le débordement négatif de la search card */
+  .search-card { margin-top: 0; border-radius: 0; box-shadow: none; border-left: none; border-right: none; }
+  /* Touche minimale de 44px sur tous les éléments interactifs */
+  .btn { min-height: 44px; }
+  .nav a, .tabs button { min-height: 44px; display: flex; align-items: center; }
 }
 
 /* ---------- Cookie banner ---------- */
@@ -1590,6 +1625,14 @@ p  { margin: 0 0 1em; }
 /* ── Messages / alertes : fade-in ── */
 @keyframes fadeSlideIn {
   from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes navSlideDown {
+  from { opacity: 0; transform: translateY(-10px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
