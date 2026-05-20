@@ -11,21 +11,54 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     <p>Vérification de votre accès…</p>
   </div>
 
-  <!-- État : non connecté -->
+  <!-- État : non connecté (visiteur sans session) -->
   <div id="cp-anon" style="display:none;text-align:center;padding:120px 24px;">
     <div style="font-size:3rem;margin-bottom:16px;">🔒</div>
-    <h1>Lien expiré ou invalide</h1>
-    <p style="color:var(--color-text-soft);margin-bottom:24px;">
-      Le lien de connexion a expiré (valable 1 heure).<br/>
-      Entrez votre email pour recevoir un nouveau lien.
+    <h1 id="cp-anon-title">Accès restreint</h1>
+    <p id="cp-anon-desc" style="color:var(--color-text-soft);margin-bottom:24px;">
+      Cette page est réservée aux membres connectés.<br/>
+      <a href="/connexion" style="color:var(--color-primary);font-weight:600;">Se connecter →</a>
     </p>
-    <div style="max-width:360px;margin:0 auto;">
+    <!-- Section renvoi lien (affichée seulement si lien expiré) -->
+    <div id="cp-anon-relink" style="display:none;max-width:360px;margin:0 auto;">
       <div class="field">
         <input id="relink-email" type="email" placeholder="votre@email.fr" autocomplete="email" />
       </div>
       <button id="relink-btn" class="btn btn--primary btn--block">Recevoir un nouveau lien</button>
       <div id="relink-msg" style="margin-top:12px;font-size:0.9rem;color:var(--color-text-soft);"></div>
     </div>
+  </div>
+
+  <!-- État : réinitialisation du mot de passe (type=recovery) -->
+  <div id="cp-reset-wrap" style="display:none;">
+    <section class="section" style="padding-top:32px;">
+      <div class="container" style="max-width:480px;">
+        <div style="text-align:center;margin-bottom:32px;">
+          <div style="font-size:3rem;margin-bottom:12px;">🔑</div>
+          <span class="section__eyebrow">Sécurité du compte</span>
+          <h1 style="margin-top:12px;">Choisissez votre nouveau mot de passe</h1>
+          <p style="color:var(--color-text-soft);">
+            Vous avez demandé une réinitialisation. Saisissez votre nouveau mot de passe ci-dessous.
+          </p>
+        </div>
+        <div id="cp-reset-msg" style="display:none;padding:14px 18px;border-radius:var(--radius-md);margin-bottom:20px;font-size:0.95rem;"></div>
+        <div class="form-card">
+          <form id="cp-reset-form" novalidate>
+            <div class="field">
+              <label for="reset-mdp">Nouveau mot de passe *</label>
+              <input id="reset-mdp" type="password" autocomplete="new-password" minlength="8" placeholder="8 caractères minimum" required />
+            </div>
+            <div class="field">
+              <label for="reset-mdp2">Confirmer le mot de passe *</label>
+              <input id="reset-mdp2" type="password" autocomplete="new-password" minlength="8" required />
+            </div>
+            <button type="submit" id="reset-btn" class="btn btn--primary btn--block btn--lg" style="margin-top:20px;">
+              Enregistrer le mot de passe
+            </button>
+          </form>
+        </div>
+      </div>
+    </section>
   </div>
 
   <!-- ═══════════ ÉTAPE 1 : Profil ═══════════ -->
@@ -311,14 +344,17 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 <script>
   import { supabase } from '../lib/supabase';
 
-  const loadingEl  = document.getElementById('cp-loading')   as HTMLElement;
-  const anonEl     = document.getElementById('cp-anon')      as HTMLElement;
-  const formWrapEl = document.getElementById('cp-form-wrap') as HTMLElement;
-  const docsWrapEl = document.getElementById('cp-docs-wrap') as HTMLElement;
-  const msgBox     = document.getElementById('cp-msg')       as HTMLDivElement;
-  const docsMsgBox = document.getElementById('cp-docs-msg')  as HTMLDivElement;
+  const loadingEl   = document.getElementById('cp-loading')    as HTMLElement;
+  const anonEl      = document.getElementById('cp-anon')       as HTMLElement;
+  const resetWrapEl = document.getElementById('cp-reset-wrap') as HTMLElement;
+  const formWrapEl  = document.getElementById('cp-form-wrap')  as HTMLElement;
+  const docsWrapEl  = document.getElementById('cp-docs-wrap')  as HTMLElement;
+  const msgBox      = document.getElementById('cp-msg')        as HTMLDivElement;
+  const docsMsgBox  = document.getElementById('cp-docs-msg')   as HTMLDivElement;
+  const resetMsgBox = document.getElementById('cp-reset-msg')  as HTMLDivElement;
 
   let currentUserId = '';
+  let recoveryHandled = false; // évite d'afficher le form profil si on est en mode reset
 
   function showMsg(box: HTMLDivElement, type: 'success' | 'error', text: string) {
     box.style.display = 'block';
@@ -424,11 +460,24 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     btn.textContent = 'Vérifier ✓';
   });
 
+  // ─── Détection mode PASSWORD_RECOVERY (lien "mot de passe oublié") ──────────
+  supabase.auth.onAuthStateChange((event, session) => {
+    if (event === 'PASSWORD_RECOVERY') {
+      recoveryHandled = true;
+      loadingEl.style.display   = 'none';
+      resetWrapEl.style.display = 'block';
+    }
+  });
+
   // ─── Vérification de session ──────────────────────────────────────────────────
   supabase.auth.getSession().then(async ({ data: { session } }) => {
+    // Si onAuthStateChange a déjà pris la main (recovery), on ne fait rien ici
+    if (recoveryHandled) return;
+
     loadingEl.style.display = 'none';
 
     if (!session?.user) {
+      // Visiteur non connecté — message neutre (pas "lien expiré")
       anonEl.style.display = 'block';
       return;
     }
@@ -748,6 +797,41 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     showMsg(docsMsgBox, 'success', '✓ Documents enregistrés ! Redirection vers votre tableau de bord…');
     setTimeout(() => { window.location.href = '/dashboard'; }, 1500);
   });
+
+  // ─── Formulaire reset password (mode PASSWORD_RECOVERY) ───────────────────────
+  const resetForm = document.getElementById('cp-reset-form') as HTMLFormElement;
+  if (resetForm) {
+    resetForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const mdp  = (document.getElementById('reset-mdp')  as HTMLInputElement).value;
+      const mdp2 = (document.getElementById('reset-mdp2') as HTMLInputElement).value;
+      const btn  = document.getElementById('reset-btn')   as HTMLButtonElement;
+
+      if (!mdp || mdp.length < 8) {
+        showMsg(resetMsgBox, 'error', 'Le mot de passe doit faire au moins 8 caractères.');
+        return;
+      }
+      if (mdp !== mdp2) {
+        showMsg(resetMsgBox, 'error', 'Les deux mots de passe ne correspondent pas.');
+        return;
+      }
+
+      btn.disabled    = true;
+      btn.textContent = 'Enregistrement…';
+
+      const { error } = await supabase.auth.updateUser({ password: mdp });
+
+      if (error) {
+        showMsg(resetMsgBox, 'error', `Erreur : ${error.message}`);
+        btn.disabled    = false;
+        btn.textContent = 'Enregistrer le mot de passe';
+        return;
+      }
+
+      showMsg(resetMsgBox, 'success', '✓ Mot de passe mis à jour ! Redirection vers votre tableau de bord…');
+      setTimeout(() => { window.location.href = '/dashboard'; }, 1500);
+    });
+  }
 
   // ─── Renvoi du magic link ──────────────────────────────────────────────────────
   const relinkBtn = document.getElementById('relink-btn') as HTMLButtonElement;
