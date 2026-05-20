@@ -180,7 +180,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             <p class="form-help" style="margin-top:-8px;">Optionnel — vous pouvez toujours vous connecter par magic link.</p>
 
             <button type="submit" id="cp-btn" class="btn btn--primary btn--block btn--lg" style="margin-top:28px;">
-              Continuer → Documents professionnels
+              Continuer →
             </button>
           </form>
         </div>
@@ -202,9 +202,20 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           <span class="section__eyebrow">Documents professionnels</span>
           <h1 style="margin-top:12px;">Justificatifs légaux</h1>
           <p style="color:var(--color-text-soft);">
-            Ces documents sont requis pour exercer légalement et rassurer les hôtes.
-            Ils sont stockés de façon sécurisée et ne sont jamais partagés publiquement.
+            Ces documents permettent aux hôtes de vous faire confiance et d'activer votre profil vérifié.
+            <strong>Cette étape est optionnelle</strong> — vous pouvez les ajouter plus tard depuis votre tableau de bord.
           </p>
+        </div>
+
+        <!-- Encart rassurant — "pourquoi on vous demande ça" -->
+        <div style="background:var(--color-cream-soft);border:1px solid var(--color-border);border-radius:var(--radius-md);padding:20px 24px;margin-bottom:28px;display:flex;gap:16px;align-items:flex-start;">
+          <span style="font-size:1.8rem;flex-shrink:0;" aria-hidden="true">🔒</span>
+          <div>
+            <strong style="display:block;margin-bottom:6px;font-size:0.95rem;">Pourquoi ces documents ?</strong>
+            <p style="font-size:0.88rem;color:var(--color-text-soft);margin:0;line-height:1.6;">
+              Les hôtes (collectivités, entreprises) ont besoin de s'assurer que vous êtes bien un professionnel qualifié avant d'ouvrir leurs locaux. Vos documents sont <strong>chiffrés, privés</strong> et consultés uniquement par l'équipe MOB'SS dans le cadre d'une vérification manuelle. Conformément au RGPD, vous pouvez en demander la suppression à tout moment.
+            </p>
+          </div>
         </div>
 
         <div id="cp-docs-msg" style="display:none;padding:14px 18px;border-radius:var(--radius-md);margin-bottom:20px;font-size:0.95rem;"></div>
@@ -215,13 +226,14 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:28px;">
             <div style="flex:1;height:6px;border-radius:3px;background:var(--color-primary);"></div>
             <div style="flex:1;height:6px;border-radius:3px;background:var(--color-primary);"></div>
-            <span style="font-size:0.82rem;color:var(--color-text-soft);white-space:nowrap;">Étape 2 / 2</span>
+            <span style="font-size:0.82rem;color:var(--color-text-soft);white-space:nowrap;">Étape 2 / 2 — facultative</span>
           </div>
 
           <!-- Zone upload : Diplôme -->
           <div style="margin-bottom:28px;">
             <h2 style="font-size:1.1rem;font-family:var(--font-body);margin-bottom:6px;">
               🎓 Diplôme / Titre professionnel
+              <span style="font-size:0.8rem;font-weight:400;color:var(--color-text-soft);"> — facultatif</span>
             </h2>
             <p style="font-size:0.88rem;color:var(--color-text-soft);margin-bottom:12px;">
               Diplôme d'État, titre RNCP ou certificat officiel reconnaissant votre qualité de professionnel.
@@ -240,10 +252,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           <!-- Zone upload : Assurance RC Pro -->
           <div style="margin-bottom:28px;">
             <h2 style="font-size:1.1rem;font-family:var(--font-body);margin-bottom:6px;">
-              🛡️ Assurance Responsabilité Civile Professionnelle
+              🛡️ Assurance RC Pro
+              <span style="font-size:0.8rem;font-weight:400;color:var(--color-text-soft);"> — facultatif</span>
             </h2>
             <p style="font-size:0.88rem;color:var(--color-text-soft);margin-bottom:12px;">
-              Attestation RC Pro en cours de validité. Elle est obligatoire pour exercer en France.
+              Attestation de Responsabilité Civile Professionnelle en cours de validité.
             </p>
             <label class="upload-zone" id="zone-assurance" for="file-assurance">
               <input type="file" id="file-assurance" accept=".pdf,.jpg,.jpeg,.png,.webp" style="display:none;" />
@@ -268,10 +281,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
           <div style="display:flex;gap:12px;flex-wrap:wrap;">
             <button id="docs-skip-btn" class="btn btn--outline" style="flex:1;">
-              Passer cette étape →
+              Ignorer pour l'instant
             </button>
             <button id="docs-save-btn" class="btn btn--primary" style="flex:2;">
-              Enregistrer les documents →
+              Enregistrer et accéder à mon espace →
             </button>
           </div>
 
@@ -790,7 +803,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     const assuranceOk = document.getElementById('zone-assurance')?.classList.contains('upload-zone--done');
 
     if (!diplomeOk && !assuranceOk) {
-      showMsg(docsMsgBox, 'error', 'Ajoutez au moins un document, ou cliquez sur "Passer cette étape".');
+      showMsg(docsMsgBox, 'error', 'Ajoutez au moins un document, ou cliquez sur « Ignorer pour l\'instant ».');
       return;
     }
 

@@ -1,16 +1,46 @@
 ---
 // Footer — Le pied de page commun à toutes les pages
-// Pour modifier les liens du footer, c'est ici.
 ---
 
 <footer class="site-footer">
   <div class="container">
     <div class="footer-grid">
+
+      <!-- Colonne marque -->
       <div class="footer-brand">
-        <a class="brand" href="/">
+        <a class="brand" href="/" aria-label="MOB'SS — Accueil">
           <span class="brand__mark" aria-hidden="true">MOB'SS</span>
         </a>
-        <p>La plateforme qui connecte professionnels du sport, de la santé et espaces inoccupés pour rendre le bien-être accessible à tous, partout.</p>
+        <p class="footer-brand__desc">
+          Des espaces inoccupés. Des professionnels qui cherchent où exercer.<br/>
+          MOB'SS fait le lien — gratuitement, partout en France.
+        </p>
+        <!-- Réseaux sociaux -->
+        <div class="footer-social" aria-label="Réseaux sociaux MOB'SS">
+          <a href="https://www.linkedin.com/company/mobss" target="_blank" rel="noopener noreferrer" aria-label="MOB'SS sur LinkedIn" class="footer-social__link">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
+              <rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/>
+            </svg>
+            LinkedIn
+          </a>
+          <a href="https://www.instagram.com/mobss.france" target="_blank" rel="noopener noreferrer" aria-label="MOB'SS sur Instagram" class="footer-social__link">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+              <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+              <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+            </svg>
+            Instagram
+          </a>
+        </div>
+        <!-- Contact direct -->
+        <a href="mailto:contact@mobss.fr" class="footer-contact-link">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+            <polyline points="22,6 12,13 2,6"/>
+          </svg>
+          contact@mobss.fr
+        </a>
       </div>
 
       <div>
@@ -34,19 +64,88 @@
       </div>
 
       <div>
-        <h4>Aide</h4>
+        <h4>Aide & infos</h4>
         <ul>
           <li><a href="/contact">Nous contacter</a></li>
           <li><a href="/comment-ca-marche#faq">FAQ</a></li>
           <li><a href="/mentions-legales">Mentions légales</a></li>
-          <li><a href="/confidentialite">Confidentialité</a></li>
+          <li><a href="/confidentialite">Politique de confidentialité</a></li>
         </ul>
       </div>
     </div>
 
     <div class="footer-bottom">
-      <span>© 2026 MOB'SS — Une plateforme à impact social.</span>
-      <span>Conçu pour les territoires, par et pour les acteurs du sport et de la santé.</span>
+      <span>© 2026 MOB'SS · Tous droits réservés</span>
+      <span class="footer-bottom__tagline">Rendre le sport et la santé accessibles à tous, partout en France.</span>
     </div>
   </div>
 </footer>
+
+<style>
+  .footer-brand__desc {
+    font-size: 0.9rem;
+    color: var(--color-text-soft);
+    line-height: 1.6;
+    margin: 12px 0 18px;
+  }
+
+  /* Réseaux sociaux */
+  .footer-social {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+  }
+  .footer-social__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-text-soft);
+    background: var(--color-bg-soft);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-pill);
+    padding: 6px 14px;
+    text-decoration: none;
+    transition: color .15s ease, border-color .15s ease, background .15s ease;
+  }
+  .footer-social__link:hover {
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+    background: var(--color-cream-soft);
+  }
+
+  /* Contact email */
+  .footer-contact-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 0.88rem;
+    color: var(--color-text-soft);
+    text-decoration: none;
+    transition: color .15s ease;
+  }
+  .footer-contact-link:hover { color: var(--color-primary); }
+
+  /* Barre du bas */
+  .footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding-top: 24px;
+    margin-top: 48px;
+    border-top: 1px solid var(--color-border);
+    font-size: 0.83rem;
+    color: var(--color-text-soft);
+  }
+  .footer-bottom__tagline {
+    font-style: italic;
+    opacity: 0.8;
+  }
+  @media (max-width: 640px) {
+    .footer-bottom { flex-direction: column; text-align: center; }
+  }
+</style>

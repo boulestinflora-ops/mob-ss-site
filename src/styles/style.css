@@ -1500,6 +1500,131 @@ p  { margin: 0 0 1em; }
   }
 }
 
+/* ═══════════════════════════════════════════════════════════
+   MICRO-INTERACTIONS — Feedback visuel & animations
+   Toutes désactivées si prefers-reduced-motion (déjà géré globalement)
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Boutons : press effect + ombre dynamique ── */
+.btn {
+  will-change: transform;
+}
+.btn:active { transform: translateY(1px) scale(0.985); }
+
+.btn--primary {
+  box-shadow: 0 4px 0 var(--color-primary-dark), 0 2px 8px rgba(181,48,64,0.18);
+  transition: transform .15s ease, box-shadow .15s ease, background .18s ease;
+}
+.btn--primary:hover {
+  box-shadow: 0 6px 0 var(--color-primary-dark), 0 4px 16px rgba(181,48,64,0.25);
+  transform: translateY(-2px);
+}
+.btn--primary:active {
+  box-shadow: 0 2px 0 var(--color-primary-dark);
+  transform: translateY(1px);
+}
+.btn--cream:hover  { transform: translateY(-2px); box-shadow: 0 4px 0 #c9bb6e, 0 4px 14px rgba(200,180,60,0.2); }
+.btn--cream:active { transform: translateY(1px); box-shadow: 0 1px 0 #c9bb6e; }
+.btn--outline:hover  { transform: translateY(-1px); }
+.btn--outline:active { transform: translateY(1px); }
+
+/* ── Cartes d'espaces : lift + image zoom + border glow ── */
+.space-card {
+  transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease;
+  will-change: transform;
+}
+.space-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 32px rgba(31,21,24,0.10), 0 2px 8px rgba(31,21,24,0.04);
+  border-color: rgba(181,48,64,0.2);
+}
+.space-card__media { overflow: hidden; }
+.space-card__media img { transition: transform .35s ease; }
+.space-card:hover .space-card__media img { transform: scale(1.06); }
+
+/* Bouton favoris */
+.space-card__fav {
+  transition: transform .15s ease, background .15s ease, color .15s ease;
+}
+.space-card__fav:hover  { transform: scale(1.15); background: var(--color-cream); }
+.space-card__fav:active { transform: scale(0.92); }
+.space-card__fav.is-fav svg { fill: var(--color-primary); }
+
+/* ── Cards génériques ── */
+.card {
+  transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease;
+}
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 32px rgba(31,21,24,0.08);
+  border-color: rgba(181,48,64,0.2);
+}
+.audience-card { transition: transform .22s ease, box-shadow .22s ease; }
+.audience-card:hover { transform: translateY(-6px); box-shadow: 0 14px 36px rgba(31,21,24,0.09); }
+
+/* ── Champs de formulaire : focus fluide ── */
+.field input,
+.field select,
+.field textarea {
+  transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
+}
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(181,48,64,0.12);
+  background: #fff;
+}
+
+/* ── Navigation : underline slide ── */
+.nav a { transition: color .15s ease; }
+.nav a::after {
+  transition: transform .2s ease, opacity .2s ease;
+  transform-origin: left center;
+  transform: scaleX(0);
+  opacity: 0;
+}
+.nav a:hover::after,
+.nav a.is-active::after { transform: scaleX(1); opacity: 1; }
+
+/* ── Messages / alertes : fade-in ── */
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Tags : hover subtil ── */
+.tag { transition: background .15s ease, border-color .15s ease; }
+.tag:hover { background: var(--color-cream-soft); border-color: var(--color-primary); }
+
+/* ── Upload zones ── */
+.upload-zone { transition: border-color .2s ease, background .2s ease, transform .15s ease; }
+.upload-zone:hover { transform: scale(1.005); }
+
+/* ── Skeleton loading ── */
+@keyframes shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position:  400px 0; }
+}
+.skeleton {
+  background: linear-gradient(90deg, #f0ece4 25%, #e8e2d8 50%, #f0ece4 75%);
+  background-size: 800px 100%;
+  animation: shimmer 1.4s ease infinite;
+  border-radius: var(--radius-sm);
+}
+.skeleton-card {
+  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  height: 320px;
+}
+.skeleton-card .skeleton-media { height: 200px; }
+.skeleton-card .skeleton-body  { padding: 20px; display: flex; flex-direction: column; gap: 10px; }
+.skeleton-card .skeleton-line  { height: 14px; border-radius: 6px; }
+.skeleton-card .skeleton-line--short { width: 60%; }
+.skeleton-card .skeleton-line--title { height: 18px; width: 80%; }
+
 /* Déposer une annonce — étapes sur mobile */
 @media (max-width: 640px) {
   /* Stepper horizontal qui déborde */
