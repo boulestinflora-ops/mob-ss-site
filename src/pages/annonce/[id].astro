@@ -149,7 +149,7 @@ const bgStyle = gradientStyles[space.gradient] || gradientStyles['from-cream'];
               <strong style="display:block;">{hostLabel} · {space.city}</strong>
               <span style="color:var(--color-text-soft);font-size:0.9rem;">Membre vérifié MOB'SS · Réponse sous 48h</span>
             </div>
-            <button class="btn btn--outline">Contacter</button>
+            <button id="btn-contacter" class="btn btn--outline">Contacter</button>
           </div>
 
           <!-- Localisation -->
@@ -202,6 +202,11 @@ const bgStyle = gradientStyles[space.gradient] || gradientStyles['from-cream'];
 
             <button id="btn-demande" class="btn btn--primary btn--block btn--lg">Envoyer une demande</button>
             <p id="demande-hint" style="text-align:center;font-size:0.85rem;color:var(--color-text-soft);margin:12px 0 0;">L'hôte confirmera votre demande sous 48h.</p>
+
+            <!-- Réassurance -->
+            <div style="display:flex;align-items:center;gap:8px;margin-top:16px;padding-top:14px;border-top:1px solid var(--color-border);font-size:0.8rem;color:var(--color-text-soft);">
+              <span>🔒</span><span>Inscription gratuite · 2 min · Sans engagement</span>
+            </div>
           </div>
 
           <div class="card" style="margin-top:12px;display:flex;align-items:flex-start;gap:12px;padding:18px;">
@@ -215,6 +220,41 @@ const bgStyle = gradientStyles[space.gradient] || gradientStyles['from-cream'];
   </section>
 
 </BaseLayout>
+
+<!-- Modale auth — s'affiche quand un visiteur non connecté essaie d'envoyer une demande -->
+<div id="auth-gate-modal" role="dialog" aria-modal="true" aria-labelledby="auth-gate-title"
+  style="display:none;position:fixed;inset:0;z-index:500;background:rgba(31,21,24,0.55);backdrop-filter:blur(3px);align-items:center;justify-content:center;padding:20px;">
+  <div style="background:#fff;border-radius:var(--radius-lg);max-width:420px;width:100%;padding:36px 32px;box-shadow:0 24px 64px rgba(31,21,24,0.22);position:relative;">
+    <!-- Fermer -->
+    <button id="auth-gate-close" aria-label="Fermer"
+      style="position:absolute;top:14px;right:14px;background:none;border:none;cursor:pointer;color:var(--color-text-soft);font-size:1.3rem;line-height:1;padding:4px;">✕</button>
+
+    <div style="text-align:center;margin-bottom:24px;">
+      <div style="font-size:2.2rem;margin-bottom:12px;">🗝️</div>
+      <h2 id="auth-gate-title" style="font-size:1.3rem;margin-bottom:8px;">Connectez-vous pour envoyer votre demande</h2>
+      <p style="color:var(--color-text-soft);font-size:0.93rem;line-height:1.55;">
+        Votre sélection de dates est conservée.<br/>Inscription gratuite, sans engagement, en 2 minutes.
+      </p>
+    </div>
+
+    <!-- CTAs -->
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <a id="auth-gate-signup" href="/inscription?role=praticien" class="btn btn--primary btn--block btn--lg">
+        Créer un compte gratuitement →
+      </a>
+      <a id="auth-gate-login" href="/connexion" class="btn btn--outline btn--block">
+        Déjà inscrit ? Se connecter
+      </a>
+    </div>
+
+    <!-- Réassurance -->
+    <div style="display:flex;justify-content:center;gap:16px;margin-top:20px;font-size:0.78rem;color:var(--color-text-soft);">
+      <span>🔒 RGPD</span>
+      <span>✓ Profils vérifiés</span>
+      <span>0 € gratuit</span>
+    </div>
+  </div>
+</div>
 
 <!-- Leaflet pour la mini-carte de localisation -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -253,6 +293,29 @@ const bgStyle = gradientStyles[space.gradient] || gradientStyles['from-cream'];
   const btn     = document.getElementById('btn-demande');
   const msgBox  = document.getElementById('demande-msg');
   const hint    = document.getElementById('demande-hint');
+  const modal   = document.getElementById('auth-gate-modal');
+  const modalClose = document.getElementById('auth-gate-close');
+
+  // Lier les liens de la modale avec le paramètre retour
+  const retourParam = encodeURIComponent(window.location.pathname + window.location.search);
+  document.getElementById('auth-gate-signup')?.setAttribute('href', `/inscription?role=praticien&retour=${retourParam}`);
+  document.getElementById('auth-gate-login')?.setAttribute('href',  `/connexion?retour=${retourParam}`);
+
+  // Ouvrir / fermer la modale
+  function openAuthModal() {
+    if (!modal) return;
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+    modalClose?.focus();
+  }
+  function closeAuthModal() {
+    if (!modal) return;
+    modal.style.display = 'none';
+    document.body.style.overflow = '';
+  }
+  modalClose?.addEventListener('click', closeAuthModal);
+  modal?.addEventListener('click', (e) => { if (e.target === modal) closeAuthModal(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeAuthModal(); });
 
   function showMsg(type, text) {
     if (!msgBox) return;
@@ -270,15 +333,32 @@ const bgStyle = gradientStyles[space.gradient] || gradientStyles['from-cream'];
     msgBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
 
+  // Bouton "Contacter" sur la fiche hôte → même modale
+  document.getElementById('btn-contacter')?.addEventListener('click', async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.user) { openAuthModal(); return; }
+    // Connecté → scroll vers le formulaire de demande
+    document.getElementById('btn-demande')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  });
+
+  // Bouton "Sauvegarder" → modale si non connecté
+  document.querySelectorAll('.btn--outline').forEach(b => {
+    if ((b as HTMLElement).textContent?.trim() === 'Sauvegarder') {
+      b.addEventListener('click', async () => {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session?.user) openAuthModal();
+      });
+    }
+  });
+
   if (btn) {
     btn.addEventListener('click', async () => {
       // Vérifie si l'utilisateur est connecté
       const { data: { session } } = await supabase.auth.getSession();
 
       if (!session?.user) {
-        // Pas connecté → redirection vers inscription avec contexte
-        const retour = encodeURIComponent(window.location.pathname);
-        window.location.href = `/inscription?role=praticien&retour=${retour}`;
+        // Pas connecté → modale contextuelle (pas de redirection)
+        openAuthModal();
         return;
       }
 

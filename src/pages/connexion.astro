@@ -165,7 +165,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         return;
       }
 
-      window.location.href = '/dashboard';
+      // Redirige vers la page d'origine si ?retour= présent, sinon dashboard
+      const retourParam = new URLSearchParams(window.location.search).get('retour');
+      window.location.href = retourParam ? decodeURIComponent(retourParam) : '/dashboard';
     });
   }
 
