@@ -4,6 +4,6 @@ Allow: /
 # Pages privées — ne pas indexer
 Disallow: /dashboard
 Disallow: /completer-profil
-Disallow: /deposer-annonce
+Disallow: /admin
 
-Sitemap: https://project-ysntr.vercel.app/sitemap.xml
+Sitemap: https://mobss.fr/sitemap.xml

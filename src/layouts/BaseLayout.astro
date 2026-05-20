@@ -41,15 +41,59 @@ const BETA_MODE = import.meta.env.PUBLIC_BETA_MODE !== 'false';
   <link rel="canonical" href={canonicalUrl} />
 
   <!-- Open Graph — partage sur LinkedIn, WhatsApp, etc. -->
-  <meta property="og:type"        content="website" />
-  <meta property="og:site_name"   content="MOB'SS" />
-  <meta property="og:url"         content={canonicalUrl} />
-  <meta property="og:title"       content={title} />
-  <meta property="og:description" content={description} />
-  <meta property="og:image"       content={`${siteUrl}/og-image.png`} />
-  <meta name="twitter:card"       content="summary_large_image" />
-  <meta name="twitter:title"      content={title} />
+  <meta property="og:type"         content="website" />
+  <meta property="og:site_name"    content="MOB'SS" />
+  <meta property="og:locale"       content="fr_FR" />
+  <meta property="og:url"          content={canonicalUrl} />
+  <meta property="og:title"        content={title} />
+  <meta property="og:description"  content={description} />
+  <meta property="og:image"        content={`${siteUrl}/og-image.png`} />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt"    content="MOB'SS — Des espaces gratuits pour exercer, partout en France" />
+  <meta name="twitter:card"        content="summary_large_image" />
+  <meta name="twitter:site"        content="@mobss_france" />
+  <meta name="twitter:title"       content={title} />
   <meta name="twitter:description" content={description} />
+  <meta name="twitter:image"       content={`${siteUrl}/og-image.png`} />
+
+  <!-- JSON-LD — Organisation + moteur de recherche -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": `${siteUrl}/#organization`,
+        "name": "MOB'SS",
+        "url": siteUrl,
+        "logo": {
+          "@type": "ImageObject",
+          "url": `${siteUrl}/logo.svg`
+        },
+        "description": "MOB'SS connecte les espaces inoccupés des collectivités et des entreprises avec les professionnels du sport et de la santé — gratuitement, partout en France.",
+        "email": "contact@mobss.fr",
+        "sameAs": [
+          "https://www.linkedin.com/company/mobss",
+          "https://www.instagram.com/mobss.france"
+        ]
+      },
+      {
+        "@type": "WebSite",
+        "@id": `${siteUrl}/#website`,
+        "url": siteUrl,
+        "name": "MOB'SS",
+        "publisher": { "@id": `${siteUrl}/#organization` },
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": {
+            "@type": "EntryPoint",
+            "urlTemplate": `${siteUrl}/explorez?q={search_term_string}`
+          },
+          "query-input": "required name=search_term_string"
+        }
+      }
+    ]
+  })} />
 
   <!-- Noindex bêta — RETIRER cette ligne au lancement officiel (mettre BETA_MODE = false) -->
   {BETA_MODE && <meta name="robots" content="noindex, nofollow" />}

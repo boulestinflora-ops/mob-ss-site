@@ -6,9 +6,21 @@ import faq from '../data/faq.json';
 
 <BaseLayout
   title="Comment ça marche — MOB'SS"
-  description="Découvrez comment MOB'SS connecte praticiens, collectivités et entreprises autour des espaces sport et santé."
+  description="Découvrez comment MOB'SS connecte praticiens, collectivités et entreprises autour des espaces sport et santé. Gratuit, sans engagement, 100 % en ligne."
   currentPage="comment"
 >
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": faq.map(item => ({
+      "@type": "Question",
+      "name": item.question,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": item.answer
+      }
+    }))
+  })} />
 
   <section style="background:linear-gradient(135deg,var(--color-primary),var(--color-primary-dark));color:#fff;padding:80px 0 60px;">
     <div class="container text-center">
