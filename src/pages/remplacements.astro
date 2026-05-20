@@ -198,9 +198,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     const nomInit   = p.nom ? esc(p.nom[0].toUpperCase()) + '.' : '';
     const initiales = esc(((p.prenom?.[0] || '') + (p.nom?.[0] || '')).toUpperCase() || '?');
     const color     = avatarColor(initiales);
+    const profileUrl = p.id ? `/praticien?id=${encodeURIComponent(p.id)}` : '#';
 
     return `
-      <div class="card" style="display:flex;flex-direction:column;gap:12px;padding:22px;">
+      <a class="card" href="${profileUrl}" style="display:flex;flex-direction:column;gap:12px;padding:22px;text-decoration:none;color:inherit;transition:box-shadow 0.15s,border-color 0.15s;" onmouseover="this.style.borderColor='var(--color-primary)';this.style.boxShadow='var(--shadow-sm)';" onmouseout="this.style.borderColor='';this.style.boxShadow='';">
         <div style="display:flex;align-items:center;gap:14px;">
           <div style="width:52px;height:52px;border-radius:12px;background:${color};color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.2rem;flex-shrink:0;">
             ${initiales}
@@ -215,7 +216,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         </span>
         ${p.ville ? `<p style="margin:0;font-size:0.88rem;color:var(--color-text-soft);">📍 ${esc(p.ville)}</p>` : ''}
         ${p.bio ? `<p style="margin:0;font-size:0.88rem;color:var(--color-text-soft);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;">${esc(p.bio)}</p>` : ''}
-      </div>
+        <span style="font-size:0.82rem;color:var(--color-primary);font-weight:600;margin-top:4px;">Voir le profil →</span>
+      </a>
     `;
   }
 
@@ -230,7 +232,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     try {
       const { data, error } = await supabase
         .from('profiles')
-        .select('prenom, nom, specialite, ville, bio')
+        .select('id, prenom, nom, specialite, ville, bio')
         .eq('disponible_remplacement', true)
         .eq('visible_annuaire', true)
         .not('prenom', 'is', null)

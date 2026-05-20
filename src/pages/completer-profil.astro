@@ -98,6 +98,24 @@ import BaseLayout from '../layouts/BaseLayout.astro';
                 <input id="cp-ville" type="text" required autocomplete="address-level2" placeholder="Lyon" />
               </div>
             </div>
+
+            <!-- Numéro RPPS — affiché uniquement pour les professions réglementées -->
+            <div class="field" id="field-rpps" style="display:none;">
+              <label for="cp-rpps">
+                Numéro RPPS
+                <span style="font-weight:400;color:var(--color-text-soft);font-size:0.85rem;">(recommandé)</span>
+              </label>
+              <div style="display:flex;gap:8px;align-items:center;">
+                <input id="cp-rpps" type="text" maxlength="11" pattern="\d{11}" placeholder="11 chiffres" autocomplete="off"
+                  style="max-width:200px;letter-spacing:0.08em;" />
+                <button type="button" id="btn-verify-rpps" class="btn btn--outline" style="white-space:nowrap;padding:8px 14px;font-size:0.9rem;">
+                  Vérifier ✓
+                </button>
+              </div>
+              <div id="rpps-result" style="display:none;margin-top:8px;padding:10px 14px;border-radius:var(--radius-sm);font-size:0.88rem;"></div>
+              <p class="form-help">Votre numéro RPPS est visible sur votre carte professionnelle ou sur <a href="https://annuaire.sante.fr" target="_blank" rel="noopener">annuaire.sante.fr</a>. Il permet de confirmer votre inscription au répertoire national.</p>
+            </div>
+
             <div class="field">
               <label for="cp-bio">Présentation courte</label>
               <textarea id="cp-bio" placeholder="Ex : Kinésithérapeute libéral spécialisé en sport, je cherche des espaces pour recevoir mes patients en dehors de mon cabinet principal…" style="min-height:90px;"></textarea>
@@ -317,6 +335,95 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     box.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
 
+  // ─── Professions pour lesquelles le RPPS est pertinent ──────────────────────
+  const RPPS_SPECIALITES = new Set([
+    'Kinésithérapeute', 'Ostéopathe', 'Infirmier libéral', 'Médecin',
+    'Psychomotricien', 'Ergothérapeute', 'Diététicien / nutritionniste',
+  ]);
+
+  function updateRppsVisibility(specialite: string) {
+    const fieldRpps = document.getElementById('field-rpps') as HTMLElement;
+    if (fieldRpps) fieldRpps.style.display = RPPS_SPECIALITES.has(specialite) ? '' : 'none';
+  }
+
+  document.getElementById('cp-specialite')?.addEventListener('change', (e) => {
+    updateRppsVisibility((e.target as HTMLSelectElement).value);
+  });
+
+  // ─── Vérification RPPS ───────────────────────────────────────────────────────
+  let rppsVerifie = false;
+
+  document.getElementById('btn-verify-rpps')?.addEventListener('click', async () => {
+    const rppsInput  = document.getElementById('cp-rpps')   as HTMLInputElement;
+    const resultDiv  = document.getElementById('rpps-result') as HTMLElement;
+    const btn        = document.getElementById('btn-verify-rpps') as HTMLButtonElement;
+    const rpps       = rppsInput.value.replace(/\s/g, '');
+
+    if (!/^\d{11}$/.test(rpps)) {
+      resultDiv.style.display    = 'block';
+      resultDiv.style.background = '#FBE5E5';
+      resultDiv.style.color      = '#A02323';
+      resultDiv.style.border     = '1px solid #F0B8B8';
+      resultDiv.textContent      = '⚠️ Le numéro RPPS doit contenir exactement 11 chiffres.';
+      return;
+    }
+
+    btn.disabled    = true;
+    btn.textContent = '…';
+    resultDiv.style.display    = 'block';
+    resultDiv.style.background = '#EFF6FF';
+    resultDiv.style.color      = '#1D4ED8';
+    resultDiv.style.border     = '1px solid #BFDBFE';
+    resultDiv.textContent      = '⏳ Vérification en cours via l\'annuaire national…';
+
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const res = await fetch(
+        `${import.meta.env.PUBLIC_SUPABASE_URL}/functions/v1/verify-rpps`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${session?.access_token ?? import.meta.env.PUBLIC_SUPABASE_ANON_KEY}`,
+          },
+          body: JSON.stringify({ rpps }),
+        }
+      );
+      const json = await res.json();
+
+      if (json.ok) {
+        rppsVerifie = true;
+        resultDiv.style.background = '#E8F4EA';
+        resultDiv.style.color      = '#2D6E3F';
+        resultDiv.style.border     = '1px solid #B8DBC0';
+        const parts = ['✅ Numéro RPPS confirmé dans l\'annuaire national.'];
+        if (json.nom)       parts.push(`Praticien : ${json.prenom} ${json.nom}`);
+        if (json.specialite)parts.push(`Spécialité : ${json.specialite}`);
+        if (json.mode === 'non_verifie') {
+          resultDiv.style.background = '#FFFBEB';
+          resultDiv.style.color      = '#92400E';
+          resultDiv.style.border     = '1px solid #FDE68A';
+          parts[0] = '⚠️ Numéro enregistré (vérification API non activée).';
+        }
+        resultDiv.textContent = parts.join(' · ');
+      } else {
+        rppsVerifie = false;
+        resultDiv.style.background = '#FBE5E5';
+        resultDiv.style.color      = '#A02323';
+        resultDiv.style.border     = '1px solid #F0B8B8';
+        resultDiv.textContent      = `❌ ${json.error}`;
+      }
+    } catch {
+      resultDiv.style.background = '#FBE5E5';
+      resultDiv.style.color      = '#A02323';
+      resultDiv.style.border     = '1px solid #F0B8B8';
+      resultDiv.textContent      = '❌ Service temporairement indisponible.';
+    }
+
+    btn.disabled    = false;
+    btn.textContent = 'Vérifier ✓';
+  });
+
   // ─── Vérification de session ──────────────────────────────────────────────────
   supabase.auth.getSession().then(async ({ data: { session } }) => {
     loadingEl.style.display = 'none';
@@ -345,7 +452,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     try {
       const { data: profile } = await supabase
         .from('profiles')
-        .select('prenom, nom, telephone, specialite, ville, bio, disponible_remplacement')
+        .select('prenom, nom, telephone, specialite, ville, bio, disponible_remplacement, rpps_numero, rpps_verifie')
         .eq('id', session.user.id)
         .single();
 
@@ -358,14 +465,28 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         set('cp-nom', profile.nom);
         set('cp-tel', profile.telephone);
         set('cp-bio', profile.bio);
+        set('cp-rpps', profile.rpps_numero);
         if (profile.ville) villeEl.value = profile.ville;
         if (profile.specialite && specialiteEl) {
           Array.from(specialiteEl.options).forEach(opt => {
             if (opt.text === profile.specialite) opt.selected = true;
           });
+          updateRppsVisibility(profile.specialite);
         }
         const rempl = document.getElementById('cp-remplacement') as HTMLInputElement;
         if (rempl) rempl.checked = !!profile.disponible_remplacement;
+        // Afficher le statut RPPS déjà vérifié
+        if (profile.rpps_verifie && profile.rpps_numero) {
+          rppsVerifie = true;
+          const resultDiv = document.getElementById('rpps-result') as HTMLElement;
+          if (resultDiv) {
+            resultDiv.style.display    = 'block';
+            resultDiv.style.background = '#E8F4EA';
+            resultDiv.style.color      = '#2D6E3F';
+            resultDiv.style.border     = '1px solid #B8DBC0';
+            resultDiv.textContent      = '✅ Numéro RPPS précédemment vérifié.';
+          }
+        }
       }
     } catch (_) { /* Pas de profil existant */ }
   });
@@ -422,6 +543,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         }
       }
 
+      const rppsNum = (document.getElementById('cp-rpps') as HTMLInputElement)?.value.trim() || null;
+
       const { error: profileError } = await supabase.from('profiles').upsert({
         id: session.user.id,
         prenom,
@@ -432,6 +555,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         bio: bio || null,
         disponible_remplacement: remplacement,
         role: 'praticien',
+        rpps_numero:  rppsNum,
+        rpps_verifie: rppsVerifie,
         updated_at: new Date().toISOString(),
       });
 
@@ -527,15 +652,78 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         return;
       }
 
-      // Succès
+      // Récupérer l'id du document qu'on vient d'insérer
+      const { data: docRow } = await supabase
+        .from('documents')
+        .select('id')
+        .eq('user_id', currentUserId)
+        .eq('type', docType)
+        .order('uploaded_at', { ascending: false })
+        .limit(1)
+        .single();
+
+      // Succès visuel immédiat
       zone.classList.remove('upload-zone--active');
       zone.classList.add('upload-zone--done');
       zone.querySelector('.upload-zone__icon')!.textContent = '✅';
       (zone.querySelector('.upload-zone__text strong') as HTMLElement).textContent = file.name;
-      (zone.querySelector('.upload-zone__text span') as HTMLElement).textContent = 'Document enregistré avec succès';
+      (zone.querySelector('.upload-zone__text span') as HTMLElement).textContent = 'Document enregistré — analyse en cours…';
 
-      statusEl.className   = 'doc-status doc-status--ok';
-      statusEl.textContent = `✓ "${file.name}" enregistré.`;
+      statusEl.className   = 'doc-status doc-status--uploading';
+      statusEl.textContent = `⏳ Analyse automatique du document en cours…`;
+
+      // ── Appel analyse IA ───────────────────────────────────────
+      if (docRow?.id) {
+        try {
+          const { data: { session } } = await supabase.auth.getSession();
+          const analyseRes = await fetch(
+            `${import.meta.env.PUBLIC_SUPABASE_URL}/functions/v1/analyze-document`,
+            {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${session?.access_token ?? import.meta.env.PUBLIC_SUPABASE_ANON_KEY}`,
+              },
+              body: JSON.stringify({
+                document_id: docRow.id,
+                file_path:   filePath,
+                doc_type:    docType,
+              }),
+            }
+          );
+          const analyseData = await analyseRes.json();
+          const a = analyseData.analyse;
+
+          if (a?.conforme === true) {
+            (zone.querySelector('.upload-zone__text span') as HTMLElement).textContent = '✅ Document analysé — conforme';
+            statusEl.className   = 'doc-status doc-status--ok';
+            const msgs = [`✅ "${file.name}" enregistré et analysé.`];
+            if (a.assureur)        msgs.push(`Assureur : ${a.assureur}`);
+            if (a.date_fin)        msgs.push(`Expire le : ${new Date(a.date_fin).toLocaleDateString('fr-FR')}`);
+            if (a.intitule)        msgs.push(`Diplôme : ${a.intitule}`);
+            if (a.anomalies?.length) msgs.push(`Attention : ${a.anomalies.join(', ')}`);
+            statusEl.textContent = msgs.join(' · ');
+          } else if (a?.conforme === false) {
+            (zone.querySelector('.upload-zone__text span') as HTMLElement).textContent = '⚠️ Document enregistré — à vérifier';
+            statusEl.className   = 'doc-status doc-status--error';
+            const anomalies = a.anomalies?.length ? a.anomalies.join(', ') : 'Document non reconnu ou illisible';
+            statusEl.textContent = `⚠️ "${file.name}" enregistré mais l'analyse signale : ${anomalies}`;
+          } else {
+            // Clé API absente → pas d'analyse, mais upload OK
+            (zone.querySelector('.upload-zone__text span') as HTMLElement).textContent = 'Document enregistré avec succès';
+            statusEl.className   = 'doc-status doc-status--ok';
+            statusEl.textContent = `✓ "${file.name}" enregistré. (Analyse IA non activée)`;
+          }
+        } catch {
+          (zone.querySelector('.upload-zone__text span') as HTMLElement).textContent = 'Document enregistré avec succès';
+          statusEl.className   = 'doc-status doc-status--ok';
+          statusEl.textContent = `✓ "${file.name}" enregistré.`;
+        }
+      } else {
+        (zone.querySelector('.upload-zone__text span') as HTMLElement).textContent = 'Document enregistré avec succès';
+        statusEl.className   = 'doc-status doc-status--ok';
+        statusEl.textContent = `✓ "${file.name}" enregistré.`;
+      }
     });
   }
 

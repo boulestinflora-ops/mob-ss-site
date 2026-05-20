@@ -22,8 +22,8 @@ const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? 'https://mobss.verc
 const canonicalUrl = new URL(Astro.url.pathname, siteUrl).href;
 
 // ⚠️ BETA — Empêche l'indexation par Google pendant la phase de test.
-// À retirer quand le site sera prêt pour le lancement officiel.
-const BETA_MODE = true;
+// Pour désactiver, mettre PUBLIC_BETA_MODE=false dans .env (ou supprimer la variable).
+const BETA_MODE = import.meta.env.PUBLIC_BETA_MODE !== 'false';
 ---
 
 <!DOCTYPE html>

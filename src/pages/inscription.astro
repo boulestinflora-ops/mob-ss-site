@@ -261,6 +261,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       submitBtn.textContent = 'Création du compte…';
 
       // Appel Supabase : crée le compte + envoie email de confirmation
+      // Récupère la spécialité si l'utilisateur est praticien
+      const specialite = role === 'praticien'
+        ? (document.getElementById('activite') as HTMLSelectElement)?.value || null
+        : null;
+
       const { data, error } = await supabase.auth.signUp({
         email,
         password: mdp,
@@ -270,6 +275,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             prenom,
             nom,
             telephone: tel,
+            specialite,
           },
           emailRedirectTo: `${window.location.origin}/dashboard`,
         },

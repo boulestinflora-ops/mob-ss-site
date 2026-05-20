@@ -338,12 +338,24 @@ const equipements = [
 
   // ─── Auth check ───────────────────────────────────────────────────────────────
   let currentUserId = '';
-  supabase.auth.getSession().then(({ data: { session } }) => {
+  supabase.auth.getSession().then(async ({ data: { session } }) => {
     if (!session?.user) {
       window.location.href = '/inscription?role=collectivite&redirect=deposer-annonce';
       return;
     }
     currentUserId = session.user.id;
+
+    // Les praticiens ne peuvent pas déposer d'espace
+    try {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', session.user.id)
+        .single();
+      if (profile?.role === 'praticien') {
+        window.location.href = '/dashboard';
+      }
+    } catch (_) {}
   });
 
   // ─── Sélection type d'espace ──────────────────────────────────────────────────

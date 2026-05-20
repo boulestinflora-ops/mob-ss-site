@@ -155,7 +155,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       btn.textContent = 'Envoi…';
 
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/dashboard`,
+        redirectTo: `${window.location.origin}/completer-profil`,
       });
 
       btn.disabled    = false;

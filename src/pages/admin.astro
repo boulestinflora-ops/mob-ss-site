@@ -1,0 +1,352 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Admin — Validation documents | MOB'SS"
+  description="Interface d'administration MOB'SS — validation des documents professionnels."
+>
+
+  <!-- État chargement -->
+  <div id="admin-loading" style="text-align:center;padding:120px 24px;color:var(--color-text-soft);">
+    <p>Vérification des droits d'accès…</p>
+  </div>
+
+  <!-- Accès refusé -->
+  <div id="admin-denied" style="display:none;text-align:center;padding:120px 24px;">
+    <div style="font-size:3rem;margin-bottom:16px;">🚫</div>
+    <h1>Accès restreint</h1>
+    <p style="color:var(--color-text-soft);">Cette page est réservée à l'équipe MOB'SS.</p>
+    <a href="/" class="btn btn--primary" style="margin-top:20px;">Retour à l'accueil</a>
+  </div>
+
+  <!-- Dashboard admin -->
+  <div id="admin-panel" style="display:none;">
+    <section class="section" style="padding-top:32px;">
+      <div class="container" style="max-width:1100px;">
+
+        <div class="admin-header">
+          <div>
+            <span class="section__eyebrow">Administration MOB'SS</span>
+            <h1 style="margin-top:8px;">Validation des documents</h1>
+          </div>
+          <div class="admin-stats" id="admin-stats">
+            <div class="stat-chip"><span id="stat-total">—</span> documents</div>
+            <div class="stat-chip stat-chip--warn"><span id="stat-pending">—</span> à valider</div>
+            <div class="stat-chip stat-chip--ok"><span id="stat-ok">—</span> validés</div>
+            <div class="stat-chip stat-chip--err"><span id="stat-refused">—</span> refusés</div>
+          </div>
+        </div>
+
+        <!-- Filtres rapides -->
+        <div class="admin-filters">
+          <button class="admin-filter-btn is-active" data-filter="fourni">⏳ À valider</button>
+          <button class="admin-filter-btn" data-filter="verifie">✅ Validés</button>
+          <button class="admin-filter-btn" data-filter="refuse">❌ Refusés</button>
+          <button class="admin-filter-btn" data-filter="all">Tous</button>
+        </div>
+
+        <div id="admin-message" style="display:none;margin:16px 0;padding:14px 18px;border-radius:var(--radius-md);font-size:0.95rem;"></div>
+
+        <!-- Liste des documents -->
+        <div id="admin-list">
+          <p style="text-align:center;color:var(--color-text-soft);padding:40px;">Chargement…</p>
+        </div>
+
+      </div>
+    </section>
+  </div>
+
+</BaseLayout>
+
+<style>
+  .admin-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .admin-stats {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .stat-chip {
+    padding: 6px 14px;
+    background: var(--color-bg-soft);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-pill);
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+  .stat-chip--warn { background: #FFF8E1; border-color: #F59E0B; color: #92400E; }
+  .stat-chip--ok   { background: #E8F4EA; border-color: #2D6E3F; color: #2D6E3F; }
+  .stat-chip--err  { background: #FBE5E5; border-color: #A02323; color: #A02323; }
+
+  .admin-filters {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+  .admin-filter-btn {
+    padding: 7px 16px;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--color-border);
+    background: #fff;
+    font-family: inherit;
+    font-size: 0.88rem;
+    cursor: pointer;
+    transition: background 0.12s, border-color 0.12s;
+  }
+  .admin-filter-btn:hover   { background: var(--color-bg-soft); }
+  .admin-filter-btn.is-active { background: var(--color-primary); border-color: var(--color-primary); font-weight: 600; }
+
+  .doc-card {
+    background: #fff;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 20px 24px;
+    margin-bottom: 16px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 16px;
+    align-items: start;
+  }
+  .doc-card--verifie { border-left: 4px solid #2D6E3F; }
+  .doc-card--refuse  { border-left: 4px solid #A02323; }
+  .doc-card--fourni  { border-left: 4px solid #F59E0B; }
+
+  .doc-meta { font-size:0.9rem; color:var(--color-text-soft); margin:4px 0; }
+  .doc-name { font-weight:600; margin:0 0 4px; }
+  .doc-type-badge {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: var(--radius-pill);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-right: 8px;
+  }
+  .badge-diplome  { background: #EDE9FE; color: #5B21B6; }
+  .badge-assurance{ background: #DBEAFE; color: #1E40AF; }
+  .badge-rpps     { background: #D1FAE5; color: #065F46; }
+
+  .ai-box {
+    background: var(--color-cream-soft);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    margin-top: 10px;
+    font-size: 0.85rem;
+  }
+  .ai-box__title { font-weight: 700; margin-bottom: 4px; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-text-soft); }
+
+  .doc-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 130px;
+  }
+  .btn-validate { background:#2D6E3F; color:#fff; border:none; padding:9px 16px; border-radius:var(--radius-pill); cursor:pointer; font-size:0.88rem; font-family:inherit; font-weight:600; }
+  .btn-refuse   { background:#fff; color:#A02323; border:1px solid #F0B8B8; padding:8px 16px; border-radius:var(--radius-pill); cursor:pointer; font-size:0.88rem; font-family:inherit; }
+  .btn-validate:hover { background:#1a4d2a; }
+  .btn-refuse:hover   { background:#FBE5E5; }
+
+  .status-badge { display:inline-block; padding:3px 10px; border-radius:var(--radius-pill); font-size:0.78rem; font-weight:700; }
+  .status-fourni  { background:#FFF8E1; color:#92400E; }
+  .status-verifie { background:#E8F4EA; color:#2D6E3F; }
+  .status-refuse  { background:#FBE5E5; color:#A02323; }
+
+  @media (max-width: 640px) {
+    .doc-card { grid-template-columns: 1fr; }
+    .doc-actions { flex-direction: row; flex-wrap: wrap; }
+  }
+</style>
+
+<script>
+  import { supabase } from '../lib/supabase';
+
+  const ADMIN_EMAILS = ['boulestinflora@gmail.com']; // ← ajouter d'autres admins ici
+
+  const loadingEl = document.getElementById('admin-loading') as HTMLElement;
+  const deniedEl  = document.getElementById('admin-denied')  as HTMLElement;
+  const panelEl   = document.getElementById('admin-panel')   as HTMLElement;
+  const listEl    = document.getElementById('admin-list')    as HTMLElement;
+  const msgEl     = document.getElementById('admin-message') as HTMLElement;
+
+  let allDocs: any[] = [];
+  let currentFilter = 'fourni';
+
+  function showMsg(type: 'success'|'error', text: string) {
+    msgEl.style.display = 'block';
+    msgEl.textContent   = text;
+    msgEl.style.background = type === 'success' ? '#E8F4EA' : '#FBE5E5';
+    msgEl.style.color      = type === 'success' ? '#2D6E3F' : '#A02323';
+    msgEl.style.border     = type === 'success' ? '1px solid #B8DBC0' : '1px solid #F0B8B8';
+    setTimeout(() => { msgEl.style.display = 'none'; }, 4000);
+  }
+
+  // ─── Vérification session + droits admin ─────────────────────────────────────
+  const { data: { session } } = await supabase.auth.getSession();
+  loadingEl.style.display = 'none';
+
+  if (!session?.user || !ADMIN_EMAILS.includes(session.user.email ?? '')) {
+    deniedEl.style.display = 'block';
+  } else {
+    panelEl.style.display = 'block';
+    await loadDocs();
+  }
+
+  // ─── Chargement des documents ────────────────────────────────────────────────
+  async function loadDocs() {
+    // On utilise la vue documents_admin (service role requis côté Supabase)
+    // Fallback : jointure directe depuis les documents
+    const { data, error } = await supabase
+      .from('documents')
+      .select(`
+        id, type, file_name, file_path, mime_type,
+        status, status_note, expires_at,
+        ai_analyse, ai_analyse_at, uploaded_at,
+        user_id,
+        profiles:user_id ( prenom, nom, specialite, rpps_numero, rpps_verifie )
+      `)
+      .order('uploaded_at', { ascending: false });
+
+    if (error) {
+      listEl.innerHTML = `<p style="color:#A02323;">Erreur de chargement : ${error.message}</p>`;
+      return;
+    }
+
+    allDocs = data ?? [];
+    updateStats();
+    renderDocs();
+  }
+
+  function updateStats() {
+    const total    = allDocs.length;
+    const pending  = allDocs.filter(d => d.status === 'fourni').length;
+    const ok       = allDocs.filter(d => d.status === 'verifie').length;
+    const refused  = allDocs.filter(d => d.status === 'refuse').length;
+    (document.getElementById('stat-total')   as HTMLElement).textContent = String(total);
+    (document.getElementById('stat-pending') as HTMLElement).textContent = String(pending);
+    (document.getElementById('stat-ok')      as HTMLElement).textContent = String(ok);
+    (document.getElementById('stat-refused') as HTMLElement).textContent = String(refused);
+  }
+
+  function renderDocs() {
+    const filtered = currentFilter === 'all'
+      ? allDocs
+      : allDocs.filter(d => d.status === currentFilter);
+
+    if (filtered.length === 0) {
+      listEl.innerHTML = `<p style="text-align:center;color:var(--color-text-soft);padding:40px 0;">Aucun document dans cette catégorie.</p>`;
+      return;
+    }
+
+    listEl.innerHTML = filtered.map(doc => docCardHTML(doc)).join('');
+
+    // Listeners sur les boutons
+    filtered.forEach(doc => {
+      document.getElementById(`btn-ok-${doc.id}`)?.addEventListener('click', () => updateStatus(doc.id, 'verifie'));
+      document.getElementById(`btn-ko-${doc.id}`)?.addEventListener('click', () => {
+        const note = prompt('Raison du refus (optionnel) :') ?? '';
+        updateStatus(doc.id, 'refuse', note);
+      });
+    });
+  }
+
+  function docCardHTML(doc: any): string {
+    const p = doc.profiles || {};
+    const typeLabel   = doc.type === 'assurance' ? 'RC Pro' : 'Diplôme';
+    const typeBadge   = doc.type === 'assurance' ? 'badge-assurance' : 'badge-diplome';
+    const cardClass   = `doc-card doc-card--${doc.status}`;
+    const statusLabel = { fourni:'À valider', verifie:'Validé', refuse:'Refusé' }[doc.status as string] ?? doc.status;
+    const statusClass = `status-badge status-${doc.status}`;
+
+    const ai = doc.ai_analyse;
+    let aiHTML = '';
+    if (ai) {
+      const conf   = ai.conforme === true ? '✅ Conforme' : ai.conforme === false ? '❌ Non conforme' : '—';
+      const fields: string[] = [];
+      if (ai.assureur)        fields.push(`Assureur : ${ai.assureur}`);
+      if (ai.date_fin)        fields.push(`Expire : ${new Date(ai.date_fin).toLocaleDateString('fr-FR')}`);
+      if (ai.assure_nom)      fields.push(`Assuré : ${ai.assure_nom}`);
+      if (ai.intitule)        fields.push(`Diplôme : ${ai.intitule}`);
+      if (ai.titulaire_nom)   fields.push(`Titulaire : ${ai.titulaire_nom}`);
+      if (ai.annee_obtention) fields.push(`Année : ${ai.annee_obtention}`);
+      if (ai.anomalies?.length) fields.push(`⚠️ ${ai.anomalies.join(', ')}`);
+
+      aiHTML = `
+        <div class="ai-box">
+          <div class="ai-box__title">🤖 Analyse automatique</div>
+          <strong>${conf}</strong>
+          ${fields.length ? '<br/>' + fields.join(' &nbsp;·&nbsp; ') : ''}
+        </div>`;
+    }
+
+    const rppsHTML = p.rpps_numero
+      ? `<span class="doc-type-badge badge-rpps" title="Numéro RPPS${p.rpps_verifie ? ' (vérifié)' : ' (non vérifié)'}">
+           RPPS ${p.rpps_verifie ? '✅' : '⚠️'} ${p.rpps_numero}
+         </span>`
+      : '';
+
+    const expiry = doc.expires_at
+      ? `<span class="doc-meta">📅 Expire le ${new Date(doc.expires_at).toLocaleDateString('fr-FR')}</span>`
+      : '';
+
+    const actionBtns = doc.status === 'fourni'
+      ? `<button class="btn-validate" id="btn-ok-${doc.id}">✅ Valider</button>
+         <button class="btn-refuse"   id="btn-ko-${doc.id}">❌ Refuser</button>`
+      : doc.status === 'verifie'
+      ? `<button class="btn-refuse"   id="btn-ko-${doc.id}">↩ Annuler</button>`
+      : `<button class="btn-validate" id="btn-ok-${doc.id}">↩ Remettre en attente</button>`;
+
+    return `
+      <div class="${cardClass}">
+        <div>
+          <p class="doc-name">
+            <span class="doc-type-badge ${typeBadge}">${typeLabel}</span>
+            ${rppsHTML}
+            ${doc.file_name}
+            &nbsp;<span class="${statusClass}">${statusLabel}</span>
+          </p>
+          <p class="doc-meta">👤 ${p.prenom ?? ''} ${p.nom ?? ''} — ${p.specialite ?? 'Spécialité inconnue'}</p>
+          <p class="doc-meta">📤 Déposé le ${new Date(doc.uploaded_at).toLocaleDateString('fr-FR')}</p>
+          ${expiry}
+          ${doc.status_note ? `<p class="doc-meta" style="color:#A02323;">📝 Note : ${doc.status_note}</p>` : ''}
+          ${aiHTML}
+        </div>
+        <div class="doc-actions">
+          ${actionBtns}
+        </div>
+      </div>`;
+  }
+
+  async function updateStatus(docId: string, status: string, note = '') {
+    const { error } = await supabase
+      .from('documents')
+      .update({ status, status_note: note || null, updated_at: new Date().toISOString() })
+      .eq('id', docId);
+
+    if (error) {
+      showMsg('error', `Erreur : ${error.message}`);
+      return;
+    }
+    showMsg('success', status === 'verifie' ? '✅ Document validé.' : status === 'refuse' ? '❌ Document refusé.' : '↩ Remis en attente.');
+    await loadDocs();
+  }
+
+  // ─── Boutons de filtre ────────────────────────────────────────────────────────
+  document.querySelectorAll('.admin-filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.admin-filter-btn').forEach(b => b.classList.remove('is-active'));
+      btn.classList.add('is-active');
+      currentFilter = (btn as HTMLElement).dataset.filter ?? 'fourni';
+      renderDocs();
+    });
+  });
+</script>
