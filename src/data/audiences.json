@@ -2,24 +2,24 @@
   {
     "tag": "Praticiens",
     "variant": "is-pro",
-    "title": "Trouvez un lieu pour exercer",
-    "description": "Coachs, kinés, ostéopathes, diététiciens, APA, infirmiers, sophrologues… réservez ponctuellement des espaces équipés près de votre patientèle, sans louer un cabinet fixe.",
-    "ctaLabel": "En savoir plus →",
-    "ctaHref": "/inscription?role=praticien"
+    "title": "Exercez là où vos patients ont besoin de vous",
+    "description": "Kinés, ostéos, coachs, sophrologues… accédez à des espaces vérifiés, adaptés à votre pratique, sans loyer ni bail. Concentrez-vous sur ce qui compte : vos patients.",
+    "ctaLabel": "Trouver un espace →",
+    "ctaHref": "/explorez"
   },
   {
     "tag": "Collectivités",
     "variant": "is-collec",
-    "title": "Dynamisez votre territoire",
-    "description": "Mettez gracieusement vos salles à disposition de praticiens locaux pour lutter contre les déserts médicaux et améliorer l'accès aux soins.",
-    "ctaLabel": "En savoir plus →",
+    "title": "Donnez une utilité sociale à vos locaux",
+    "description": "Gymnase vide trois jours sur sept. Salle communale inoccupée en semaine. Mettez ces espaces à disposition de praticiens locaux et luttez contre les déserts médicaux de votre territoire.",
+    "ctaLabel": "Proposer un espace →",
     "ctaHref": "/inscription?role=collectivite"
   },
   {
     "tag": "Entreprises",
     "variant": "is-corp",
-    "title": "Soutenez vos collaborateurs",
-    "description": "Proposez gracieusement vos espaces inoccupés à des praticiens du sport et de la santé. Bénéficiez d'une réduction d'impôt mécénat et améliorez la QVCT.",
+    "title": "Transformez vos m² inutilisés en impact QVCT",
+    "description": "Vos salles de réunion, espaces de détente ou locaux inoccupés peuvent accueillir des professionnels de santé. Avantage fiscal mécénat + image employeur renforcée.",
     "ctaLabel": "En savoir plus →",
     "ctaHref": "/inscription?role=entreprise"
   }

@@ -1,17 +1,17 @@
 [
   {
     "num": 1,
-    "title": "Créez votre profil",
-    "description": "Inscrivez-vous en quelques minutes selon votre profil : praticien, collectivité ou entreprise."
+    "title": "Créez votre profil en 2 minutes",
+    "description": "Nom, spécialité, zone géographique. Rien de plus pour commencer. Vous ajouterez vos documents professionnels à votre rythme."
   },
   {
     "num": 2,
-    "title": "Trouvez ou proposez",
-    "description": "Recherchez un espace selon votre activité et localisation, ou publiez votre annonce avec photos et créneaux."
+    "title": "Trouvez l'espace qui vous correspond",
+    "description": "Filtrez par activité, région, équipements. Chaque annonce montre photos, superficie, disponibilités et le profil de l'hôte — avant toute inscription."
   },
   {
     "num": 3,
-    "title": "Réservez en sécurité",
-    "description": "Échangez via la messagerie et planifiez vos créneaux. Les espaces sont mis à disposition gracieusement — sans transaction financière."
+    "title": "Exercez dès cette semaine",
+    "description": "Envoyez votre demande, l'hôte confirme sous 48h. Zéro loyer, zéro charge fixe. Juste vous, votre pratique, et vos patients."
   }
 ]

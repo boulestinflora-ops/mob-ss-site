@@ -18,10 +18,14 @@ import steps from '../data/steps.json';
   <!-- HERO -->
   <section class="hero" style="padding:80px 0 120px;">
     <div class="container hero__content">
+      <p class="hero__brand-meaning" aria-label="MOB'SS — Mobilité Sport &amp; Santé">
+        MOB'SS — <em>Mobilité Sport &amp; Santé</em>
+      </p>
       <h1>Des espaces gratuits<br />pour exercer,&nbsp;partout.</h1>
       <p class="lead">
-        Collectivités et entreprises ouvrent leurs locaux aux professionnels
-        du sport et de la santé — sans frais, en quelques clics.
+        Kinés, ostéos, coachs sportifs&nbsp;— des communes et des entreprises de votre
+        territoire mettent leurs locaux à votre disposition, <strong style="color:var(--color-cream);">gratuitement</strong>.
+        Plus besoin de signer un bail pour exercer.
       </p>
       <div class="hero__cta">
         <a href="/explorez" class="btn btn--cream btn--lg">Trouver un espace →</a>
@@ -87,25 +91,25 @@ import steps from '../data/steps.json';
     <div class="container" style="max-width:960px;">
       <header class="section__header" style="margin-bottom:40px;">
         <span class="section__eyebrow">Le concept MOB'SS</span>
-        <h2>Des locaux inutilisés. Des professionnels qui cherchent où exercer.<br/>La solution s'appelle MOB'SS.</h2>
+        <h2>Des locaux inutilisés. Des praticiens qui cherchent où exercer.<br/>La solution s'appelle MOB'SS — <em>Mobilité Sport &amp; Santé</em>.</h2>
       </header>
       <div class="explication-grid">
         <div class="explication-block">
           <div class="explication-icon">🏢</div>
           <h3>Des espaces qui dorment</h3>
-          <p>Partout en France, des salles de réunion, gymnases, locaux municipaux et espaces d'entreprises restent vides une partie de la semaine — des ressources inexploitées à fort potentiel.</p>
+          <p>En France, des gymnases, salles de réunion et locaux municipaux restent vides une grande partie de la semaine. Ce sont des ressources publiques qui n'attendent qu'une chose : être utiles.</p>
         </div>
         <div class="explication-arrow">→</div>
         <div class="explication-block explication-block--highlight">
           <div class="explication-icon">🤝</div>
           <h3>MOB'SS fait le lien</h3>
-          <p>Notre plateforme met en relation les propriétaires d'espaces avec les professionnels du sport et de la santé à la recherche d'un lieu pour exercer. Simple, gratuit, et ancré dans votre territoire.</p>
+          <p>Notre conviction&nbsp;: le manque d'accès aux soins n'est pas qu'un problème de formation. C'est aussi un problème de loyers et de géographie. MOB'SS attaque ce problème à la racine.</p>
         </div>
         <div class="explication-arrow">→</div>
         <div class="explication-block">
           <div class="explication-icon">🏃</div>
-          <h3>Des soins accessibles à tous</h3>
-          <p>Kinés, coachs sportifs, ostéopathes, diététiciens… exercent dans des locaux adaptés sans frais de location. Résultat : plus de professionnels là où les habitants en ont besoin.</p>
+          <h3>Des praticiens libres d'exercer</h3>
+          <p>Kinés, coachs, ostéopathes, sophrologues… exercent dans des conditions professionnelles, sans loyer ni bail. Ils peuvent aller là où leurs patients ont besoin d'eux — pas où le marché immobilier les contraint.</p>
         </div>
       </div>
     </div>
@@ -133,7 +137,8 @@ import steps from '../data/steps.json';
       <header class="section__header">
         <h2>Comment ça marche</h2>
         <p class="section__lead">
-          Un fonctionnement simple, en trois étapes, pour démarrer rapidement.
+          Exercez dans des conditions professionnelles, sans les contraintes d'un bail.
+          En trois étapes, depuis n'importe où.
         </p>
       </header>
       <div class="steps">
@@ -265,9 +270,9 @@ import steps from '../data/steps.json';
         <div class="cta-final-card cta-final-card--praticien">
           <span class="cta-final-card__eyebrow">Vous êtes praticien</span>
           <h2 class="cta-final-card__title">Trouvez un espace dès aujourd'hui</h2>
-          <p class="cta-final-card__desc">Kinésithérapeute, coach, ostéopathe… accédez à des locaux adaptés, sans frais de location, près de chez vous.</p>
+          <p class="cta-final-card__desc">Exercez dans des conditions professionnelles sans les contraintes d'un cabinet fixe. Vos prochains patients vous attendent — trouvez l'espace qui leur permettra de vous rejoindre.</p>
           <a href="/explorez" class="btn btn--cream btn--lg">Parcourir les espaces →</a>
-          <p class="cta-final-card__sub">Inscription gratuite · 2 min</p>
+          <p class="cta-final-card__sub">Inscription gratuite · 2 min · Sans engagement</p>
         </div>
 
         <!-- Hôte -->
@@ -423,6 +428,21 @@ import steps from '../data/steps.json';
     background: var(--color-border);
     margin: 0 24px;
     flex-shrink: 0;
+  }
+
+  /* Hero — signification de l'acronyme */
+  .hero__brand-meaning {
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.6);
+    margin-bottom: 16px;
+    margin-top: 0;
+  }
+  .hero__brand-meaning em {
+    font-style: normal;
+    color: rgba(255,255,255,0.85);
   }
 
   /* Hero — ligne de réassurance sous les CTA */
