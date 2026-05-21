@@ -9,6 +9,15 @@ import Footer from '../components/Footer.astro';
 import CookieBanner from '../components/CookieBanner.astro';
 import '../styles/style.css';
 
+// Polices auto-hébergées (évite la dépendance Google Fonts)
+// Installées via : npm install @fontsource-variable/dm-sans @fontsource/playfair-display
+import '@fontsource-variable/dm-sans';
+import '@fontsource/playfair-display/700.css';
+import '@fontsource/playfair-display/800.css';
+
+const POSTHOG_KEY = import.meta.env.PUBLIC_POSTHOG_KEY ?? '';
+const POSTHOG_HOST = 'https://eu.posthog.com';
+
 // Les pages peuvent passer des informations au layout (titre, description, etc.)
 // Exemple : <BaseLayout title="Contact" description="Nous contacter">
 const {
@@ -103,11 +112,7 @@ const BETA_MODE = import.meta.env.PUBLIC_BETA_MODE !== 'false';
        (ex : Leaflet CSS/JS pour la page Explorez) -->
   <slot name="head" />
 
-  <!-- Polices : Playfair Display (titres) + DM Sans (corps) — chargées sans bloquer le rendu -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&display=swap" />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&display=swap" rel="stylesheet" />
+  <!-- Polices : auto-hébergées via @fontsource (pas de dépendance Google) -->
 </head>
 <body>
 
@@ -137,5 +142,7 @@ const BETA_MODE = import.meta.env.PUBLIC_BETA_MODE !== 'false';
 
   <!-- Scripts JavaScript globaux -->
   <script src="/scripts/script.js" is:inline></script>
-</body>
-</html>
+
+  <!-- PostHog — analytics privacy-first (EU cloud, ne charge pas si clé absente) -->
+  {POSTHOG_KEY && (
+    <script is:inline define:vars={{ POSTHOG_KEY, POSTHOG_
