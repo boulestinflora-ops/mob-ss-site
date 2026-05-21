@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Panel from '../components/Panel.astro';
 import spaces from '../data/spaces.json';
 
 const spacesMapJson = JSON.stringify(
@@ -124,15 +125,12 @@ const spacesMapJson = JSON.stringify(
         </div>
 
         <!-- Dernières demandes -->
-        <div class="panel" style="margin-top:24px;">
-          <div class="panel__head">
-            <h3>Dernières demandes</h3>
-            <button class="btn btn--ghost" data-goto="demandes" style="font-size:0.88rem;">Tout voir →</button>
-          </div>
+        <Panel title="Dernières demandes" style="margin-top:24px;">
+            <button slot="actions" class="btn btn--ghost" data-goto="demandes" style="font-size:0.88rem;">Tout voir →</button>
           <div id="overview-demandes-list">
             <p style="color:var(--color-text-soft);text-align:center;padding:32px;">Chargement…</p>
           </div>
-        </div>
+        </Panel>
 
         <!-- Actions rapides -->
         <div class="grid grid--3" style="margin-top:20px;gap:16px;">
@@ -167,7 +165,7 @@ const spacesMapJson = JSON.stringify(
 
           <!-- Colonne gauche : calendrier -->
           <div class="cal-main">
-            <div class="panel">
+            <Panel>
 
               <!-- En-tête navigation mois -->
               <div class="cal-header">
@@ -190,11 +188,10 @@ const spacesMapJson = JSON.stringify(
                 <span class="cal-legend-item"><span class="cal-dot cal-dot--accepted"></span>Réservation confirmée</span>
                 <span class="cal-legend-item"><span class="cal-dot cal-dot--pending"></span>En attente</span>
               </div>
-            </div>
+            </Panel>
 
             <!-- Synchronisation agenda -->
-            <div class="panel" style="margin-top:16px;">
-              <div class="panel__head"><h3>Synchroniser avec votre agenda</h3></div>
+            <Panel title="Synchroniser avec votre agenda" style="margin-top:16px;">
               <p style="font-size:0.88rem;color:var(--color-text-soft);margin-bottom:16px;">
                 Exportez vos réservations dans Google Calendar, Apple Calendar ou tout agenda compatible iCal.
               </p>
@@ -221,23 +218,22 @@ const spacesMapJson = JSON.stringify(
                 </button>
                 <div id="cal-copy-msg" role="status" aria-live="polite" aria-atomic="true" style="display:none;font-size:0.82rem;color:#2D6E3F;margin-top:6px;">✓ URL copiée !</div>
               </div>
-            </div>
+            </Panel>
           </div>
 
           <!-- Colonne droite : détail du jour sélectionné -->
           <div class="cal-aside">
-            <div class="panel" id="cal-detail-panel">
+            <Panel id="cal-detail-panel">
               <div class="panel__head"><h3 id="cal-detail-title">Sélectionnez une date</h3></div>
               <div id="cal-detail-content">
                 <p style="color:var(--color-text-soft);font-size:0.88rem;text-align:center;padding:24px 0;">
                   Cliquez sur une journée du calendrier pour voir les détails de votre réservation.
                 </p>
               </div>
-            </div>
+            </Panel>
 
             <!-- Mini résumé du mois -->
-            <div class="panel" style="margin-top:16px;">
-              <div class="panel__head"><h3>Ce mois-ci</h3></div>
+            <Panel title="Ce mois-ci" style="margin-top:16px;">
               <div style="display:flex;flex-direction:column;gap:10px;">
                 <div style="display:flex;justify-content:space-between;align-items:center;">
                   <span style="font-size:0.88rem;color:var(--color-text-soft);">Réservations confirmées</span>
@@ -252,7 +248,7 @@ const spacesMapJson = JSON.stringify(
                   <strong id="cal-count-days">0</strong>
                 </div>
               </div>
-            </div>
+            </Panel>
           </div>
 
         </div>
@@ -260,11 +256,8 @@ const spacesMapJson = JSON.stringify(
 
       <!-- ── Mes demandes ── -->
       <div class="dash-section" id="demandes" style="display:none;">
-        <div class="panel">
-          <div class="panel__head">
-            <h3>Mes demandes d'espace</h3>
-            <a href="/explorez" class="btn btn--primary" style="font-size:0.88rem;">+ Nouvelle demande</a>
-          </div>
+        <Panel title="Mes demandes d'espace">
+            <a slot="actions" href="/explorez" class="btn btn--primary" style="font-size:0.88rem;">+ Nouvelle demande</a>
           <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;">
             <button class="dem-filter btn btn--primary" data-filter="all" style="font-size:0.85rem;padding:7px 16px;">Toutes</button>
             <button class="dem-filter btn btn--outline" data-filter="en_attente" style="font-size:0.85rem;padding:7px 16px;">⏳ En attente</button>
@@ -274,7 +267,7 @@ const spacesMapJson = JSON.stringify(
           <div id="demandes-list">
             <p style="color:var(--color-text-soft);text-align:center;padding:48px;">Chargement…</p>
           </div>
-        </div>
+        </Panel>
       </div>
 
       <!-- ── Mon profil ── -->
@@ -344,8 +337,7 @@ const spacesMapJson = JSON.stringify(
       <div class="dash-section" id="remplacements" style="display:none;">
         <div class="grid grid--2" style="gap:24px;align-items:start;">
 
-          <div class="panel">
-            <div class="panel__head"><h3>Ma disponibilité</h3></div>
+          <Panel title="Ma disponibilité">
             <div style="text-align:center;padding:20px 16px 28px;">
               <div id="remp-icon" style="font-size:3rem;margin-bottom:12px;">⏸️</div>
               <p id="remp-text" style="font-size:1rem;font-weight:600;margin-bottom:6px;color:var(--color-text);">Chargement…</p>
@@ -358,23 +350,22 @@ const spacesMapJson = JSON.stringify(
               </label>
               <p style="font-size:0.78rem;color:var(--color-text-soft);">Synchronisé avec le paramètre dans "Mon profil"</p>
             </div>
-          </div>
+          </Panel>
 
           <div style="display:flex;flex-direction:column;gap:20px;">
-            <div class="panel">
-              <div class="panel__head"><h3>Trouver un remplaçant</h3></div>
+            <Panel title="Trouver un remplaçant">
               <p style="color:var(--color-text-soft);font-size:0.9rem;margin-bottom:16px;">
                 Cherchez un confrère disponible dans votre spécialité pour vous remplacer ponctuellement.
               </p>
               <a href="/remplacements" class="btn btn--primary btn--block">Voir les remplaçants disponibles →</a>
-            </div>
+            </Panel>
 
-            <div class="panel" style="background:var(--color-cream-soft);border-color:transparent;">
+            <Panel style="background:var(--color-cream-soft);border-color:transparent;">
               <strong style="display:block;margin-bottom:8px;font-size:0.92rem;">💡 Comment ça marche</strong>
               <p style="margin:0;font-size:0.85rem;color:var(--color-text-soft);">
                 MOB'SS vous met en relation directement. Échangez vos coordonnées et organisez le remplacement entre vous — gratuitement, sans intermédiaire.
               </p>
-            </div>
+            </Panel>
           </div>
         </div>
       </div>
@@ -396,11 +387,8 @@ const spacesMapJson = JSON.stringify(
           <!-- Panneau : Mes documents -->
           <div id="doctab-mes-docs" class="doc-tabpanel" role="tabpanel" aria-labelledby="doctab-btn-mes-docs" tabindex="0">
 
-            <div class="panel" style="margin-bottom:20px;">
-              <div class="panel__head">
-                <h3>Documents professionnels</h3>
-                <a href="/completer-profil" class="btn btn--outline" style="font-size:0.85rem;">Modifier →</a>
-              </div>
+            <Panel title="Documents professionnels" style="margin-bottom:20px;">
+                <a slot="actions" href="/completer-profil" class="btn btn--outline" style="font-size:0.85rem;">Modifier →</a>
               <p style="font-size:0.88rem;color:var(--color-text-soft);margin:0 0 20px;">
                 Vos justificatifs légaux sont stockés de façon privée et sécurisée. Seule l'équipe MOB'SS peut les consulter dans le cadre d'une vérification.
               </p>
@@ -426,7 +414,7 @@ const spacesMapJson = JSON.stringify(
                 </div>
                 <div id="doc-assurance-badge" class="doc-badge doc-badge--loading">…</div>
               </div>
-            </div>
+            </Panel>
 
             <!-- Alerte si documents manquants -->
             <div id="docs-alert" style="display:none;background:#FFF8DC;border:1px solid #E8D87A;border-radius:var(--radius-md);padding:16px 20px;font-size:0.9rem;color:#6B5800;">
@@ -450,8 +438,7 @@ const spacesMapJson = JSON.stringify(
           <!-- Panneau : Confidentialité -->
           <div id="doctab-confidentialite" class="doc-tabpanel" role="tabpanel" aria-labelledby="doctab-btn-confidentialite" tabindex="0" style="display:none;">
 
-            <div class="panel" style="margin-bottom:16px;">
-              <div class="panel__head"><h3>Comment sont stockés vos documents ?</h3></div>
+            <Panel title="Comment sont stockés vos documents ?" style="margin-bottom:16px;">
 
               <div class="privacy-block">
                 <div class="privacy-block__icon">🔐</div>
@@ -492,7 +479,7 @@ const spacesMapJson = JSON.stringify(
                   <p>Vos documents sont conservés tant que votre compte est actif. En cas de suppression de votre compte, tous vos fichiers sont définitivement effacés de nos serveurs dans un délai de 30 jours.</p>
                 </div>
               </div>
-            </div>
+            </Panel>
 
             <div style="background:var(--color-cream-soft);border-radius:var(--radius-md);padding:16px 20px;font-size:0.85rem;color:var(--color-text-soft);">
               Des questions sur la confidentialité de vos données ?
@@ -509,8 +496,7 @@ const spacesMapJson = JSON.stringify(
         <div style="max-width:600px;display:flex;flex-direction:column;gap:20px;">
 
           <!-- Informations du compte -->
-          <div class="panel">
-            <div class="panel__head"><h3>Informations du compte</h3></div>
+          <Panel title="Informations du compte">
             <div style="display:flex;flex-direction:column;gap:0;">
 
               <div class="param-row">
@@ -534,11 +520,10 @@ const spacesMapJson = JSON.stringify(
               </div>
 
             </div>
-          </div>
+          </Panel>
 
           <!-- Sécurité -->
-          <div class="panel">
-            <div class="panel__head"><h3>Sécurité</h3></div>
+          <Panel title="Sécurité">
             <div style="display:flex;flex-direction:column;gap:14px;">
               <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
                 <div>
@@ -549,11 +534,10 @@ const spacesMapJson = JSON.stringify(
               </div>
               <div id="pwd-msg" role="status" aria-live="polite" aria-atomic="true" style="display:none;padding:10px 14px;border-radius:var(--radius-md);font-size:0.88rem;"></div>
             </div>
-          </div>
+          </Panel>
 
           <!-- Notifications -->
-          <div class="panel">
-            <div class="panel__head"><h3>Notifications</h3></div>
+          <Panel title="Notifications">
             <div style="display:flex;flex-direction:column;gap:16px;">
               <div class="toggle-row">
                 <div>
@@ -569,10 +553,10 @@ const spacesMapJson = JSON.stringify(
                 Les préférences de notification avancées seront disponibles prochainement.
               </p>
             </div>
-          </div>
+          </Panel>
 
           <!-- Zone danger -->
-          <div class="panel" style="border-color:#FCA5A5;">
+          <Panel style="border-color:#FCA5A5;">
             <div class="panel__head"><h3 style="color:#B91C1C;">Zone de danger</h3></div>
             <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:14px;">
               <div>
@@ -585,7 +569,7 @@ const spacesMapJson = JSON.stringify(
             <button id="btn-logout-param" class="btn btn--outline" style="color:var(--color-primary);font-size:0.9rem;">
               Se déconnecter
             </button>
-          </div>
+          </Panel>
 
         </div>
       </div>
@@ -817,8 +801,7 @@ const spacesMapJson = JSON.stringify(
         </div>
 
         <div class="grid grid--2" style="gap:20px;margin-top:24px;">
-          <div class="panel">
-            <div class="panel__head"><h3>Prochaine étape</h3></div>
+          <Panel title="Prochaine étape">
             <div style="text-align:center;padding:20px 16px 24px;">
               <div style="font-size:2.5rem;margin-bottom:12px;">🏢</div>
               <h3 style="margin-bottom:8px;">Déposez votre premier espace</h3>
@@ -827,9 +810,8 @@ const spacesMapJson = JSON.stringify(
               </p>
               <a href="/deposer-annonce" class="btn btn--primary">Déposer un espace →</a>
             </div>
-          </div>
-          <div class="panel">
-            <div class="panel__head"><h3>Parcourir l'annuaire</h3></div>
+          </Panel>
+          <Panel title="Parcourir l'annuaire">
             <div style="text-align:center;padding:20px 16px 24px;">
               <div style="font-size:2.5rem;margin-bottom:12px;">🩺</div>
               <h3 style="margin-bottom:8px;">Trouvez un praticien</h3>
@@ -838,17 +820,14 @@ const spacesMapJson = JSON.stringify(
               </p>
               <a href="/annuaire" class="btn btn--outline">Voir l'annuaire →</a>
             </div>
-          </div>
+          </Panel>
         </div>
       </div>
 
       <!-- Mes espaces hôte -->
       <div class="dash-section" id="hote-espaces" style="display:none;">
-        <div class="panel">
-          <div class="panel__head">
-            <h3>Vos espaces</h3>
-            <a href="/deposer-annonce" class="btn btn--primary" style="font-size:0.88rem;">+ Nouvel espace</a>
-          </div>
+        <Panel title="Vos espaces">
+            <a slot="actions" href="/deposer-annonce" class="btn btn--primary" style="font-size:0.88rem;">+ Nouvel espace</a>
           <div style="text-align:center;padding:48px 24px;">
             <div style="font-size:3rem;margin-bottom:12px;">🏢</div>
             <h3 style="margin-bottom:8px;">Aucun espace référencé</h3>
@@ -857,31 +836,27 @@ const spacesMapJson = JSON.stringify(
             </p>
             <a href="/deposer-annonce" class="btn btn--primary">Déposer un espace →</a>
           </div>
-        </div>
+        </Panel>
       </div>
 
       <!-- Demandes reçues hôte -->
       <div class="dash-section" id="hote-demandes" style="display:none;">
-        <div class="panel">
-          <div class="panel__head">
-            <h3>Demandes reçues</h3>
-            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <Panel title="Demandes reçues">
+            <div slot="actions" style="display:flex;gap:8px;flex-wrap:wrap;">
               <button class="hote-dem-filter btn btn--primary" data-filter="all" style="font-size:0.85rem;padding:7px 16px;">Toutes</button>
               <button class="hote-dem-filter btn btn--outline" data-filter="en_attente" style="font-size:0.85rem;padding:7px 16px;">⏳ En attente</button>
               <button class="hote-dem-filter btn btn--outline" data-filter="acceptee" style="font-size:0.85rem;padding:7px 16px;">✅ Acceptées</button>
               <button class="hote-dem-filter btn btn--outline" data-filter="refusee" style="font-size:0.85rem;padding:7px 16px;">❌ Refusées</button>
             </div>
-          </div>
           <div id="hote-demandes-list">
             <p style="color:var(--color-text-soft);text-align:center;padding:48px;">Chargement…</p>
           </div>
-        </div>
+        </Panel>
       </div>
 
       <!-- Impact territorial hôte -->
       <div class="dash-section" id="hote-impact" style="display:none;">
-        <div class="panel" style="margin-bottom:24px;">
-          <div class="panel__head"><h3>Votre impact territorial</h3></div>
+        <Panel title="Votre impact territorial" style="margin-bottom:24px;">
           <p style="color:var(--color-text-soft);font-size:0.9rem;margin-bottom:20px;">
             En mettant vos espaces à disposition, vous contribuez directement à l'accès aux soins et au sport sur votre territoire.
           </p>
@@ -902,22 +877,21 @@ const spacesMapJson = JSON.stringify(
               <p style="color:var(--color-text-soft);font-size:0.85rem;margin:0;">Entreprises : 60 % de réduction d'impôt mécénat (art. 238 bis CGI).</p>
             </div>
           </div>
-        </div>
-        <div class="panel" style="background:var(--color-primary);color:#fff;border:none;">
+        </Panel>
+        <Panel style="background:var(--color-primary);color:#fff;border:none;">
           <h3 style="color:#fff;margin-bottom:8px;">Générez votre rapport d'impact</h3>
           <p style="color:rgba(255,255,255,0.85);font-size:0.9rem;margin-bottom:16px;">
             Un rapport complet sera disponible depuis ce tableau de bord une fois votre premier espace référencé.
           </p>
           <a href="/deposer-annonce" class="btn btn--cream">Déposer un espace →</a>
-        </div>
+        </Panel>
       </div>
 
       <!-- Paramètres hôte -->
       <div class="dash-section" id="hote-parametres" style="display:none;">
         <div style="max-width:600px;display:flex;flex-direction:column;gap:20px;">
 
-          <div class="panel">
-            <div class="panel__head"><h3>Informations du compte</h3></div>
+          <Panel title="Informations du compte">
             <div style="display:flex;flex-direction:column;gap:0;">
               <div class="param-row">
                 <div class="param-row__label">Adresse email</div>
@@ -932,10 +906,9 @@ const spacesMapJson = JSON.stringify(
                 <div id="hote-param-date" class="param-row__value">—</div>
               </div>
             </div>
-          </div>
+          </Panel>
 
-          <div class="panel">
-            <div class="panel__head"><h3>Sécurité</h3></div>
+          <Panel title="Sécurité">
             <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
               <div>
                 <strong style="display:block;font-size:0.92rem;">Mot de passe</strong>
@@ -944,9 +917,9 @@ const spacesMapJson = JSON.stringify(
               <button id="hote-btn-reset-pwd" class="btn btn--outline" style="font-size:0.88rem;">Changer le mot de passe</button>
             </div>
             <div id="hote-pwd-msg" role="status" aria-live="polite" aria-atomic="true" style="display:none;margin-top:12px;padding:10px 14px;border-radius:var(--radius-md);font-size:0.88rem;"></div>
-          </div>
+          </Panel>
 
-          <div class="panel" style="border-color:#FCA5A5;">
+          <Panel style="border-color:#FCA5A5;">
             <div class="panel__head"><h3 style="color:#B91C1C;">Zone de danger</h3></div>
             <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:14px;">
               <div>
@@ -957,7 +930,7 @@ const spacesMapJson = JSON.stringify(
             </div>
             <hr style="border:none;border-top:1px solid #FCA5A5;margin:0 0 14px;" />
             <button id="hote-btn-logout" class="btn btn--outline" style="font-size:0.9rem;">Se déconnecter</button>
-          </div>
+          </Panel>
         </div>
       </div>
 
