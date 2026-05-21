@@ -186,8 +186,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
   // ── Chargement et affichage ──────────────────────────────────────────────────
   let allProfiles: any[] = [];
+  let _annuaireController: AbortController | null = null;
 
   async function loadProfiles() {
+    _annuaireController?.abort();
+    _annuaireController = new AbortController();
+    const { signal } = _annuaireController;
+
     loadingEl.style.display = 'block';
     gridEl.style.display    = 'none';
     emptyEl.style.display   = 'none';
@@ -200,8 +205,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         .eq('visible_annuaire', true)
         .eq('role', 'praticien')
         .not('prenom', 'is', null)
-        .order('created_at', { ascending: false });
+        .order('created_at', { ascending: false })
+        .abortSignal(signal);
 
+      if (signal.aborted) return;
       if (error) throw error;
 
       allProfiles = data || [];
@@ -210,7 +217,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       if (countEl) countEl.textContent = String(count ?? allProfiles.length);
 
       renderFiltered();
-    } catch (e) {
+    } catch (e: any) {
+      if (e?.name === 'AbortError') return;
       console.error('Annuaire error:', e);
       loadingEl.style.display = 'none';
       errorEl.style.display   = 'block';

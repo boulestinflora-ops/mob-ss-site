@@ -172,7 +172,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
   // ── URL de l'Edge Function ────────────────────────────────────────────────────
   // La fonction admin-documents tourne côté serveur avec service_role → bypass RLS
-  const ADMIN_EMAILS = ['boulestinflora@gmail.com']; // garde-fou côté client en plus
+  const ADMIN_EMAIL = import.meta.env.PUBLIC_ADMIN_EMAIL as string; // garde-fou côté client en plus
   const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL as string;
   const EDGE_URL     = `${SUPABASE_URL}/functions/v1/admin-documents`;
 
@@ -345,4 +345,20 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       const payload = await res.json();
       if (!res.ok) throw new Error(payload.error ?? `HTTP ${res.status}`);
     } catch (e: any) {
-      showMsg('error
+      showMsg('error', `Erreur : ${e.message}`);
+      return;
+    }
+    showMsg('success', status === 'verifie' ? '✅ Document validé.' : status === 'refuse' ? '❌ Document refusé.' : '↩ Remis en attente.');
+    await loadDocs();
+  }
+
+  // ─── Boutons de filtre ────────────────────────────────────────────────────────
+  document.querySelectorAll('.admin-filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.admin-filter-btn').forEach(b => b.classList.remove('is-active'));
+      btn.classList.add('is-active');
+      currentFilter = (btn as HTMLElement).dataset.filter ?? 'fourni';
+      renderDocs();
+    });
+  });
+</script>

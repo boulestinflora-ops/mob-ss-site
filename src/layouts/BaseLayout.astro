@@ -99,4 +99,43 @@ const BETA_MODE = import.meta.env.PUBLIC_BETA_MODE !== 'false';
   {BETA_MODE && <meta name="robots" content="noindex, nofollow" />}
 
   <!-- Moteur de visite guidée — chargé en premier pour être disponible partout -->
-  <script sr
+  <!-- Slot optionnel pour les pages qui ont besoin d'injecter dans <head>
+       (ex : Leaflet CSS/JS pour la page Explorez) -->
+  <slot name="head" />
+
+  <!-- Polices : Playfair Display (titres) + DM Sans (corps) — chargées sans bloquer le rendu -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&display=swap" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- Lien d'accès rapide pour la navigation au clavier -->
+  <a href="#main-content" class="skip-link">Aller au contenu principal</a>
+
+  <!-- Bandeau "site en cours de développement" -->
+  <div class="dev-banner" role="status" aria-label="Avis de développement" aria-live="polite">
+    🚧&nbsp; Site en cours de création — MOB'SS est en développement, la société n'est pas encore créée.
+    <button type="button" class="dev-banner__close" aria-label="Fermer" onclick="this.parentElement.style.display='none'">✕</button>
+  </div>
+
+  <!-- En-tête (le menu en haut, identique sur toutes les pages) -->
+  <Header currentPage={currentPage} />
+
+  <!-- Le contenu de la page : c'est le <slot /> qui reçoit
+       le HTML spécifique à chaque page -->
+  <main id="main-content">
+    <slot />
+  </main>
+
+  <!-- Pied de page (identique sur toutes les pages) -->
+  <Footer />
+
+  <!-- Bandeau cookies RGPD (identique sur toutes les pages) -->
+  <CookieBanner />
+
+  <!-- Scripts JavaScript globaux -->
+  <script src="/scripts/script.js" is:inline></script>
+</body>
+</html>
