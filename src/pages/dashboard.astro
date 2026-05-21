@@ -1473,8 +1473,8 @@ const spacesMapJson = JSON.stringify(
   }
 </style>
 
-<!-- Visite guidée : script système -->
-<script src="/scripts/tour.js" is:inline></script>
+<!-- Visite guidée : script système — defer = non-bloquant, s'exécute après le DOM -->
+<script src="/scripts/tour.js" is:inline defer></script>
 
 <!-- Étapes de la visite guidée dashboard (is:inline = exécution immédiate) -->
 <script is:inline>
@@ -1783,10 +1783,10 @@ const spacesMapJson = JSON.stringify(
 
       // Avatar (carte + sidebar + modale)
       const avatarHtml = data.photo_url
-        ? `<img src="${data.photo_url}" alt="Photo de profil">`
+        ? `<img src="${data.photo_url}" alt="Photo de profil" width="80" height="80" loading="lazy" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">`
         : init;
       const avatarHtmlSide = data.photo_url
-        ? `<img src="${data.photo_url}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">`
+        ? `<img src="${data.photo_url}" alt="" width="52" height="52" loading="lazy" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">`
         : init;
       const pfAv      = document.getElementById('pf-avatar')       as HTMLElement;
       const pfAvModal = document.getElementById('pf-avatar-modal') as HTMLElement;
@@ -2562,4 +2562,4 @@ const spacesMapJson = JSON.stringify(
     }
   });
 </script>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
