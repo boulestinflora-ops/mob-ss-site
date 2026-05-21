@@ -1403,4 +1403,325 @@ p  { margin: 0 0 1em; }
   .hero { padding: 48px 0 64px; }
   .hero__cta .btn { width: 100%; justify-content: center; }
   .btn--lg { padding: 14px 20px; font-size: 1rem; }
-  .ta
+  .tabs button { font-size: 0.88rem; padding: 10px 14px; }
+  .dev-banner { font-size: 0.8rem; line-height: 1.4; }
+  /* iOS : éviter le zoom automatique sur focus des inputs */
+  input, select, textarea { font-size: 16px !important; }
+  /* Carte Leaflet moins haute sur mobile */
+  #map { height: 220px; min-height: 220px; }
+}
+
+/* ─── 375px — iPhone SE ─────────────────────────────────────── */
+@media (max-width: 390px) {
+  /* Supprimer le débordement négatif de la search card */
+  .search-card { margin-top: 0; border-radius: 0; box-shadow: none; border-left: none; border-right: none; }
+  /* Touche minimale de 44px sur tous les éléments interactifs */
+  .btn { min-height: 44px; }
+  .nav a, .tabs button { min-height: 44px; display: flex; align-items: center; }
+}
+
+/* ---------- Cookie banner ---------- */
+.cookie-banner {
+  position: fixed;
+  bottom: 16px;
+  left: 16px;
+  right: 16px;
+  max-width: 720px;
+  margin: 0 auto;
+  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  padding: 20px 24px;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.cookie-banner[hidden] { display: none; }
+.cookie-banner p { margin: 0; flex: 1 1 280px; font-size: 0.92rem; color: var(--color-text-soft); }
+.cookie-banner p strong { color: var(--color-text); display: block; margin-bottom: 4px; }
+.cookie-banner .cookie-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.cookie-banner .btn { padding: 10px 18px; font-size: 0.9rem; }
+
+/* ---------- Page légale (mentions, confidentialité) ---------- */
+.legal-content {
+  max-width: 760px;
+  margin: 0 auto;
+}
+.legal-content h2 { margin-top: 32px; }
+.legal-content h3 { margin-top: 24px; }
+.legal-content ul { padding-left: 20px; }
+.legal-content ul li { margin-bottom: 6px; }
+
+/* ─────────────────────────────────────────────────────────────
+   Corrections Mobile — Dashboard & Déposer une annonce
+   ───────────────────────────────────────────────────────────── */
+
+/* Tableaux horizontalement scrollables sur mobile */
+.table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.table-wrap table {
+  min-width: 540px;
+}
+
+/* Dashboard : sidebar + contenu en colonne sur mobile */
+@media (max-width: 860px) {
+  /* Grille dashboard sidebar/main */
+  .dashboard-layout {
+    grid-template-columns: 1fr !important;
+    grid-template-rows: auto 1fr;
+  }
+  .dashboard-sidebar {
+    position: static !important;
+    width: 100% !important;
+    border-right: none !important;
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 16px !important;
+  }
+  /* Nav dashboard en mode horizontal scrollable */
+  .dashboard-sidebar nav {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 4px;
+    padding-bottom: 4px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .dashboard-sidebar nav a,
+  .dashboard-sidebar nav button {
+    white-space: nowrap;
+    flex-shrink: 0;
+    font-size: 0.85rem;
+    padding: 8px 14px;
+  }
+  /* Cards de stat en deux colonnes sur tablette */
+  .stat-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  /* Sections flex qui cassent sur mobile */
+  .dashboard-actions-row {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Cards de stat en une colonne sur petit mobile */
+  .stat-grid {
+    grid-template-columns: 1fr !important;
+  }
+  /* Header de section avec bouton — stack vertical */
+  .section-header-actions {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 12px !important;
+  }
+  /* Modales plein écran sur mobile */
+  .modal__box {
+    margin: 0 !important;
+    border-radius: var(--radius-md) var(--radius-md) 0 0 !important;
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    max-width: 100% !important;
+    max-height: 90vh !important;
+    overflow-y: auto !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   MICRO-INTERACTIONS — Feedback visuel & animations
+   Toutes désactivées si prefers-reduced-motion (déjà géré globalement)
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Boutons : press effect + ombre dynamique ── */
+.btn {
+  will-change: transform;
+}
+.btn:active { transform: translateY(1px) scale(0.985); }
+
+.btn--primary {
+  box-shadow: 0 4px 0 var(--color-primary-dark), 0 2px 8px rgba(181,48,64,0.18);
+  transition: transform .15s ease, box-shadow .15s ease, background .18s ease;
+}
+.btn--primary:hover {
+  box-shadow: 0 6px 0 var(--color-primary-dark), 0 4px 16px rgba(181,48,64,0.25);
+  transform: translateY(-2px);
+}
+.btn--primary:active {
+  box-shadow: 0 2px 0 var(--color-primary-dark);
+  transform: translateY(1px);
+}
+.btn--cream:hover  { transform: translateY(-2px); box-shadow: 0 4px 0 #c9bb6e, 0 4px 14px rgba(200,180,60,0.2); }
+.btn--cream:active { transform: translateY(1px); box-shadow: 0 1px 0 #c9bb6e; }
+.btn--outline:hover  { transform: translateY(-1px); }
+.btn--outline:active { transform: translateY(1px); }
+
+/* ── Cartes d'espaces : lift + image zoom + border glow ── */
+.space-card {
+  transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease;
+  will-change: transform;
+}
+.space-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 32px rgba(31,21,24,0.10), 0 2px 8px rgba(31,21,24,0.04);
+  border-color: rgba(181,48,64,0.2);
+}
+.space-card__media { overflow: hidden; }
+.space-card__media img { transition: transform .35s ease; }
+.space-card:hover .space-card__media img { transform: scale(1.06); }
+
+/* Bouton favoris */
+.space-card__fav {
+  transition: transform .15s ease, background .15s ease, color .15s ease;
+}
+.space-card__fav:hover  { transform: scale(1.15); background: var(--color-cream); }
+.space-card__fav:active { transform: scale(0.92); }
+.space-card__fav.is-fav svg { fill: var(--color-primary); }
+
+/* ── Cards génériques ── */
+.card {
+  transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease;
+}
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 32px rgba(31,21,24,0.08);
+  border-color: rgba(181,48,64,0.2);
+}
+.audience-card { transition: transform .22s ease, box-shadow .22s ease; }
+.audience-card:hover { transform: translateY(-6px); box-shadow: 0 14px 36px rgba(31,21,24,0.09); }
+
+/* ── Champs de formulaire : focus fluide ── */
+.field input,
+.field select,
+.field textarea {
+  transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
+}
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(181,48,64,0.12);
+  background: #fff;
+}
+
+/* ── Navigation : underline slide ── */
+.nav a { transition: color .15s ease; }
+.nav a::after {
+  transition: transform .2s ease, opacity .2s ease;
+  transform-origin: left center;
+  transform: scaleX(0);
+  opacity: 0;
+}
+.nav a:hover::after,
+.nav a.is-active::after { transform: scaleX(1); opacity: 1; }
+
+/* ── Messages / alertes : fade-in ── */
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes navSlideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Tags : hover subtil ── */
+.tag { transition: background .15s ease, border-color .15s ease; }
+.tag:hover { background: var(--color-cream-soft); border-color: var(--color-primary); }
+
+/* ── Upload zones ── */
+.upload-zone { transition: border-color .2s ease, background .2s ease, transform .15s ease; }
+.upload-zone:hover { transform: scale(1.005); }
+
+/* ── Skeleton loading ── */
+@keyframes shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position:  400px 0; }
+}
+.skeleton {
+  background: linear-gradient(90deg, #f0ece4 25%, #e8e2d8 50%, #f0ece4 75%);
+  background-size: 800px 100%;
+  animation: shimmer 1.4s ease infinite;
+  border-radius: var(--radius-sm);
+}
+.skeleton-card {
+  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  height: 320px;
+}
+.skeleton-card .skeleton-media { height: 200px; }
+.skeleton-card .skeleton-body  { padding: 20px; display: flex; flex-direction: column; gap: 10px; }
+.skeleton-card .skeleton-line  { height: 14px; border-radius: 6px; }
+.skeleton-card .skeleton-line--short { width: 60%; }
+.skeleton-card .skeleton-line--title { height: 18px; width: 80%; }
+
+/* ── Trust badges (inscription, deposer-annonce) ── */
+.trust-badges {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+.trust-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--color-text-soft);
+  background: var(--color-bg-soft);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  padding: 6px 14px;
+}
+.trust-badge span:first-child {
+  font-style: normal;
+  font-size: 0.9rem;
+}
+
+/* Déposer une annonce — étapes sur mobile */
+@media (max-width: 640px) {
+  /* Stepper horizontal qui déborde */
+  .stepper {
+    gap: 4px !important;
+  }
+  .stepper__label {
+    display: none !important; /* masquer texte des étapes, garder chiffres */
+  }
+  .stepper__step {
+    flex: 0 0 auto !important;
+    min-width: 36px !important;
+  }
+  /* Grille équipements — 2 colonnes sur mobile */
+  .equipements-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  /* Champs côte à côte → en colonne */
+  .field-row {
+    flex-direction: column !important;
+    gap: 0 !important;
+  }
+  /* Boutons d'action des étapes — pleine largeur */
+  .step-actions {
+    flex-direction: column !important;
+  }
+  .step-actions .btn {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+}

@@ -158,5 +158,30 @@ import faq from '../data/faq.json';
 
 <script>
   // ─── Onglets Comment ça marche ───────────────────────────────────────────────
-  const tabBtns  = Array.from(document.querySelectorAll<HTMLElement>('.ccm-tab-btn'));
-  const panels   = document.querySelector
+  const tabBtns = Array.from(document.querySelectorAll('[role="tab"]')) as HTMLElement[];
+
+  function activateCcmTab(btn: HTMLElement) {
+    tabBtns.forEach(b => {
+      const active = b === btn;
+      b.classList.toggle('btn--cream', active);
+      b.classList.toggle('btn--outline', !active);
+      b.setAttribute('aria-selected', active ? 'true' : 'false');
+      b.setAttribute('tabindex', active ? '0' : '-1');
+    });
+    document.querySelectorAll<HTMLElement>('.ccm-panel').forEach(p => {
+      p.style.display = p.id === ('tab-' + (btn as HTMLElement & {dataset: {tab:string}}).dataset.tab) ? '' : 'none';
+    });
+  }
+
+  tabBtns.forEach((btn, idx) => {
+    btn.addEventListener('click', () => activateCcmTab(btn));
+    btn.addEventListener('keydown', (e: KeyboardEvent) => {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+        e.preventDefault();
+        const next = tabBtns[(idx + (e.key === 'ArrowRight' ? 1 : -1) + tabBtns.length) % tabBtns.length];
+        next.focus();
+        activateCcmTab(next);
+      }
+    });
+  });
+</script>

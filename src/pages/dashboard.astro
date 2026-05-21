@@ -1346,4 +1346,1248 @@ const spacesMapJson = JSON.stringify(
   .privacy-block p { margin: 0; font-size: 0.87rem; color: var(--color-text-soft); line-height: 1.55; }
   .privacy-block em { font-style: italic; }
 
-  /* ── Documents ─────────────────────────────────────────────────────────────
+  /* ── Documents ──────────────────────────────────────────────────────────────── */
+  .doc-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 4px 0;
+  }
+  .doc-row__icon { font-size: 1.5rem; flex-shrink: 0; }
+  .doc-row__info { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+  .doc-row__info strong { font-size: 0.92rem; }
+  .doc-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .doc-badge--loading { background: var(--color-bg-soft); color: var(--color-text-soft); }
+  .doc-badge--ok      { background: #E8F4EA; color: #2D6E3F; border: 1px solid #B8DBC0; }
+  .doc-badge--missing { background: #FFF8DC; color: #6B5800; border: 1px solid #E8D87A; }
+  .doc-badge--expired { background: #FBE5E5; color: #A02323; border: 1px solid #F0B8B8; }
+
+  /* ── Profil — aperçu ─────────────────────────────────────────────────────────── */
+  .pf-header {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    gap: 16px; margin-bottom: 20px; flex-wrap: wrap;
+  }
+  .pf-avatar {
+    border-radius: 50%; background: var(--color-primary); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; overflow: hidden; border: 3px solid var(--color-border);
+    flex-shrink: 0;
+  }
+  .pf-avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .pf-preview-card { padding: 24px; }
+  .pf-preview__hero { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+  .pf-preview__badges { display: flex; flex-direction: column; gap: 6px; margin-left: auto; }
+  .pf-badge-vis {
+    font-size: 0.75rem; padding: 3px 9px; border-radius: 20px;
+    font-weight: 600; white-space: nowrap;
+  }
+  .pf-badge-vis--on  { background: #D1FAE5; color: #065F46; }
+  .pf-badge-vis--off { background: #F3F4F6; color: #6B7280; }
+  .pf-preview__body { display: flex; flex-direction: column; gap: 10px; }
+  .pf-preview__row { display: flex; align-items: center; gap: 10px; font-size: 0.9rem; }
+  .pf-preview__icon { width: 20px; text-align: center; flex-shrink: 0; }
+  .pf-vis-tag {
+    margin-left: auto; font-size: 0.72rem; padding: 2px 7px;
+    border-radius: 12px; font-weight: 600;
+  }
+  .pf-completude { display: flex; align-items: center; gap: 10px; }
+  .pf-completude__track {
+    flex: 1; height: 6px; background: var(--color-border);
+    border-radius: 6px; overflow: hidden; min-width: 60px;
+  }
+  .pf-completude__fill {
+    height: 100%; background: var(--color-primary);
+    border-radius: 6px; transition: width 0.4s ease, background 0.4s;
+    width: 0%;
+  }
+
+  /* ── Profil — modale ─────────────────────────────────────────────────────────── */
+  .pf-modal {
+    position: fixed; inset: 0; z-index: 1000;
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px;
+  }
+  .pf-modal__backdrop {
+    position: absolute; inset: 0;
+    background: rgba(0,0,0,0.45); backdrop-filter: blur(3px);
+  }
+  .pf-modal__panel {
+    position: relative; z-index: 1;
+    background: var(--color-bg);
+    border-radius: var(--radius-lg);
+    width: 100%; max-width: 820px;
+    max-height: 90vh;
+    display: flex; flex-direction: column;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    overflow: hidden;
+  }
+  .pf-modal__header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 24px; border-bottom: 1px solid var(--color-border);
+    flex-shrink: 0;
+  }
+  .pf-modal__close {
+    width: 32px; height: 32px; border-radius: 50%; border: none;
+    background: var(--color-border); color: var(--color-text);
+    cursor: pointer; font-size: 0.9rem; display: flex;
+    align-items: center; justify-content: center; transition: background 0.15s;
+  }
+  .pf-modal__close:hover { background: #ccc; }
+  .pf-modal__body {
+    padding: 24px; overflow-y: auto; flex: 1;
+  }
+  .pf-modal__avatar-row { display: flex; align-items: center; gap: 18px; }
+  .pf-hero__avatar-wrap { position: relative; flex-shrink: 0; }
+  .pf-avatar__edit {
+    position: absolute; bottom: -2px; right: -2px;
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--color-text); color: #fff;
+    border: 2px solid var(--color-bg); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.15s;
+  }
+  .pf-avatar__edit:hover { background: var(--color-primary); }
+  .pf-modal__grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 4px;
+  }
+  .pf-col { display: flex; flex-direction: column; gap: 20px; }
+  .pf-modal__group { display: flex; flex-direction: column; gap: 12px; }
+  .pf-modal__group-title {
+    margin: 0; font-size: 0.82rem; font-weight: 700; color: var(--color-text-soft);
+    text-transform: uppercase; letter-spacing: 0.05em;
+    padding-bottom: 8px; border-bottom: 1px solid var(--color-border);
+  }
+  .pf-fields { display: flex; flex-direction: column; gap: 12px; }
+  .pf-field { display: flex; flex-direction: column; gap: 5px; }
+  .pf-field label { font-size: 0.82rem; font-weight: 600; color: var(--color-text-soft); }
+  .pf-field input, .pf-field textarea {
+    padding: 9px 12px; border: 1.5px solid var(--color-border);
+    border-radius: var(--radius-sm); font-size: 0.9rem;
+    background: var(--color-bg); color: var(--color-text);
+    transition: border-color 0.15s; font-family: inherit;
+  }
+  .pf-field input:focus, .pf-field textarea:focus {
+    outline: none; border-color: var(--color-primary);
+  }
+  .pf-hint { font-size: 0.78rem; color: var(--color-text-soft); }
+  .pf-modal__footer {
+    display: flex; align-items: center; padding: 16px 24px;
+    border-top: 1px solid var(--color-border); flex-shrink: 0;
+    background: var(--color-cream-soft);
+  }
+  .pf-doctolib { border: 1.5px solid #E0F0FF; border-radius: var(--radius-md); padding: 16px; }
+
+  /* ── Responsive ──────────────────────────────────────────────────────────────── */
+  @media (max-width: 900px) {
+    .dash-layout { grid-template-columns: 1fr; }
+    .dash-side { position: static; height: auto; flex-direction: row; flex-wrap: wrap; border-right: none; border-bottom: 1px solid var(--color-border); padding: 12px; gap: 4px; }
+    .dash-side__user { display: none; }
+    .dash-main { padding: 24px 16px; }
+    .stat-grid { grid-template-columns: 1fr 1fr; }
+    .pf-modal__grid { grid-template-columns: 1fr; }
+    .pf-preview__badges { flex-direction: row; margin-left: 0; }
+    .pf-modal { padding: 0; align-items: flex-end; }
+    .pf-modal__panel { max-width: 100%; border-radius: var(--radius-lg) var(--radius-lg) 0 0; max-height: 95vh; }
+  }
+  @media (max-width: 540px) {
+    .stat-grid { grid-template-columns: 1fr; }
+  }
+</style>
+
+<!-- Étapes de la visite guidée dashboard (is:inline = exécution immédiate) -->
+<script is:inline>
+  window._dashTourSteps = [
+    {
+      target: null,
+      emoji: '🧭',
+      title: 'Bienvenue dans votre tableau de bord !',
+      content: "C'est votre espace personnel MOB'SS. Il s'adapte à votre rôle : praticien ou hôte. On vous explique tout !",
+    },
+    {
+      target: '.dash-side',
+      emoji: '🗂️',
+      title: 'Votre menu de navigation',
+      content: "La barre latérale vous permet de passer d'une section à l'autre : Vue d'ensemble, vos demandes d'espace, et votre profil.",
+      position: 'right',
+    },
+    {
+      target: '#overview',
+      emoji: '📊',
+      title: "Vue d'ensemble",
+      content: "Retrouvez ici un résumé de votre activité : nombre de demandes envoyées, statut de votre profil, et vos dernières demandes en un coup d'œil.",
+      position: 'top',
+    },
+    {
+      target: '.dash-side__user',
+      emoji: '👤',
+      title: 'Votre profil',
+      content: "Complétez votre profil pour apparaître dans l'annuaire des praticiens et être contacté par des hôtes pour des remplacements.",
+      position: 'right',
+    },
+    {
+      target: null,
+      emoji: '🏠',
+      title: 'Vous êtes aussi hôte ?',
+      content: "Si vous proposez un espace (salle, cabinet…), vous pouvez déposer une annonce depuis la section \"Déposer un espace\". Vos demandes reçues apparaîtront dans votre espace hôte.",
+    },
+    {
+      target: null,
+      emoji: '✅',
+      title: 'Vous êtes prêt !',
+      content: "Vous connaissez maintenant l'essentiel de MOB'SS. N'hésitez pas à relancer cette visite via le bouton 🧭 en bas à droite à tout moment.",
+    },
+  ];
+</script>
+
+<script>
+  import { supabase } from '../lib/supabase';
+
+  let _dashController: AbortController | null = null;
+  function getDashSignal(): AbortSignal {
+    _dashController?.abort();
+    _dashController = new AbortController();
+    window.addEventListener('beforeunload', () => _dashController?.abort(), { once: true });
+    return _dashController.signal;
+  }
+
+  const spacesMap: Record<string, string> = JSON.parse(
+    document.getElementById('spaces-map-data')?.textContent || '{}'
+  );
+
+  const loadingEl = document.getElementById('dash-loading') as HTMLElement;
+  const anonEl    = document.getElementById('dash-anonymous') as HTMLElement;
+  const pratEl    = document.getElementById('dash-praticien') as HTMLElement;
+  const hoteEl    = document.getElementById('dash-hote') as HTMLElement;
+  const bannerEl  = document.getElementById('dash-incomplete-banner') as HTMLElement;
+
+  // ── Navigation sidebar — VERSION CORRIGÉE ─────────────────────────────────────
+  // Les IDs des sections correspondent EXACTEMENT aux data-section des boutons
+  function initNav(dashEl: HTMLElement) {
+    const navBtns  = Array.from(dashEl.querySelectorAll<HTMLElement>('.dash-nav-btn[data-section]'));
+    const sections = Array.from(dashEl.querySelectorAll<HTMLElement>('.dash-section'));
+
+    function activate(targetId: string) {
+      // Boutons sidebar
+      navBtns.forEach(b => {
+        const active = b.dataset.section === targetId;
+        b.classList.toggle('is-active', active);
+        b.setAttribute('aria-current', active ? 'page' : 'false');
+      });
+      // Sections contenu
+      sections.forEach(s => {
+        const show = s.id === targetId;
+        s.style.display = show ? '' : 'none';
+      });
+    }
+
+    navBtns.forEach(btn => {
+      btn.addEventListener('click', () => activate(btn.dataset.section!));
+    });
+
+    // Boutons "Tout voir →" et quick actions dans l'overview
+    dashEl.querySelectorAll<HTMLElement>('[data-goto]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const target = btn.dataset.goto!;
+        activate(target);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    });
+  }
+
+  // ── Formatage date ────────────────────────────────────────────────────────────
+  function fmtDate(str: string | null): string {
+    if (!str) return '—';
+    try { return new Date(str).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }); }
+    catch { return str; }
+  }
+
+  // ── Badge statut demande ──────────────────────────────────────────────────────
+  function statutBadge(s: string): string {
+    const map: Record<string, [string, string]> = {
+      en_attente: ['attente',  '⏳ En attente'],
+      acceptee:   ['acceptee', '✅ Acceptée'],
+      refusee:    ['refusee',  '❌ Refusée'],
+    };
+    const [cls, label] = map[s] || ['attente', s];
+    return `<span class="dem-statut dem-statut--${cls}">${label}</span>`;
+  }
+
+  // ── Ligne demande ─────────────────────────────────────────────────────────────
+  function renderDemRow(d: any): string {
+    const nom    = spacesMap[d.space_id] || d.space_id || 'Espace';
+    const horaire = d.heure_debut && d.heure_fin ? ` · ${d.heure_debut}–${d.heure_fin}` : '';
+    const recur  = d.recurrence && d.recurrence !== 'Une seule fois' ? ` · ${d.recurrence}` : '';
+    return `
+      <div class="dem-row" data-statut="${d.statut}">
+        <div style="flex:1;min-width:0;">
+          <strong style="display:block;font-size:0.9rem;">${nom}</strong>
+          <span style="font-size:0.8rem;color:var(--color-text-soft);">${fmtDate(d.date)}${horaire}${recur}</span>
+        </div>
+        ${statutBadge(d.statut)}
+      </div>`;
+  }
+
+  // ── Chargement des documents professionnels ──────────────────────────────────
+  async function loadDocuments(userId: string) {
+    const { data: docs } = await supabase
+      .from('documents')
+      .select('type, file_name, status, status_note, expires_at, uploaded_at')
+      .eq('user_id', userId);
+
+    const diplome   = docs?.find((d: any) => d.type === 'diplome');
+    const assurance = docs?.find((d: any) => d.type === 'assurance');
+
+    // ── Diplôme ──
+    const diplomeLabel = document.getElementById('doc-diplome-label') as HTMLElement;
+    const diplomeBadge = document.getElementById('doc-diplome-badge') as HTMLElement;
+    if (diplome) {
+      let labelText = diplome.file_name;
+      if (diplome.status === 'refuse' && diplome.status_note) labelText += ` — ${diplome.status_note}`;
+      diplomeLabel.textContent = labelText;
+      if (diplome.status === 'verifie') {
+        diplomeBadge.className   = 'doc-badge doc-badge--ok';
+        diplomeBadge.textContent = '✓ Vérifié';
+      } else if (diplome.status === 'refuse') {
+        diplomeBadge.className   = 'doc-badge doc-badge--expired';
+        diplomeBadge.textContent = '✕ Refusé';
+      } else {
+        diplomeBadge.className   = 'doc-badge doc-badge--missing';
+        diplomeBadge.textContent = '⏳ En vérification';
+      }
+    } else {
+      diplomeLabel.textContent = 'Non fourni';
+      diplomeBadge.className   = 'doc-badge doc-badge--missing';
+      diplomeBadge.textContent = '⚠ Manquant';
+    }
+
+    // ── Assurance RC Pro ──
+    const assuranceLabel = document.getElementById('doc-assurance-label') as HTMLElement;
+    const assuranceBadge = document.getElementById('doc-assurance-badge') as HTMLElement;
+    if (assurance) {
+      const today   = new Date();
+      const expires = assurance.expires_at ? new Date(assurance.expires_at) : null;
+      const isExpired = expires && expires < today;
+      const expiresSoon = expires && !isExpired &&
+        (expires.getTime() - today.getTime()) < 30 * 24 * 60 * 60 * 1000; // 30 jours
+
+      let labelText = assurance.file_name;
+      if (expires) {
+        const fmt = expires.toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' });
+        labelText += ` — expire le ${fmt}`;
+      }
+      assuranceLabel.textContent = labelText;
+
+      if (isExpired) {
+        assuranceBadge.className   = 'doc-badge doc-badge--expired';
+        assuranceBadge.textContent = '✕ Expirée';
+      } else if (expiresSoon) {
+        assuranceBadge.className   = 'doc-badge doc-badge--missing';
+        assuranceBadge.textContent = '⚠ Expire bientôt';
+      } else if (assurance.status === 'verifie') {
+        assuranceBadge.className   = 'doc-badge doc-badge--ok';
+        assuranceBadge.textContent = '✓ Vérifiée';
+      } else if (assurance.status === 'refuse') {
+        assuranceBadge.className   = 'doc-badge doc-badge--expired';
+        assuranceBadge.textContent = '✕ Refusée';
+        if (assurance.status_note) assuranceLabel.textContent += ` — ${assurance.status_note}`;
+      } else {
+        assuranceBadge.className   = 'doc-badge doc-badge--missing';
+        assuranceBadge.textContent = '⏳ En vérification';
+      }
+    } else {
+      assuranceLabel.textContent = 'Non fournie';
+      assuranceBadge.className   = 'doc-badge doc-badge--missing';
+      assuranceBadge.textContent = '⚠ Manquante';
+    }
+
+    // ── Badge nav + alertes ──
+    const bothPresent  = !!diplome && !!assurance;
+    const anyRefused   = diplome?.status === 'refuse' || assurance?.status === 'refuse';
+    const bothVerified = diplome?.status === 'verifie' && assurance?.status === 'verifie';
+    const badgeDocs    = document.getElementById('badge-docs') as HTMLElement;
+
+    if (badgeDocs && bothPresent) {
+      badgeDocs.style.display = '';
+      if (anyRefused) {
+        badgeDocs.style.background = '#FBE5E5';
+        badgeDocs.style.color      = '#A02323';
+        badgeDocs.style.borderColor= '#F0B8B8';
+        badgeDocs.textContent      = '✕';
+      } else if (bothVerified) {
+        badgeDocs.style.background = '#E8F4EA';
+        badgeDocs.style.color      = '#2D6E3F';
+        badgeDocs.style.borderColor= '#B8DBC0';
+        badgeDocs.textContent      = '✓';
+      } else {
+        badgeDocs.style.background = '#FFF8E1';
+        badgeDocs.style.color      = '#92400E';
+        badgeDocs.style.borderColor= '#F59E0B';
+        badgeDocs.textContent      = '⏳';
+      }
+    }
+
+    const alertEl  = document.getElementById('docs-alert') as HTMLElement;
+    const okEl     = document.getElementById('docs-ok')    as HTMLElement;
+    const refusedEl = document.getElementById('docs-refused') as HTMLElement | null;
+
+    if (alertEl)   alertEl.style.display   = bothPresent ? 'none' : 'block';
+    if (refusedEl) refusedEl.style.display = anyRefused  ? 'block' : 'none';
+    if (okEl) {
+      okEl.style.display = bothPresent && !anyRefused ? 'block' : 'none';
+      okEl.innerHTML = bothVerified
+        ? '✅ <strong>Dossier vérifié.</strong> Vos deux documents ont été validés par l\'équipe MOB\'SS.'
+        : '📋 <strong>Documents reçus.</strong> Vos documents sont en cours de vérification par l\'équipe MOB\'SS.';
+    }
+
+    // ── Stat visibilité (overview) — mise à jour si docs complets ──
+    const statVis = document.getElementById('stat-visibilite') as HTMLElement;
+    if (statVis && bothPresent) {
+      statVis.innerHTML += '<br><span style="font-size:0.75rem;color:#2D6E3F;">📄 Docs vérifiés</span>';
+    }
+  }
+
+  // ── Dashboard Praticien ───────────────────────────────────────────────────────
+  async function loadPraticien(session: any, profile: any) {
+    pratEl.style.display = 'block';
+    initNav(pratEl);
+
+    // ── Visite guidée ──────────────────────────────────────────────────────
+    const fabDash = document.getElementById('tour-fab-dash') as HTMLElement;
+    if (fabDash) fabDash.style.display = '';
+    if (!localStorage.getItem('mobss_tour_dashboard')) {
+      setTimeout(function() { if (window.startTour) window.startTour(window._dashTourSteps, 'mobss_tour_dashboard'); }, 1200);
+    }
+    // ───────────────────────────────────────────────────────────────────────
+
+    // ── Chargement des documents ───────────────────────────────────────────
+    loadDocuments(session.user.id);
+    // ───────────────────────────────────────────────────────────────────────
+
+    const prenom = profile?.prenom || session.user.email?.split('@')[0] || 'vous';
+    const nom    = profile?.nom    || '';
+    const initiales = ((profile?.prenom?.[0] || '') + (profile?.nom?.[0] || '')).toUpperCase() || '?';
+
+    // Sidebar user
+    (document.getElementById('side-avatar') as HTMLElement).textContent = initiales;
+    (document.getElementById('side-nom')    as HTMLElement).textContent = `${prenom} ${nom}`.trim();
+    (document.getElementById('side-role')   as HTMLElement).textContent = 'Praticien·ne';
+
+    // En-tête
+    (document.getElementById('prat-prenom') as HTMLElement).textContent = prenom;
+
+    // ── Section profil ────────────────────────────────────────────────────────────
+
+    // État courant du profil (mis à jour après chaque save)
+    let currentProfile = { ...(profile || {}), email: session.user.email };
+
+    // ── Helpers ───────────────────────────────────────────────────────────────────
+
+    function visTag(on: boolean, onLabel: string, offLabel: string): string {
+      return on
+        ? `<span class="pf-vis-tag" style="background:#D1FAE5;color:#065F46;">${onLabel}</span>`
+        : `<span class="pf-vis-tag" style="background:#F3F4F6;color:#6B7280;">${offLabel}</span>`;
+    }
+
+    // Rafraîchit la carte aperçu public
+    function refreshProfilUI(data: any) {
+      const p = data.prenom || ''; const n = data.nom || '';
+      const init = ((p[0]||'') + (n[0]||'')).toUpperCase() || '?';
+
+      // Sidebar
+      (document.getElementById('side-nom') as HTMLElement).textContent = `${p} ${n}`.trim() || '—';
+      const sideAv = document.getElementById('side-avatar') as HTMLElement;
+
+      // Avatar (carte + sidebar + modale)
+      const avatarHtml = data.photo_url
+        ? `<img src="${data.photo_url}" alt="Photo de profil">`
+        : init;
+      const avatarHtmlSide = data.photo_url
+        ? `<img src="${data.photo_url}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">`
+        : init;
+      const pfAv      = document.getElementById('pf-avatar')       as HTMLElement;
+      const pfAvModal = document.getElementById('pf-avatar-modal') as HTMLElement;
+      if (data.photo_url) {
+        pfAv.innerHTML      = avatarHtml;
+        sideAv.innerHTML    = avatarHtmlSide;
+        if (pfAvModal) pfAvModal.innerHTML = avatarHtml;
+      } else {
+        pfAv.textContent      = init;
+        sideAv.textContent    = init;
+        if (pfAvModal) pfAvModal.textContent = init;
+      }
+
+      // Carte aperçu
+      (document.getElementById('pf-preview-nom')       as HTMLElement).textContent = `${p} ${n}`.trim() || '—';
+      (document.getElementById('pf-preview-specialite')as HTMLElement).textContent = data.specialite || 'Spécialité non renseignée';
+      (document.getElementById('pf-preview-ville')     as HTMLElement).textContent = '📍 ' + (data.ville || 'Non renseignée');
+      (document.getElementById('pf-preview-email')     as HTMLElement).textContent = data.email || session.user.email || '—';
+      (document.getElementById('pf-preview-tel')       as HTMLElement).textContent = data.telephone || 'Non renseigné';
+
+      // Tags visibilité
+      const emailVisEl = document.getElementById('pf-email-vis') as HTMLElement;
+      const telVisEl   = document.getElementById('pf-tel-vis')   as HTMLElement;
+      if (emailVisEl) emailVisEl.innerHTML = visTag(data.email_public, '👁 Public', '🔒 Privé');
+      if (telVisEl)   telVisEl.innerHTML   = visTag(data.tel_public,   '👁 Public', '🔒 Privé');
+
+      // Badges annuaire + rempl
+      const bA = document.getElementById('badge-annuaire-preview') as HTMLElement;
+      const bR = document.getElementById('badge-rempl-preview')    as HTMLElement;
+      if (bA) { bA.textContent = data.visible_annuaire ? '✅ Visible annuaire' : '❌ Hors annuaire'; bA.className = 'pf-badge-vis ' + (data.visible_annuaire ? 'pf-badge-vis--on' : 'pf-badge-vis--off'); }
+      if (bR) { bR.textContent = data.disponible_remplacement ? '🔄 Disponible rempl.' : '⏸ Rempl. désactivé'; bR.className = 'pf-badge-vis ' + (data.disponible_remplacement ? 'pf-badge-vis--on' : 'pf-badge-vis--off'); }
+
+      // Bio
+      const bioRow = document.getElementById('pf-row-bio') as HTMLElement;
+      if (data.bio) { bioRow.textContent = `"${data.bio}"`; bioRow.style.display = 'block'; }
+      else { bioRow.style.display = 'none'; }
+
+      // Doctolib
+      const docRow  = document.getElementById('pf-row-doctolib')     as HTMLElement;
+      const docLink = document.getElementById('pf-preview-doctolib') as HTMLAnchorElement;
+      if (data.doctolib_url && data.doctolib_url.startsWith('http')) {
+        docRow.style.display = 'flex'; docLink.href = data.doctolib_url;
+      } else { docRow.style.display = 'none'; }
+
+      // Complétude
+      const flds = [data.prenom, data.nom, data.specialite, data.ville, data.bio, data.telephone];
+      const cnt  = flds.filter(Boolean).length;
+      const pct  = Math.round((cnt / flds.length) * 100);
+      const col  = pct === 100 ? '#065F46' : pct >= 60 ? '#92400E' : 'var(--color-primary)';
+      const lbl  = document.getElementById('pct-label') as HTMLElement;
+      const bar  = document.getElementById('pct-bar')   as HTMLElement;
+      const hint = document.getElementById('pct-hint')  as HTMLElement;
+      if (lbl)  { lbl.textContent = `${pct}%`; lbl.style.color = col; }
+      if (bar)  { bar.style.width = `${pct}%`; bar.style.background = col; }
+      if (hint) { const miss = ['Prénom','Nom','Spécialité','Ville','Bio','Téléphone'].filter((_,i) => !flds[i]); hint.textContent = miss.length ? `Manquant : ${miss.join(', ')}` : '✅ Profil complet !'; }
+
+      // Stat overview
+      const statVis = document.getElementById('stat-visibilite') as HTMLElement;
+      if (statVis) statVis.textContent = data.visible_annuaire ? '✅ Visible' : '❌ Masqué';
+    }
+
+    // Remplit les champs de la modale
+    function fillProfilForm(data: any, email: string) {
+      (document.getElementById('pf-prenom')    as HTMLInputElement).value    = data.prenom       || '';
+      (document.getElementById('pf-nom')       as HTMLInputElement).value    = data.nom          || '';
+      (document.getElementById('pf-specialite')as HTMLInputElement).value    = data.specialite   || '';
+      (document.getElementById('pf-ville')     as HTMLInputElement).value    = data.ville        || '';
+      (document.getElementById('pf-bio')       as HTMLTextAreaElement).value = data.bio          || '';
+      (document.getElementById('pf-email')     as HTMLInputElement).value    = email             || '';
+      (document.getElementById('pf-tel')       as HTMLInputElement).value    = data.telephone    || '';
+      (document.getElementById('pf-doctolib')  as HTMLInputElement).value    = data.doctolib_url || '';
+      (document.getElementById('toggle-annuaire')    as HTMLInputElement).checked = data.visible_annuaire        ?? true;
+      (document.getElementById('toggle-rempl')       as HTMLInputElement).checked = data.disponible_remplacement ?? false;
+      (document.getElementById('toggle-tel-public')  as HTMLInputElement).checked = data.tel_public              ?? false;
+      (document.getElementById('toggle-email-public')as HTMLInputElement).checked = data.email_public            ?? false;
+      updateDoctolibPreview(data.doctolib_url || '');
+    }
+
+    function updateDoctolibPreview(url: string) {
+      const preview = document.getElementById('doctolib-preview') as HTMLElement;
+      const link    = document.getElementById('doctolib-link')    as HTMLAnchorElement;
+      if (url && url.startsWith('http')) { preview.style.display = 'block'; link.href = url; }
+      else { preview.style.display = 'none'; }
+    }
+
+    // ── Modale ────────────────────────────────────────────────────────────────────
+    const modal = document.getElementById('profil-modal') as HTMLElement;
+
+    function openModal() {
+      fillProfilForm(currentProfile, session.user.email);
+      modal.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+      // Sync avatar dans la modale
+      const pfAvModal = document.getElementById('pf-avatar-modal') as HTMLElement;
+      const pfAv      = document.getElementById('pf-avatar')       as HTMLElement;
+      if (pfAvModal && pfAv) pfAvModal.innerHTML = pfAv.innerHTML || pfAv.textContent || '?';
+    }
+
+    function closeModal() {
+      modal.style.display = 'none';
+      document.body.style.overflow = '';
+    }
+
+    document.getElementById('btn-edit-profil')?.addEventListener('click', openModal);
+    document.getElementById('btn-modal-close')?.addEventListener('click', closeModal);
+    document.getElementById('btn-modal-cancel')?.addEventListener('click', closeModal);
+    document.getElementById('modal-backdrop')?.addEventListener('click', closeModal);
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+
+    // Doctolib preview live dans la modale
+    document.getElementById('pf-doctolib')?.addEventListener('input', (e) => {
+      updateDoctolibPreview((e.target as HTMLInputElement).value);
+    });
+
+    // ── Upload avatar ─────────────────────────────────────────────────────────────
+    const avatarInput = document.getElementById('avatar-input') as HTMLInputElement;
+    document.getElementById('btn-upload-avatar')?.addEventListener('click', () => avatarInput.click());
+
+    avatarInput.addEventListener('change', async () => {
+      const file = avatarInput.files?.[0];
+      if (!file) return;
+      if (file.size > 5 * 1024 * 1024) { showAvatarStatus('⚠️ Fichier trop lourd (max 5 Mo)', 'error'); return; }
+      showAvatarStatus('⏳ Upload en cours…', 'info');
+      const ext  = file.name.split('.').pop();
+      const path = `${session.user.id}/avatar.${ext}`;
+      const { error: upErr } = await supabase.storage.from('avatars').upload(path, file, { upsert: true });
+      if (upErr) { showAvatarStatus('⚠️ Erreur upload', 'error'); return; }
+      const { data: urlData } = supabase.storage.from('avatars').getPublicUrl(path);
+      const photoUrl = urlData.publicUrl + '?t=' + Date.now();
+      const { error: dbErr } = await supabase.from('profiles').update({ photo_url: photoUrl }).eq('id', session.user.id);
+      if (dbErr) { showAvatarStatus('⚠️ Erreur mise à jour', 'error'); return; }
+      currentProfile.photo_url = photoUrl;
+      refreshProfilUI(currentProfile);
+      showAvatarStatus('✅ Photo mise à jour !', 'ok');
+      setTimeout(() => { (document.getElementById('pf-avatar-status') as HTMLElement).style.display = 'none'; }, 3000);
+    });
+
+    function showAvatarStatus(msg: string, type: 'ok'|'error'|'info') {
+      const el = document.getElementById('pf-avatar-status') as HTMLElement;
+      el.textContent = msg; el.style.display = 'block';
+      el.style.background = type === 'ok' ? '#D1FAE5' : type === 'error' ? '#FEE2E2' : '#FEF3C7';
+      el.style.color      = type === 'ok' ? '#065F46' : type === 'error' ? '#991B1B' : '#92400E';
+    }
+
+    // ── Sauvegarde ────────────────────────────────────────────────────────────────
+    document.getElementById('btn-save-profil')?.addEventListener('click', async () => {
+      const saveMsg = document.getElementById('pf-save-msg') as HTMLElement;
+      const btn     = document.getElementById('btn-save-profil') as HTMLButtonElement;
+      btn.disabled = true; btn.textContent = 'Sauvegarde…';
+
+      const payload = {
+        prenom:                  (document.getElementById('pf-prenom')         as HTMLInputElement).value.trim(),
+        nom:                     (document.getElementById('pf-nom')            as HTMLInputElement).value.trim(),
+        specialite:              (document.getElementById('pf-specialite')     as HTMLInputElement).value.trim(),
+        ville:                   (document.getElementById('pf-ville')          as HTMLInputElement).value.trim(),
+        bio:                     (document.getElementById('pf-bio')            as HTMLTextAreaElement).value.trim(),
+        telephone:               (document.getElementById('pf-tel')            as HTMLInputElement).value.trim(),
+        doctolib_url:            (document.getElementById('pf-doctolib')       as HTMLInputElement).value.trim(),
+        visible_annuaire:        (document.getElementById('toggle-annuaire')   as HTMLInputElement).checked,
+        disponible_remplacement: (document.getElementById('toggle-rempl')      as HTMLInputElement).checked,
+        tel_public:              (document.getElementById('toggle-tel-public') as HTMLInputElement).checked,
+        email_public:            (document.getElementById('toggle-email-public')as HTMLInputElement).checked,
+      };
+
+      try {
+        const { error } = await supabase.from('profiles').update(payload).eq('id', session.user.id);
+        if (error) throw error;
+        // Mise à jour locale
+        currentProfile = { ...currentProfile, ...payload };
+        refreshProfilUI(currentProfile);
+        // Sync section Remplacements
+        const tR2 = document.getElementById('toggle-rempl-2') as HTMLInputElement;
+        if (tR2) tR2.checked = payload.disponible_remplacement;
+        const riEl2 = document.getElementById('remp-icon') as HTMLElement;
+        const rtEl2 = document.getElementById('remp-text') as HTMLElement;
+        if (riEl2) riEl2.textContent = payload.disponible_remplacement ? '✅' : '⏸️';
+        if (rtEl2) rtEl2.textContent = payload.disponible_remplacement ? 'Vous êtes disponible pour des remplacements' : 'Vous n\'êtes pas disponible pour des remplacements';
+        // Bannière
+        if (payload.prenom && payload.specialite) bannerEl.style.display = 'none';
+        // Feedback + fermeture auto
+        saveMsg.style.display = 'inline'; saveMsg.style.color = '#065F46'; saveMsg.textContent = '✅ Sauvegardé !';
+        setTimeout(() => { saveMsg.style.display = 'none'; closeModal(); }, 1200);
+      } catch(e: any) {
+        saveMsg.style.display = 'inline'; saveMsg.style.color = '#991B1B';
+        saveMsg.textContent = '⚠️ ' + (e?.message || 'Erreur, réessayez');
+      } finally {
+        btn.disabled = false; btn.textContent = '💾 Enregistrer';
+      }
+    });
+
+    // Toggle remplacements (section Remplacements) synchro
+    const tR2 = document.getElementById('toggle-rempl-2') as HTMLInputElement;
+    if (tR2) {
+      tR2.checked = profile?.disponible_remplacement ?? false;
+      tR2.addEventListener('change', async () => {
+        const tR = document.getElementById('toggle-rempl') as HTMLInputElement;
+        if (tR) tR.checked = tR2.checked;
+        const ri = document.getElementById('remp-icon') as HTMLElement;
+        const rt = document.getElementById('remp-text') as HTMLElement;
+        if (ri) ri.textContent = tR2.checked ? '✅' : '⏸️';
+        if (rt) rt.textContent = tR2.checked ? 'Vous êtes disponible pour des remplacements' : 'Vous n\'êtes pas disponible pour des remplacements';
+        await supabase.from('profiles').update({ disponible_remplacement: tR2.checked }).eq('id', session.user.id);
+      });
+    }
+    const riEl = document.getElementById('remp-icon') as HTMLElement;
+    const rtEl = document.getElementById('remp-text') as HTMLElement;
+    if (riEl) riEl.textContent = (profile?.disponible_remplacement ?? false) ? '✅' : '⏸️';
+    if (rtEl) rtEl.textContent = (profile?.disponible_remplacement ?? false)
+      ? 'Vous êtes disponible pour des remplacements'
+      : 'Vous n\'êtes pas disponible pour des remplacements';
+
+    // Bannière si incomplet
+    if (!profile?.prenom || !profile?.specialite) bannerEl.style.display = 'block';
+
+    // Paramètres
+    (document.getElementById('param-email') as HTMLElement).textContent = session.user.email || '—';
+    (document.getElementById('param-role')  as HTMLElement).textContent = profile?.role || 'praticien';
+    (document.getElementById('param-date')  as HTMLElement).textContent = fmtDate(session.user.created_at);
+    (document.getElementById('param-id')    as HTMLElement).textContent = session.user.id;
+
+    // Initialisation profil (carte aperçu)
+    refreshProfilUI(currentProfile);
+
+    // Réinitialisation mot de passe
+    (document.getElementById('btn-reset-pwd') as HTMLButtonElement)?.addEventListener('click', async () => {
+      const msgEl = document.getElementById('pwd-msg') as HTMLElement;
+      msgEl.style.display = 'block';
+      msgEl.style.background = '#FEF3C7'; msgEl.style.color = '#92400E';
+      msgEl.textContent = 'Envoi en cours…';
+      try {
+        const { error } = await supabase.auth.resetPasswordForEmail(session.user.email, {
+          redirectTo: window.location.origin + '/connexion'
+        });
+        if (error) throw error;
+        msgEl.style.background = '#D1FAE5'; msgEl.style.color = '#065F46';
+        msgEl.textContent = `✅ Email envoyé à ${session.user.email}. Vérifiez votre boîte mail.`;
+      } catch {
+        msgEl.style.background = '#FEE2E2'; msgEl.style.color = '#991B1B';
+        msgEl.textContent = '⚠️ Erreur lors de l\'envoi. Réessayez ou contactez le support.';
+      }
+    });
+
+    // Déconnexion
+    document.getElementById('btn-logout-param')?.addEventListener('click', async () => {
+      await supabase.auth.signOut();
+      window.location.href = '/';
+    });
+
+    // ── Demandes ──────────────────────────────────────────────────────────────
+    let allDemandes: any[] = [];
+    try {
+      const { data, error } = await supabase
+        .from('demandes').select('*').eq('user_id', session.user.id)
+        .order('created_at', { ascending: false });
+
+      if (!error && data) {
+        allDemandes = data;
+        const total    = data.length;
+        const acceptee = data.filter(d => d.statut === 'acceptee').length;
+        const attente  = data.filter(d => d.statut === 'en_attente').length;
+
+        (document.getElementById('stat-total')    as HTMLElement).textContent = String(total);
+        (document.getElementById('stat-acceptees')as HTMLElement).textContent = String(acceptee);
+        (document.getElementById('stat-attente')  as HTMLElement).textContent = String(attente);
+
+        if (attente > 0) {
+          const badge = document.getElementById('badge-pending') as HTMLElement;
+          badge.textContent = String(attente);
+          badge.style.display = 'inline';
+        }
+
+        const overviewEl = document.getElementById('overview-demandes-list') as HTMLElement;
+        overviewEl.innerHTML = total === 0
+          ? `<p style="color:var(--color-text-soft);text-align:center;padding:32px;">Aucune demande pour l'instant. <a href="/explorez">Trouver un espace →</a></p>`
+          : data.slice(0, 5).map(renderDemRow).join('');
+
+        renderDemandesList(data, 'all');
+        initCalendar(allDemandes);
+      }
+    } catch {
+      ['stat-total','stat-acceptees','stat-attente'].forEach(id =>
+        ((document.getElementById(id) as HTMLElement).textContent = '—')
+      );
+    }
+
+    function renderDemandesList(data: any[], filter: string) {
+      const listEl   = document.getElementById('demandes-list') as HTMLElement;
+      const filtered = filter === 'all' ? data : data.filter(d => d.statut === filter);
+      listEl.innerHTML = filtered.length === 0
+        ? `<p style="color:var(--color-text-soft);text-align:center;padding:48px;">${filter === 'all' ? 'Aucune demande. <a href="/explorez">Trouver un espace →</a>' : 'Aucune demande dans cette catégorie.'}</p>`
+        : filtered.map(renderDemRow).join('');
+    }
+
+    pratEl.querySelectorAll<HTMLElement>('.dem-filter').forEach(btn => {
+      btn.addEventListener('click', () => {
+        pratEl.querySelectorAll('.dem-filter').forEach(b => {
+          b.classList.remove('btn--primary'); b.classList.add('btn--outline');
+        });
+        btn.classList.add('btn--primary'); btn.classList.remove('btn--outline');
+        renderDemandesList(allDemandes, btn.dataset.filter!);
+      });
+    });
+  }
+
+  // ── Dashboard Hôte ────────────────────────────────────────────────────────────
+  async function loadHote(session: any, profile: any) {
+    hoteEl.style.display = 'block';
+    initNav(hoteEl);
+
+    // ── Visite guidée ──────────────────────────────────────────────────────
+    const fabDash = document.getElementById('tour-fab-dash') as HTMLElement;
+    if (fabDash) fabDash.style.display = '';
+    if (!localStorage.getItem('mobss_tour_dashboard')) {
+      setTimeout(function() { if (window.startTour) window.startTour(window._dashTourSteps, 'mobss_tour_dashboard'); }, 1200);
+    }
+    // ───────────────────────────────────────────────────────────────────────
+
+    const prenom    = profile?.prenom || session.user.email?.split('@')[0] || 'vous';
+    const initiales = ((profile?.prenom?.[0] || '') + (profile?.nom?.[0] || '')).toUpperCase() || '?';
+    const roleLabel = profile?.role === 'entreprise' ? 'Entreprise' : 'Collectivité';
+
+    (document.getElementById('hote-side-avatar') as HTMLElement).textContent = initiales;
+    (document.getElementById('hote-side-nom')    as HTMLElement).textContent = prenom;
+    (document.getElementById('hote-side-role')   as HTMLElement).textContent = roleLabel;
+    (document.getElementById('hote-prenom')      as HTMLElement).textContent = prenom;
+
+    (document.getElementById('hote-param-email') as HTMLElement).textContent = session.user.email || '—';
+    (document.getElementById('hote-param-role')  as HTMLElement).textContent = roleLabel;
+    (document.getElementById('hote-param-date')  as HTMLElement).textContent = fmtDate(session.user.created_at);
+
+    // Reset password
+    document.getElementById('hote-btn-reset-pwd')?.addEventListener('click', async () => {
+      const msgEl = document.getElementById('hote-pwd-msg') as HTMLElement;
+      msgEl.style.display = 'block';
+      msgEl.style.background = '#FEF3C7'; msgEl.style.color = '#92400E';
+      msgEl.textContent = 'Envoi en cours…';
+      try {
+        const { error } = await supabase.auth.resetPasswordForEmail(session.user.email, {
+          redirectTo: window.location.origin + '/connexion'
+        });
+        if (error) throw error;
+        msgEl.style.background = '#D1FAE5'; msgEl.style.color = '#065F46';
+        msgEl.textContent = `✅ Email envoyé à ${session.user.email}.`;
+      } catch {
+        msgEl.style.background = '#FEE2E2'; msgEl.style.color = '#991B1B';
+        msgEl.textContent = '⚠️ Erreur lors de l\'envoi.';
+      }
+    });
+
+    // Déconnexion
+    document.getElementById('hote-btn-logout')?.addEventListener('click', async () => {
+      await supabase.auth.signOut();
+      window.location.href = '/';
+    });
+
+    // ── Demandes reçues hôte ──────────────────────────────────────────────────
+    let allHoteDemandes: any[] = [];
+    let annoncesMap: Record<string, string> = {};
+
+    async function loadHoteDemandes() {
+      const listEl = document.getElementById('hote-demandes-list') as HTMLElement;
+      try {
+        // 1. Récupère les espaces de cet hôte
+        const { data: annonces, error: errA } = await supabase
+          .from('annonces')
+          .select('id, titre')
+          .eq('host_id', session.user.id);
+
+        if (errA || !annonces || annonces.length === 0) {
+          listEl.innerHTML = `
+            <div style="text-align:center;padding:48px 24px;">
+              <div style="font-size:2.5rem;margin-bottom:12px;">📭</div>
+              <h3 style="margin-bottom:8px;">Aucun espace référencé</h3>
+              <p style="color:var(--color-text-soft);font-size:0.9rem;margin-bottom:20px;max-width:360px;margin-left:auto;margin-right:auto;">
+                Déposez un espace pour commencer à recevoir des demandes de praticiens.
+              </p>
+              <a href="/deposer-annonce" class="btn btn--primary">Déposer un espace →</a>
+            </div>`;
+          return;
+        }
+
+        // Construire la map id → titre pour l'affichage
+        annonces.forEach((a: any) => { annoncesMap[a.id] = a.titre || a.id; });
+        const spaceIds = annonces.map((a: any) => a.id);
+
+        // 2. Récupère les demandes pour ces espaces
+        const { data: demandes, error: errD } = await supabase
+          .from('demandes')
+          .select('*')
+          .in('space_id', spaceIds)
+          .order('created_at', { ascending: false });
+
+        if (errD) throw errD;
+        allHoteDemandes = demandes || [];
+
+        // Met à jour le badge dans la sidebar
+        const pending = allHoteDemandes.filter(d => d.statut === 'en_attente').length;
+        const badgeEl = document.getElementById('hote-badge-pending') as HTMLElement;
+        if (pending > 0) {
+          badgeEl.textContent = String(pending);
+          badgeEl.style.display = 'inline';
+        }
+
+        renderHoteDemandes(allHoteDemandes, 'all');
+      } catch (e) {
+        listEl.innerHTML = `<p style="color:#991B1B;padding:24px;text-align:center;">⚠️ Erreur de chargement. Réessayez plus tard.</p>`;
+      }
+    }
+
+    function renderHoteDemRow(d: any): string {
+      const spaceName = annoncesMap[d.space_id] || d.space_id || 'Espace';
+      const horaire   = d.heure_debut && d.heure_fin ? ` · ${d.heure_debut}–${d.heure_fin}` : '';
+      const recur     = d.recurrence && d.recurrence !== 'Une seule fois' ? ` · ${d.recurrence}` : '';
+      const praticien = d.praticien_nom || d.user_email || 'Praticien';
+      const actions   = d.statut === 'en_attente'
+        ? `<div style="display:flex;gap:8px;flex-shrink:0;">
+             <button class="btn btn--outline hote-action-btn" data-id="${d.id}" data-action="acceptee"
+               style="font-size:0.8rem;padding:6px 12px;color:#065F46;border-color:#6EE7B7;">
+               ✅ Accepter
+             </button>
+             <button class="btn btn--outline hote-action-btn" data-id="${d.id}" data-action="refusee"
+               style="font-size:0.8rem;padding:6px 12px;color:#991B1B;border-color:#FCA5A5;">
+               ❌ Refuser
+             </button>
+           </div>`
+        : '';
+      return `
+        <div class="dem-row" data-id="${d.id}" data-statut="${d.statut}">
+          <div style="flex:1;min-width:0;">
+            <strong style="display:block;font-size:0.9rem;">${spaceName}</strong>
+            <span style="font-size:0.8rem;color:var(--color-text-soft);">
+              👤 ${praticien} · ${fmtDate(d.date)}${horaire}${recur}
+            </span>
+            ${d.message ? `<p style="margin:6px 0 0;font-size:0.82rem;color:var(--color-text-soft);font-style:italic;">"${d.message}"</p>` : ''}
+          </div>
+          ${statutBadge(d.statut)}
+          ${actions}
+        </div>`;
+    }
+
+    function renderHoteDemandes(data: any[], filter: string) {
+      const listEl   = document.getElementById('hote-demandes-list') as HTMLElement;
+      const filtered = filter === 'all' ? data : data.filter(d => d.statut === filter);
+      if (filtered.length === 0) {
+        listEl.innerHTML = `<p style="color:var(--color-text-soft);text-align:center;padding:48px;">
+          ${filter === 'all' ? 'Aucune demande reçue pour le moment.' : 'Aucune demande dans cette catégorie.'}
+        </p>`;
+        return;
+      }
+      listEl.innerHTML = filtered.map(renderHoteDemRow).join('');
+      // Attacher les boutons Accepter/Refuser
+      listEl.querySelectorAll<HTMLButtonElement>('.hote-action-btn').forEach(btn => {
+        btn.addEventListener('click', () => updateHoteDemandeStatut(btn.dataset.id!, btn.dataset.action as string));
+      });
+    }
+
+    async function updateHoteDemandeStatut(id: string, statut: string) {
+      const row = document.querySelector(`.dem-row[data-id="${id}"]`) as HTMLElement;
+      if (row) {
+        // Désactiver les boutons pendant la mise à jour
+        row.querySelectorAll('button').forEach(b => { (b as HTMLButtonElement).disabled = true; });
+      }
+      try {
+        const { error } = await supabase
+          .from('demandes')
+          .update({ statut })
+          .eq('id', id);
+        if (error) throw error;
+        // Met à jour localement
+        const idx = allHoteDemandes.findIndex(d => d.id === id);
+        if (idx !== -1) allHoteDemandes[idx].statut = statut;
+        // Recalcule badge
+        const pending = allHoteDemandes.filter(d => d.statut === 'en_attente').length;
+        const badgeEl = document.getElementById('hote-badge-pending') as HTMLElement;
+        badgeEl.textContent = String(pending);
+        badgeEl.style.display = pending > 0 ? 'inline' : 'none';
+        // Re-render la liste avec le filtre actif
+        const activeFilter = (hoteEl.querySelector('.hote-dem-filter.btn--primary') as HTMLElement)?.dataset.filter || 'all';
+        renderHoteDemandes(allHoteDemandes, activeFilter);
+      } catch {
+        if (row) row.querySelectorAll('button').forEach(b => { (b as HTMLButtonElement).disabled = false; });
+        alert('⚠️ Erreur lors de la mise à jour. Réessayez.');
+      }
+    }
+
+    // Filtres
+    hoteEl.querySelectorAll<HTMLElement>('.hote-dem-filter').forEach(btn => {
+      btn.addEventListener('click', () => {
+        hoteEl.querySelectorAll('.hote-dem-filter').forEach(b => {
+          b.classList.remove('btn--primary'); b.classList.add('btn--outline');
+        });
+        btn.classList.add('btn--primary'); btn.classList.remove('btn--outline');
+        renderHoteDemandes(allHoteDemandes, btn.dataset.filter!);
+      });
+    });
+
+    // Charger les demandes dès l'initialisation
+    loadHoteDemandes();
+  }
+
+  // ── Calendrier ───────────────────────────────────────────────────────────────
+  let calDemandes: any[] = [];
+  let calYear  = new Date().getFullYear();
+  let calMonth = new Date().getMonth(); // 0-based
+  let calSelectedDate: string | null = null;
+
+  const MOIS = ['Janvier','Février','Mars','Avril','Mai','Juin',
+                'Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+
+  function calKey(d: Date) {
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  }
+
+  function buildCalendar() {
+    const grid      = document.getElementById('cal-grid')        as HTMLElement;
+    const label     = document.getElementById('cal-month-label') as HTMLElement;
+    const countAcc  = document.getElementById('cal-count-accepted') as HTMLElement;
+    const countPend = document.getElementById('cal-count-pending')  as HTMLElement;
+    const countDays = document.getElementById('cal-count-days')     as HTMLElement;
+    if (!grid) return;
+
+    label.textContent = `${MOIS[calMonth]} ${calYear}`;
+
+    // Indexer les demandes par date (clé YYYY-MM-DD)
+    const byDate: Record<string, any[]> = {};
+    calDemandes.forEach(d => {
+      if (!d.date_debut) return;
+      const key = d.date_debut.slice(0, 10);
+      if (!byDate[key]) byDate[key] = [];
+      byDate[key].push(d);
+    });
+
+    // Statistiques du mois
+    const monthKey = `${calYear}-${String(calMonth+1).padStart(2,'0')}`;
+    let acc = 0, pend = 0, days = new Set<string>();
+    Object.entries(byDate).forEach(([k, arr]) => {
+      if (!k.startsWith(monthKey)) return;
+      arr.forEach(d => {
+        if (d.statut === 'acceptee') { acc++; days.add(k); }
+        if (d.statut === 'en_attente') pend++;
+      });
+    });
+    countAcc.textContent  = String(acc);
+    countPend.textContent = String(pend);
+    countDays.textContent = String(days.size);
+
+    // Construction de la grille
+    const firstDay = new Date(calYear, calMonth, 1);
+    const lastDay  = new Date(calYear, calMonth + 1, 0);
+    const today    = calKey(new Date());
+
+    // Décalage lundi=0
+    let startOffset = firstDay.getDay() - 1;
+    if (startOffset < 0) startOffset = 6;
+
+    grid.innerHTML = '';
+
+    // Cases vides avant le 1er
+    for (let i = 0; i < startOffset; i++) {
+      const el = document.createElement('div');
+      el.className = 'cal-day cal-day--empty';
+      grid.appendChild(el);
+    }
+
+    // Jours du mois
+    for (let d = 1; d <= lastDay.getDate(); d++) {
+      const key = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+      const events = byDate[key] || [];
+      const hasAcc  = events.some(e => e.statut === 'acceptee');
+      const hasPend = events.some(e => e.statut === 'en_attente');
+
+      const el = document.createElement('div');
+      el.className = 'cal-day';
+      if (key === today)    el.classList.add('cal-day--today');
+      if (key === calSelectedDate) el.classList.add('cal-day--selected');
+      if (hasAcc && hasPend) el.classList.add('cal-day--has-both');
+      else if (hasAcc)       el.classList.add('cal-day--has-accepted');
+      else if (hasPend)      el.classList.add('cal-day--has-pending');
+
+      el.innerHTML = `<span class="cal-day__num">${d}</span>${
+        events.length > 0
+          ? `<div class="cal-day__dots">${
+              hasAcc  ? '<span class="cal-dot cal-dot--accepted"></span>' : ''
+            }${
+              hasPend ? '<span class="cal-dot cal-dot--pending"></span>'  : ''
+            }</div>`
+          : ''
+      }`;
+
+      if (events.length > 0) {
+        el.addEventListener('click', () => showCalDay(key, events));
+      } else {
+        el.addEventListener('click', () => {
+          calSelectedDate = key;
+          buildCalendar();
+          clearCalDetail(key);
+        });
+      }
+      grid.appendChild(el);
+    }
+  }
+
+  function showCalDay(key: string, events: any[]) {
+    calSelectedDate = key;
+    buildCalendar();
+
+    const title   = document.getElementById('cal-detail-title')   as HTMLElement;
+    const content = document.getElementById('cal-detail-content') as HTMLElement;
+
+    const [y, m, d] = key.split('-');
+    title.textContent = `${parseInt(d)} ${MOIS[parseInt(m)-1]} ${y}`;
+
+    content.innerHTML = events.map(e => {
+      const cls = e.statut === 'acceptee' ? 'accepted' : e.statut === 'refusee' ? 'refused' : 'pending';
+      const label = e.statut === 'acceptee' ? '✅ Confirmée' : e.statut === 'refusee' ? '❌ Refusée' : '⏳ En attente';
+      const space = spacesMap[e.space_id] || 'Espace';
+      const horaire = e.heure_debut && e.heure_fin ? `${e.heure_debut} – ${e.heure_fin}` : 'Horaires non renseignés';
+      return `
+        <div class="cal-detail-event cal-detail-event--${cls}">
+          <div class="cal-detail-event__space">${space}</div>
+          <div class="cal-detail-event__meta">🕐 ${horaire}</div>
+          <div class="cal-detail-event__meta" style="margin-top:4px;">${label}</div>
+          ${e.message ? `<div class="cal-detail-event__meta" style="margin-top:4px;font-style:italic;">"${e.message}"</div>` : ''}
+        </div>`;
+    }).join('');
+  }
+
+  function clearCalDetail(key: string) {
+    const title   = document.getElementById('cal-detail-title')   as HTMLElement;
+    const content = document.getElementById('cal-detail-content') as HTMLElement;
+    const [y, m, d] = key.split('-');
+    title.textContent = `${parseInt(d)} ${MOIS[parseInt(m)-1]} ${y}`;
+    content.innerHTML = `<p style="color:var(--color-text-soft);font-size:0.88rem;text-align:center;padding:24px 0;">Aucune réservation ce jour.</p>`;
+  }
+
+  function generateIcal(demandes: any[]): string {
+    const lines: string[] = [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      "PRODID:-//MOB'SS//Réservations//FR",
+      'CALSCALE:GREGORIAN',
+      'X-WR-CALNAME:MOB\'SS — Mes réservations',
+      'X-WR-TIMEZONE:Europe/Paris',
+    ];
+
+    demandes.filter(d => d.statut === 'acceptee' && d.date_debut).forEach(d => {
+      const uid  = `mobss-${d.id}@mobss.fr`;
+      const space = spacesMap[d.space_id] || 'Espace MOB\'SS';
+      const dtstart = d.date_debut.slice(0, 10).replace(/-/g, '');
+      const dtend   = d.date_fin
+        ? d.date_fin.slice(0, 10).replace(/-/g, '')
+        : dtstart;
+      lines.push(
+        'BEGIN:VEVENT',
+        `UID:${uid}`,
+        `DTSTART;VALUE=DATE:${dtstart}`,
+        `DTEND;VALUE=DATE:${dtend}`,
+        `SUMMARY:Réservation — ${space}`,
+        `DESCRIPTION:Espace : ${space}${d.heure_debut ? ` | Horaires : ${d.heure_debut}-${d.heure_fin}` : ''}`,
+        `STATUS:CONFIRMED`,
+        'END:VEVENT'
+      );
+    });
+
+    lines.push('END:VCALENDAR');
+    return lines.join('\r\n');
+  }
+
+  function initCalendar(demandes: any[]) {
+    calDemandes = demandes;
+    buildCalendar();
+
+    document.getElementById('cal-prev')?.addEventListener('click', () => {
+      calMonth--;
+      if (calMonth < 0) { calMonth = 11; calYear--; }
+      buildCalendar();
+    });
+    document.getElementById('cal-next')?.addEventListener('click', () => {
+      calMonth++;
+      if (calMonth > 11) { calMonth = 0; calYear++; }
+      buildCalendar();
+    });
+
+    // Export iCal
+    document.getElementById('cal-export-ical')?.addEventListener('click', () => {
+      const content = generateIcal(calDemandes);
+      const blob = new Blob([content], { type: 'text/calendar;charset=utf-8' });
+      const url  = URL.createObjectURL(blob);
+      const a    = Object.assign(document.createElement('a'), { href: url, download: 'mobss-reservations.ics' });
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    // Instructions Google Calendar
+    document.getElementById('cal-google-btn')?.addEventListener('click', () => {
+      const inst = document.getElementById('cal-sync-instructions') as HTMLElement;
+      inst.style.display = inst.style.display === 'none' ? '' : 'none';
+    });
+
+    // Copier URL de sync (URL de la page courante en .ics — informatif)
+    document.getElementById('cal-copy-url')?.addEventListener('click', () => {
+      const url = `${window.location.origin}/api/calendar/${calDemandes[0]?.user_id || 'moi'}.ics`;
+      navigator.clipboard.writeText(url).catch(() => {});
+      const msg = document.getElementById('cal-copy-msg') as HTMLElement;
+      msg.style.display = 'block';
+      setTimeout(() => { msg.style.display = 'none'; }, 2500);
+    });
+  }
+
+  // ── Onglets Documents ─────────────────────────────────────────────────────────
+  const docTabs = Array.from(document.querySelectorAll<HTMLButtonElement>('.doc-tab'));
+
+  function activateDocTab(tab: HTMLButtonElement) {
+    docTabs.forEach(t => {
+      const active = t === tab;
+      t.classList.toggle('doc-tab--active', active);
+      t.setAttribute('aria-selected', active ? 'true' : 'false');
+      t.setAttribute('tabindex', active ? '0' : '-1');
+    });
+    document.querySelectorAll<HTMLElement>('.doc-tabpanel').forEach(panel => {
+      panel.style.display = panel.id === `doctab-${tab.dataset.doctab}` ? '' : 'none';
+    });
+  }
+
+  docTabs.forEach((tab, idx) => {
+    tab.addEventListener('click', () => activateDocTab(tab));
+    tab.addEventListener('keydown', (e: KeyboardEvent) => {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+        e.preventDefault();
+        const next = docTabs[(idx + (e.key === 'ArrowRight' ? 1 : -1) + docTabs.length) % docTabs.length];
+        next.focus();
+        activateDocTab(next);
+      }
+    });
+  });
+
+  // ── Gestion expiration de session ─────────────────────────────────────────────
+  supabase.auth.onAuthStateChange((event) => {
+    if (event === 'SIGNED_OUT') {
+      window.location.href = '/connexion';
+    }
+  });
+
+  // ── Point d'entrée ────────────────────────────────────────────────────────────
+  supabase.auth.getSession().then(async ({ data: { session } }) => {
+    if (!session?.user) {
+      loadingEl.style.display = 'none';
+      anonEl.style.display = 'block';
+      return;
+    }
+    try {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role, prenom, nom, specialite, ville, bio, telephone, visible_annuaire, disponible_remplacement')
+        .eq('id', session.user.id)
+        .single();
+
+      loadingEl.style.display = 'none';
+
+      // Lien admin discret — visible uniquement pour les admins dans leur propre dashboard
+      const ADMIN_EMAIL = import.meta.env.PUBLIC_ADMIN_EMAIL as string;
+      if (ADMIN_EMAILS.includes(session.user.email ?? '')) {
+        const adminLink = document.createElement('a');
+        adminLink.href  = '/admin';
+        adminLink.textContent = '⚙️ Administration';
+        adminLink.style.cssText = 'display:block;text-align:center;font-size:0.8rem;color:var(--color-text-soft);margin-top:16px;text-decoration:none;opacity:0.6;';
+        adminLink.onmouseenter = () => { adminLink.style.opacity = '1'; };
+        adminLink.onmouseleave = () => { adminLink.style.opacity = '0.6'; };
+        document.querySelector('.dash-sidebar')?.appendChild(adminLink);
+      }
+
+      if (profile?.role === 'collectivite' || profile?.role === 'entreprise') {
+        loadHote(session, profile);
+      } else {
+        loadPraticien(session, profile);
+      }
+    } catch {
+      loadingEl.style.display = 'none';
+      loadPraticien(session, null);
+    }
+  });
+</script>

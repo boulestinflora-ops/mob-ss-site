@@ -314,4 +314,9 @@
       btn.addEventListener('click', () => {
         const action = btn.dataset.cookieAction;
         try { localStorage.setItem(COOKIE_KEY, action); } catch (e) {}
-        bann
+        banner.hidden = true;
+      });
+    });
+  }
+
+})();

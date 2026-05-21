@@ -304,4 +304,30 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       submitBtn.disabled = false;
       submitBtn.textContent = 'Créer mon compte';
 
-      if (error
+      if (error) {
+        if (error.message.includes('already registered')) {
+          showMessage('error', 'Cet email est déjà utilisé. Essayez de vous connecter.');
+        } else {
+          showMessage('error', `Erreur : ${error.message}`);
+        }
+        return;
+      }
+
+      // Succès
+      if (data.user && data.user.identities && data.user.identities.length === 0) {
+        showMessage('error', 'Cet email est déjà utilisé. Essayez de vous connecter.');
+      } else {
+        showMessage(
+          'success',
+          `✓ Compte créé ! Un email de confirmation a été envoyé à ${email}. Cliquez sur le lien dans l'email pour activer votre compte.`
+        );
+        form.reset();
+        // Retour à la page d'origine si ?retour= était présent
+        const retourParam = new URLSearchParams(window.location.search).get('retour');
+        if (retourParam) {
+          setTimeout(() => { window.location.href = retourParam; }, 3000);
+        }
+      }
+    });
+  }
+</script>

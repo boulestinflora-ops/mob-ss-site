@@ -31,4 +31,131 @@
               <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
               <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
             </svg>
-            Ins
+            Instagram
+          </a>
+        </div>
+        <!-- Contact direct -->
+        <a href="mailto:contact@mobss.fr" class="footer-contact-link">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+            <polyline points="22,6 12,13 2,6"/>
+          </svg>
+          contact@mobss.fr
+        </a>
+      </div>
+
+      <div>
+        <h4>Plateforme</h4>
+        <ul>
+          <li><a href="/explorez">Explorer les espaces</a></li>
+          <li><a href="/annuaire">Annuaire des praticiens</a></li>
+          <li><a href="/remplacements">Remplacements</a></li>
+          <li><a href="/comment-ca-marche">Comment ça marche</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>Rejoindre</h4>
+        <ul>
+          <li><a href="/rejoindre">Accès anticipé praticiens</a></li>
+          <li><a href="/inscription?role=collectivite">Collectivités</a></li>
+          <li><a href="/inscription?role=entreprise">Entreprises</a></li>
+          <li><a href="/deposer-annonce">Déposer un espace</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>Aide & infos</h4>
+        <ul>
+          <li><a href="/contact">Nous contacter</a></li>
+          <li><a href="/comment-ca-marche#faq">FAQ</a></li>
+          <li><a href="/mentions-legales">Mentions légales</a></li>
+          <li><a href="/confidentialite">Politique de confidentialité</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>© 2026 MOB'SS · Tous droits réservés</span>
+      <span class="footer-bottom__tagline">Rendre le sport et la santé accessibles à tous, partout en France.</span>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer-brand__meaning {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-primary);
+    margin: 8px 0 6px;
+    opacity: 0.75;
+  }
+  .footer-brand__desc {
+    font-size: 0.9rem;
+    color: var(--color-text-soft);
+    line-height: 1.6;
+    margin: 0 0 18px;
+  }
+
+  /* Réseaux sociaux */
+  .footer-social {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+  }
+  .footer-social__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-text-soft);
+    background: var(--color-bg-soft);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-pill);
+    padding: 6px 14px;
+    text-decoration: none;
+    transition: color .15s ease, border-color .15s ease, background .15s ease;
+  }
+  .footer-social__link:hover {
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+    background: var(--color-cream-soft);
+  }
+
+  /* Contact email */
+  .footer-contact-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 0.88rem;
+    color: var(--color-text-soft);
+    text-decoration: none;
+    transition: color .15s ease;
+  }
+  .footer-contact-link:hover { color: var(--color-primary); }
+
+  /* Barre du bas */
+  .footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding-top: 24px;
+    margin-top: 48px;
+    border-top: 1px solid var(--color-border);
+    font-size: 0.83rem;
+    color: var(--color-text-soft);
+  }
+  .footer-bottom__tagline {
+    font-style: italic;
+    opacity: 0.8;
+  }
+  @media (max-width: 640px) {
+    .footer-bottom { flex-direction: column; text-align: center; }
+  }
+</style>

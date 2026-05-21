@@ -526,4 +526,37 @@ const equipements = [
 
     try {
       const { error } = await supabase.from('annonces').insert({
-       
+        host_id:      currentUserId,
+        titre,
+        type,
+        adresse,
+        cp,
+        ville,
+        description,
+        superficie,
+        capacite,
+        equipements:  equips,
+        jours,
+        heure_debut:  hDeb,
+        heure_fin:    hFin,
+        tarif_type:   tarifType,
+        tarif:        tarif || null,
+        notes_dispo:  notes || null,
+        statut:       'en_attente',
+      });
+
+      if (error) throw error;
+
+      // Succès
+      document.getElementById('step-4')!.style.display    = 'none';
+      document.getElementById('steps-indicator')!.style.display = 'none';
+      document.getElementById('step-success')!.style.display   = '';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    } catch (e: any) {
+      btn.disabled    = false;
+      btn.textContent = '🚀 Publier mon annonce';
+      showMsg('msg-4', 'error', `⚠️ Erreur : ${e?.message || 'Impossible de publier. Réessayez ou contactez le support.'}`);
+    }
+  });
+</script>
