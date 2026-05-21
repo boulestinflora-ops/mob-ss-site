@@ -1,38 +1,96 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import spaces from '../../data/spaces.json';
+import { createClient } from '@supabase/supabase-js';
 
-// Astro génère une page statique pour chaque espace au build
-export function getStaticPaths() {
-  return spaces.map(space => ({
-    params: { id: space.id },
-    props:  { space },
-  }));
+// SSR : rendu à chaque requête (lecture depuis Supabase)
+export const prerender = false;
+
+const { id } = Astro.params;
+
+// Client Supabase côté serveur (utilise les variables d'env PUBLIC_ déjà présentes)
+const supabaseSSR = createClient(
+  import.meta.env.PUBLIC_SUPABASE_URL,
+  import.meta.env.PUBLIC_SUPABASE_ANON_KEY,
+);
+
+// 1. Charger l'annonce
+const { data: annonce, error } = await supabaseSSR
+  .from('annonces')
+  .select('*')
+  .eq('id', id)
+  .in('statut', ['actif', 'en_attente'])   // visible si actif ou en attente de validation
+  .maybeSingle();
+
+if (!annonce || error) {
+  return Astro.redirect('/explorez');
 }
 
-const { space } = Astro.props;
+// 2. Charger le profil de l'hôte
+let hostProfile: { prenom: string; nom: string; role: string } | null = null;
+if (annonce.host_id) {
+  const { data } = await supabaseSSR
+    .from('profiles')
+    .select('prenom, nom, role')
+    .eq('id', annonce.host_id)
+    .maybeSingle();
+  hostProfile = data;
+}
 
-// Initiales de l'hôte pour l'avatar
-const hostLabel   = space.host === 'collectivite' ? 'Collectivité' : 'Entreprise';
-const hostInitials = space.title.split(' ').slice(0, 2).map((w: string) => w[0] || '').join('').toUpperCase();
+// ── Dérivations pour le template ───────────────────────────────────────────────
 
-// Dégradé de fond pour la "galerie" (fallback si pas de photo)
-const gradientStyles: Record<string, string> = {
-  'from-cream':  'linear-gradient(135deg, #F4E8B8 0%, #E8C99A 100%)',
-  'from-pink':   'linear-gradient(135deg, #E8C0B5, #D88E80)',
-  'from-green':  'linear-gradient(135deg, #C8D6C5, #9DB59A)',
-  'from-blue':   'linear-gradient(135deg, #D8DDF0, #A5B0DC)',
-  'from-yellow': 'linear-gradient(135deg, #F0E0BE, #D8B968)',
-  'from-teal':   'linear-gradient(135deg, #D9E6E2, #7FAA9F)',
-  'from-rose':   'linear-gradient(135deg, #EAD4DA, #C786A0)',
-  'from-orange': 'linear-gradient(135deg, #F0DCC8, #C99876)',
+const hostRole   = hostProfile?.role ?? 'collectivite';
+const hostLabel  = hostRole === 'entreprise' ? 'Entreprise' : 'Collectivité';
+const hostName   = (hostProfile?.prenom && hostProfile?.nom)
+  ? `${hostProfile.prenom} ${hostProfile.nom}`
+  : hostLabel;
+const hostInitials = hostName.split(' ').slice(0, 2)
+  .map((w: string) => w[0] || '').join('').toUpperCase() || '?';
+
+const typeLabels: Record<string, string> = {
+  'salle-communale': 'Salle communale',
+  'cabinet':         'Cabinet médical',
+  'studio':          'Studio',
+  'salle-sport':     'Salle de sport',
+  'entreprise':      'Espace entreprise',
+  'exterieur':       'Espace extérieur',
 };
-const bgStyle = gradientStyles[space.gradient] || gradientStyles['from-cream'];
+const typeLabel = typeLabels[annonce.type] ?? annonce.type;
+
+const typeIcons: Record<string, string> = {
+  'salle-communale': '🏛️',
+  'cabinet':         '🏥',
+  'studio':          '🎯',
+  'salle-sport':     '🏋️',
+  'entreprise':      '🏢',
+  'exterieur':       '🌿',
+};
+const spaceIcon = typeIcons[annonce.type] ?? '🏢';
+
+const typeGradients: Record<string, string> = {
+  'salle-communale': 'linear-gradient(135deg, #C8D6C5 0%, #9DB59A 100%)',
+  'cabinet':         'linear-gradient(135deg, #F4E8B8 0%, #E8C99A 100%)',
+  'studio':          'linear-gradient(135deg, #EAD4DA 0%, #C786A0 100%)',
+  'salle-sport':     'linear-gradient(135deg, #D8DDF0 0%, #A5B0DC 100%)',
+  'entreprise':      'linear-gradient(135deg, #F0E0BE 0%, #D8B968 100%)',
+  'exterieur':       'linear-gradient(135deg, #D9E6E2 0%, #7FAA9F 100%)',
+};
+const bgStyle = typeGradients[annonce.type] ?? typeGradients['cabinet'];
+
+const equipements: string[] = annonce.equipements ?? [];
+const jours: string[] = annonce.jours ?? [];
+
+const isGratuit  = (annonce.tarif_type ?? 'gratuit') === 'gratuit';
+const tarifLabel = isGratuit ? 'Mise à disposition gracieuse' : (annonce.tarif ?? 'Tarif sur demande');
+
+const superficieLabel = annonce.superficie ? `${annonce.superficie} m²` : null;
+const capaciteLabel   = annonce.capacite   ? `${annonce.capacite} pers. max.` : null;
+
+const adresseComplete = [annonce.adresse, annonce.cp, annonce.ville].filter(Boolean).join(', ');
 ---
 
 <BaseLayout
-  title={`${space.title} — ${space.city} — MOB'SS`}
-  description={`Espace ${space.type.toLowerCase()} mis à disposition gracieusement à ${space.city}. Filtres : ${space.tags.join(', ')}.`}
+  title={`${annonce.titre} — ${annonce.ville} — MOB'SS`}
+  description={`${typeLabel} à ${annonce.ville} sur MOB'SS. ${isGratuit ? 'Mise à disposition gracieuse.' : tarifLabel + '.'} ${equipements.slice(0, 3).join(', ')}.`}
   currentPage="explorez"
 >
 
@@ -40,8 +98,8 @@ const bgStyle = gradientStyles[space.gradient] || gradientStyles['from-cream'];
   <div class="container" style="padding-top:24px;">
     <p style="color:var(--color-text-soft);font-size:0.9rem;">
       <a href="/explorez" style="color:var(--color-text-soft);">Explorez</a> →
-      <a href={`/explorez?type=${encodeURIComponent(space.type)}`} style="color:var(--color-text-soft);">{space.type}</a> →
-      <span>{space.city}</span>
+      <a href={`/explorez?type=${encodeURIComponent(annonce.type)}`} style="color:var(--color-text-soft);">{typeLabel}</a> →
+      <span>{annonce.ville}</span>
     </p>
   </div>
 
@@ -51,12 +109,12 @@ const bgStyle = gradientStyles[space.gradient] || gradientStyles['from-cream'];
       <!-- Titre + actions -->
       <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:16px;margin-bottom:24px;">
         <div>
-          <h1 style="margin-bottom:8px;">{space.title}</h1>
+          <h1 style="margin-bottom:8px;">{annonce.titre}</h1>
           <p style="color:var(--color-text-soft);margin:0;display:flex;align-items:center;gap:6px;">
             <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M20 10c0 7-8 13-8 13s-8-6-8-13a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="3"/>
             </svg>
-            {space.city} · {space.region} · {space.department}
+            {annonce.ville}{annonce.cp ? ` (${annonce.cp.substring(0,2)})` : ''}
           </p>
         </div>
         <div class="flex gap-12">
@@ -71,38 +129,15 @@ const bgStyle = gradientStyles[space.gradient] || gradientStyles['from-cream'];
         </div>
       </div>
 
-      <!-- Galerie photos -->
+      <!-- Galerie / placeholder -->
       <div class="annonce-gallery">
-        {space.photo ? (
-          <>
-            <div style="grid-row:span 2;overflow:hidden;">
-              <img src={space.photo} alt={space.title} style="width:100%;height:100%;object-fit:cover;display:block;" />
-            </div>
-            <div style="overflow:hidden;">
-              <img src={`${space.photo}&crop=top`} alt="" aria-hidden="true" style="width:100%;height:100%;object-fit:cover;display:block;" />
-            </div>
-            <div style="overflow:hidden;">
-              <img src={`${space.photo}&crop=bottom`} alt="" aria-hidden="true" style="width:100%;height:100%;object-fit:cover;display:block;filter:brightness(0.92);" />
-            </div>
-            <div style="overflow:hidden;">
-              <img src={`${space.photo}&crop=entropy`} alt="" aria-hidden="true" style="width:100%;height:100%;object-fit:cover;display:block;filter:brightness(0.88) saturate(1.1);" />
-            </div>
-            <div style="overflow:hidden;position:relative;">
-              <img src={`${space.photo}&crop=faces`} alt="" aria-hidden="true" style="width:100%;height:100%;object-fit:cover;display:block;filter:brightness(0.85);" />
-              <span class="badge--gratuit" style="position:absolute;bottom:14px;right:14px;">🤝 Gracieux</span>
-            </div>
-          </>
-        ) : (
-          <>
-            <div style={`grid-row:span 2;background:${bgStyle};display:flex;align-items:center;justify-content:center;font-size:5rem;`}>{space.icon}</div>
-            <div style="background:linear-gradient(135deg,#E8C0B5,#C99876);"></div>
-            <div style="background:linear-gradient(135deg,#D8E7E0,#9DB59A);"></div>
-            <div style="background:linear-gradient(135deg,#EAD4DA,#C786A0);"></div>
-            <div style="background:linear-gradient(135deg,#F0E0BE,#D8B968);position:relative;">
-              <span class="badge--gratuit" style="position:absolute;bottom:14px;right:14px;">🤝 Gracieux</span>
-            </div>
-          </>
-        )}
+        <div style={`grid-row:span 2;background:${bgStyle};display:flex;align-items:center;justify-content:center;font-size:5rem;`}>{spaceIcon}</div>
+        <div style="background:linear-gradient(135deg,#E8C0B5,#C99876);"></div>
+        <div style="background:linear-gradient(135deg,#D8E7E0,#9DB59A);"></div>
+        <div style="background:linear-gradient(135deg,#EAD4DA,#C786A0);"></div>
+        <div style="background:linear-gradient(135deg,#F0E0BE,#D8B968);position:relative;">
+          {isGratuit && <span class="badge--gratuit" style="position:absolute;bottom:14px;right:14px;">🤝 Gracieux</span>}
+        </div>
       </div>
 
       <!-- Corps -->
@@ -111,30 +146,60 @@ const bgStyle = gradientStyles[space.gradient] || gradientStyles['from-cream'];
         <div>
           <!-- Tags -->
           <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px;">
-            <span class="badge--gratuit">🤝 Mise à disposition gracieuse</span>
+            {isGratuit
+              ? <span class="badge--gratuit">🤝 Mise à disposition gracieuse</span>
+              : <span class="tag">💶 {tarifLabel}</span>
+            }
             <span class="tag">{hostLabel}</span>
-            {space.tags.map((tag: string) => <span class="tag">{tag}</span>)}
+            <span class="tag">{typeLabel}</span>
+            {superficieLabel && <span class="tag">📐 {superficieLabel}</span>}
+            {capaciteLabel   && <span class="tag">👥 {capaciteLabel}</span>}
+            {equipements.map((eq: string) => <span class="tag">{eq}</span>)}
           </div>
 
           <h2>À propos de l'espace</h2>
-          <p style="color:var(--color-text-soft);font-size:1.05rem;">
-            Cet espace est mis à disposition gracieusement par {space.host === 'collectivite' ? 'une collectivité locale' : 'une entreprise partenaire'}
-            dans le cadre du dispositif MOB'SS. Il accueille des professionnels du sport et de la santé
-            pour exercer leur activité sans loyer ni charges fixes.
-          </p>
-          <p style="color:var(--color-text-soft);font-size:1.05rem;">
-            Situé à {space.city} ({space.department}), il est filtrable et réservable directement
-            depuis la plateforme MOB'SS. Contactez l'hôte via la messagerie intégrée pour toute question.
-          </p>
+          {annonce.description ? (
+            <p style="color:var(--color-text-soft);font-size:1.05rem;line-height:1.7;">{annonce.description}</p>
+          ) : (
+            <>
+              <p style="color:var(--color-text-soft);font-size:1.05rem;">
+                Cet espace est mis à disposition par {hostRole === 'entreprise' ? 'une entreprise partenaire' : 'une collectivité locale'}
+                dans le cadre du dispositif MOB'SS. Il accueille des professionnels du sport et de la santé
+                pour exercer leur activité sans loyer ni charges fixes.
+              </p>
+              <p style="color:var(--color-text-soft);font-size:1.05rem;">
+                Situé à {annonce.ville}, il est réservable directement depuis la plateforme.
+                Contactez l'hôte via le formulaire pour toute question.
+              </p>
+            </>
+          )}
 
-          <!-- Équipements issus des tags -->
-          {space.tags.length > 0 && (
+          <!-- Disponibilités -->
+          {(jours.length > 0 || annonce.heure_debut || annonce.notes_dispo) && (
+            <>
+              <h2 style="margin-top:32px;">Disponibilités</h2>
+              <div class="card" style="padding:16px 20px;">
+                {jours.length > 0 && (
+                  <p style="margin:0 0 8px;font-size:0.95rem;"><strong>Jours :</strong> {jours.join(', ')}</p>
+                )}
+                {(annonce.heure_debut && annonce.heure_fin) && (
+                  <p style="margin:0 0 8px;font-size:0.95rem;"><strong>Horaires :</strong> {annonce.heure_debut} – {annonce.heure_fin}</p>
+                )}
+                {annonce.notes_dispo && (
+                  <p style="margin:0;font-size:0.9rem;color:var(--color-text-soft);">{annonce.notes_dispo}</p>
+                )}
+              </div>
+            </>
+          )}
+
+          <!-- Équipements -->
+          {equipements.length > 0 && (
             <>
               <h2 style="margin-top:32px;">Caractéristiques</h2>
               <div style="display:flex;flex-wrap:wrap;gap:10px;">
-                {space.tags.map((tag: string) => (
+                {equipements.map((eq: string) => (
                   <div class="card" style="padding:12px 16px;display:inline-flex;align-items:center;gap:8px;font-size:0.95rem;">
-                    <span style="color:var(--color-primary);">✓</span> {tag}
+                    <span style="color:var(--color-primary);">✓</span> {eq}
                   </div>
                 ))}
               </div>
@@ -146,7 +211,7 @@ const bgStyle = gradientStyles[space.gradient] || gradientStyles['from-cream'];
           <div class="card" style="display:flex;align-items:center;gap:16px;padding:20px;">
             <div style="width:56px;height:56px;border-radius:50%;background:var(--color-cream);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--color-primary);font-size:1.2rem;flex-shrink:0;">{hostInitials}</div>
             <div style="flex:1;">
-              <strong style="display:block;">{hostLabel} · {space.city}</strong>
+              <strong style="display:block;">{hostLabel} · {annonce.ville}</strong>
               <span style="color:var(--color-text-soft);font-size:0.9rem;">Membre vérifié MOB'SS · Réponse sous 48h</span>
             </div>
             <button id="btn-contacter" class="btn btn--outline">Contacter</button>
@@ -154,15 +219,23 @@ const bgStyle = gradientStyles[space.gradient] || gradientStyles['from-cream'];
 
           <!-- Localisation -->
           <h2 style="margin-top:32px;">Localisation</h2>
-          <div id="annonce-map" style="width:100%;height:280px;border-radius:var(--radius-md);border:1px solid var(--color-border);"></div>
+          <div style="width:100%;padding:24px;border-radius:var(--radius-md);border:1px solid var(--color-border);background:var(--color-bg-alt);display:flex;align-items:center;gap:12px;font-size:0.95rem;color:var(--color-text-soft);">
+            <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20 10c0 7-8 13-8 13s-8-6-8-13a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="3"/>
+            </svg>
+            <span>{adresseComplete}</span>
+          </div>
         </div>
 
         <!-- Sidebar de demande -->
         <aside class="annonce-sidebar">
           <div class="form-card" style="padding:28px;">
             <div style="text-align:center;margin-bottom:20px;">
-              <span class="badge--gratuit" style="font-size:0.95rem;padding:8px 16px;">🤝 Mise à disposition gracieuse</span>
-              <p style="color:var(--color-text-soft);font-size:0.85rem;margin:10px 0 0;">Aucun loyer, aucune charge. Cet espace est proposé gratuitement.</p>
+              {isGratuit
+                ? <span class="badge--gratuit" style="font-size:0.95rem;padding:8px 16px;">🤝 Mise à disposition gracieuse</span>
+                : <span class="tag" style="font-size:0.95rem;padding:8px 16px;">💶 {tarifLabel}</span>
+              }
+              {isGratuit && <p style="color:var(--color-text-soft);font-size:0.85rem;margin:10px 0 0;">Aucun loyer, aucune charge. Cet espace est proposé gratuitement.</p>}
             </div>
 
             <div style="border-top:1px dashed var(--color-border);padding-top:16px;margin-bottom:16px;">
@@ -174,15 +247,19 @@ const bgStyle = gradientStyles[space.gradient] || gradientStyles['from-cream'];
                 <div class="field">
                   <label for="debut">Début</label>
                   <select id="debut">
-                    <option>08:00</option><option>09:00</option><option>10:00</option>
-                    <option>14:00</option><option>15:00</option><option>18:00</option>
+                    {(annonce.heure_debut
+                      ? ['08:00','09:00','10:00','14:00','15:00','18:00'].filter(h => h >= (annonce.heure_debut ?? '00:00'))
+                      : ['08:00','09:00','10:00','14:00','15:00','18:00']
+                    ).map((h: string) => <option>{h}</option>)}
                   </select>
                 </div>
                 <div class="field">
                   <label for="fin">Fin</label>
                   <select id="fin">
-                    <option>10:00</option><option>12:00</option><option>13:00</option>
-                    <option>17:00</option><option>19:00</option><option>20:00</option>
+                    {(annonce.heure_fin
+                      ? ['10:00','12:00','13:00','17:00','19:00','20:00'].filter(h => h <= (annonce.heure_fin ?? '23:59'))
+                      : ['10:00','12:00','13:00','17:00','19:00','20:00']
+                    ).map((h: string) => <option>{h}</option>)}
                   </select>
                 </div>
               </div>
@@ -198,7 +275,7 @@ const bgStyle = gradientStyles[space.gradient] || gradientStyles['from-cream'];
             </div>
 
             <!-- Zone de retour (succès / erreur) -->
-            <div id="demande-msg" style="display:none;padding:14px 16px;border-radius:var(--radius-md);margin-bottom:14px;font-size:0.9rem;"></div>
+            <div id="demande-msg" role="status" aria-live="polite" style="display:none;padding:14px 16px;border-radius:var(--radius-md);margin-bottom:14px;font-size:0.9rem;"></div>
 
             <button id="btn-demande" class="btn btn--primary btn--block btn--lg">Envoyer une demande</button>
             <p id="demande-hint" style="text-align:center;font-size:0.85rem;color:var(--color-text-soft);margin:12px 0 0;">L'hôte confirmera votre demande sous 48h.</p>
@@ -221,14 +298,12 @@ const bgStyle = gradientStyles[space.gradient] || gradientStyles['from-cream'];
 
 </BaseLayout>
 
-<!-- Modale auth — s'affiche quand un visiteur non connecté essaie d'envoyer une demande -->
+<!-- Modale auth -->
 <div id="auth-gate-modal" role="dialog" aria-modal="true" aria-labelledby="auth-gate-title"
   style="display:none;position:fixed;inset:0;z-index:500;background:rgba(31,21,24,0.55);backdrop-filter:blur(3px);align-items:center;justify-content:center;padding:20px;">
   <div style="background:#fff;border-radius:var(--radius-lg);max-width:420px;width:100%;padding:36px 32px;box-shadow:0 24px 64px rgba(31,21,24,0.22);position:relative;">
-    <!-- Fermer -->
     <button id="auth-gate-close" aria-label="Fermer"
       style="position:absolute;top:14px;right:14px;background:none;border:none;cursor:pointer;color:var(--color-text-soft);font-size:1.3rem;line-height:1;padding:4px;">✕</button>
-
     <div style="text-align:center;margin-bottom:24px;">
       <div style="font-size:2.2rem;margin-bottom:12px;">🗝️</div>
       <h2 id="auth-gate-title" style="font-size:1.3rem;margin-bottom:8px;">Connectez-vous pour envoyer votre demande</h2>
@@ -236,8 +311,6 @@ const bgStyle = gradientStyles[space.gradient] || gradientStyles['from-cream'];
         Votre sélection de dates est conservée.<br/>Inscription gratuite, sans engagement, en 2 minutes.
       </p>
     </div>
-
-    <!-- CTAs -->
     <div style="display:flex;flex-direction:column;gap:10px;">
       <a id="auth-gate-signup" href="/inscription?role=praticien" class="btn btn--primary btn--block btn--lg">
         Créer un compte gratuitement →
@@ -246,8 +319,6 @@ const bgStyle = gradientStyles[space.gradient] || gradientStyles['from-cream'];
         Déjà inscrit ? Se connecter
       </a>
     </div>
-
-    <!-- Réassurance -->
     <div style="display:flex;justify-content:center;gap:16px;margin-top:20px;font-size:0.78rem;color:var(--color-text-soft);">
       <span>🔒 RGPD</span>
       <span>✓ Profils vérifiés</span>
@@ -256,94 +327,45 @@ const bgStyle = gradientStyles[space.gradient] || gradientStyles['from-cream'];
   </div>
 </div>
 
-<!-- Leaflet pour la mini-carte de localisation -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<script define:vars={{ spaceLat: space.lat, spaceLng: space.lng, spaceTitle: space.title, spaceCity: space.city }}>
-  import('https://unpkg.com/leaflet@1.9.4/dist/leaflet-src.esm.js').then(({ default: L }) => {
-    const map = L.map('annonce-map', { zoomControl: true, scrollWheelZoom: false })
-      .setView([spaceLat, spaceLng], 14);
-
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-      maxZoom: 18,
-    }).addTo(map);
-
-    const icon = L.divIcon({
-      className: '',
-      html: '<div class="map-marker map-marker--active"></div>',
-      iconSize: [32, 32],
-      iconAnchor: [16, 32],
-      popupAnchor: [0, -34],
-    });
-
-    L.marker([spaceLat, spaceLng], { icon })
-      .addTo(map)
-      .bindPopup(`<strong>${spaceTitle}</strong><br>${spaceCity}`)
-      .openPopup();
-  }).catch(() => {
-    const el = document.getElementById('annonce-map');
-    if (el) el.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--color-text-soft);">📍 ${spaceCity}</div>`;
-  });
-</script>
-
-<!-- Bouton "Envoyer une demande" -->
-<script define:vars={{ spaceId: space.id, spaceTitle: space.title }}>
+<!-- Logique demande (client-side) -->
+<script define:vars={{ annonceId: annonce.id, annonceTitre: annonce.titre }}>
   import { supabase } from '../../lib/supabase';
 
-  const btn     = document.getElementById('btn-demande');
-  const msgBox  = document.getElementById('demande-msg');
-  const hint    = document.getElementById('demande-hint');
-  const modal   = document.getElementById('auth-gate-modal');
+  const btn        = document.getElementById('btn-demande');
+  const msgBox     = document.getElementById('demande-msg');
+  const hint       = document.getElementById('demande-hint');
+  const modal      = document.getElementById('auth-gate-modal');
   const modalClose = document.getElementById('auth-gate-close');
 
-  // Lier les liens de la modale avec le paramètre retour
+  // Paramètre retour dans la modale
   const retourParam = encodeURIComponent(window.location.pathname + window.location.search);
   document.getElementById('auth-gate-signup')?.setAttribute('href', `/inscription?role=praticien&retour=${retourParam}`);
-  document.getElementById('auth-gate-login')?.setAttribute('href',  `/connexion?retour=${retourParam}`);
+  document.getElementById('auth-gate-login')?.setAttribute( 'href', `/connexion?retour=${retourParam}`);
 
-  // Ouvrir / fermer la modale
-  function openAuthModal() {
-    if (!modal) return;
-    modal.style.display = 'flex';
-    document.body.style.overflow = 'hidden';
-    modalClose?.focus();
-  }
-  function closeAuthModal() {
-    if (!modal) return;
-    modal.style.display = 'none';
-    document.body.style.overflow = '';
-  }
+  function openAuthModal()  { if (!modal) return; modal.style.display = 'flex'; document.body.style.overflow = 'hidden'; modalClose?.focus(); }
+  function closeAuthModal() { if (!modal) return; modal.style.display = 'none';  document.body.style.overflow = ''; }
   modalClose?.addEventListener('click', closeAuthModal);
-  modal?.addEventListener('click', (e) => { if (e.target === modal) closeAuthModal(); });
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeAuthModal(); });
+  modal?.addEventListener('click', e => { if (e.target === modal) closeAuthModal(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAuthModal(); });
 
   function showMsg(type, text) {
     if (!msgBox) return;
-    msgBox.style.display  = 'block';
-    msgBox.textContent    = text;
-    if (type === 'success') {
-      msgBox.style.background = '#E8F4EA';
-      msgBox.style.color      = '#2D6E3F';
-      msgBox.style.border     = '1px solid #B8DBC0';
-    } else {
-      msgBox.style.background = '#FBE5E5';
-      msgBox.style.color      = '#A02323';
-      msgBox.style.border     = '1px solid #F0B8B8';
-    }
+    msgBox.style.display = 'block';
+    msgBox.textContent   = text;
+    Object.assign(msgBox.style, type === 'success'
+      ? { background: '#E8F4EA', color: '#2D6E3F', border: '1px solid #B8DBC0' }
+      : { background: '#FBE5E5', color: '#A02323', border: '1px solid #F0B8B8' });
     msgBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
 
-  // Bouton "Contacter" sur la fiche hôte → même modale
   document.getElementById('btn-contacter')?.addEventListener('click', async () => {
     const { data: { session } } = await supabase.auth.getSession();
     if (!session?.user) { openAuthModal(); return; }
-    // Connecté → scroll vers le formulaire de demande
     document.getElementById('btn-demande')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   });
 
-  // Bouton "Sauvegarder" → modale si non connecté
   document.querySelectorAll('.btn--outline').forEach(b => {
-    if ((b as HTMLElement).textContent?.trim() === 'Sauvegarder') {
+    if (b.textContent?.trim() === 'Sauvegarder') {
       b.addEventListener('click', async () => {
         const { data: { session } } = await supabase.auth.getSession();
         if (!session?.user) openAuthModal();
@@ -353,57 +375,26 @@ const bgStyle = gradientStyles[space.gradient] || gradientStyles['from-cream'];
 
   if (btn) {
     btn.addEventListener('click', async () => {
-      // Vérifie si l'utilisateur est connecté
       const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.user) { openAuthModal(); return; }
 
-      if (!session?.user) {
-        // Pas connecté → modale contextuelle (pas de redirection)
-        openAuthModal();
-        return;
-      }
-
-      // Connecté → validation basique du formulaire
       const date       = document.getElementById('date-resa')?.value;
       const debut      = document.getElementById('debut')?.value;
       const fin        = document.getElementById('fin')?.value;
       const recurrence = document.getElementById('recurrence')?.value;
 
-      if (!date) {
-        showMsg('error', 'Veuillez choisir une date avant d\'envoyer la demande.');
-        return;
-      }
+      if (!date) { showMsg('error', 'Veuillez choisir une date avant d\'envoyer la demande.'); return; }
 
-      // Désactive le bouton pendant l'envoi
       btn.disabled    = true;
       btn.textContent = 'Envoi en cours…';
 
-      // Sauvegarde la demande en base (table 'demandes' à créer côté Supabase)
       const { error } = await supabase.from('demandes').insert({
-        space_id:   spaceId,
-        user_id:    session.user.id,
-        date:       date,
+        space_id:    annonceId,          // UUID de l'annonce Supabase
+        user_id:     session.user.id,
+        date:        date,
         heure_debut: debut,
         heure_fin:   fin,
         recurrence:  recurrence,
-      }).then(r => r).catch(() => ({ error: { message: 'network' } }));
+      });
 
-      btn.disabled = false;
-      btn.textContent = 'Envoyer une demande';
-
-      if (error) {
-        if (error.message === 'network' || error.message?.includes('relation') || error.message?.includes('does not exist')) {
-          // La table n'existe pas encore → message provisoire positif
-          showMsg('success', `✓ Demande enregistrée ! L'hôte de "${spaceTitle}" vous répondra sous 48h.`);
-          if (hint) hint.style.display = 'none';
-          btn.style.display = 'none';
-        } else {
-          showMsg('error', `Une erreur est survenue : ${error.message}`);
-        }
-      } else {
-        showMsg('success', `✓ Demande envoyée ! L'hôte de "${spaceTitle}" vous répondra sous 48h par email.`);
-        if (hint) hint.style.display = 'none';
-        btn.style.display = 'none';
-      }
-    });
-  }
-</script>
+      btn.di
