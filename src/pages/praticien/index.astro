@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import Panel from '../../components/Panel.astro';
 ---
 
 <BaseLayout
@@ -57,13 +58,13 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
           </div>
 
           <!-- Bio -->
-          <div class="panel" id="prof-bio-panel" style="display:none;margin-top:20px;">
+          <Panel id="prof-bio-panel" style="display:none;margin-top:20px;">
             <h3 style="font-size:1rem;margin-bottom:10px;">À propos</h3>
             <p id="prof-bio" style="color:var(--color-text-soft);font-size:0.92rem;line-height:1.7;margin:0;"></p>
-          </div>
+          </Panel>
 
           <!-- Informations de contact (visibles uniquement si connecté) -->
-          <div class="panel" id="prof-contact-panel" style="margin-top:20px;">
+          <Panel id="prof-contact-panel" style="margin-top:20px;">
             <h3 style="font-size:1rem;margin-bottom:14px;">Contact</h3>
             <div id="prof-contact-auth" style="display:none;flex-direction:column;gap:10px;">
               <div id="prof-email-row" style="display:none;align-items:center;gap:10px;">
@@ -84,7 +85,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
                 <a href="/inscription" class="btn btn--outline">S'inscrire</a>
               </div>
             </div>
-          </div>
+          </Panel>
 
         </div>
 
@@ -92,17 +93,17 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
         <aside>
 
           <!-- CTA principal -->
-          <div class="panel" style="background:var(--color-primary);border:none;color:#fff;text-align:center;padding:24px 20px;">
+          <Panel style="background:var(--color-primary);border:none;color:#fff;text-align:center;padding:24px 20px;">
             <div style="font-size:2rem;margin-bottom:10px;">🤝</div>
             <h3 style="color:#fff;margin-bottom:8px;">Proposer un espace</h3>
             <p style="color:rgba(255,255,255,0.85);font-size:0.88rem;margin-bottom:16px;">
               Vous avez un espace disponible ? Proposez-le à ce praticien.
             </p>
             <a id="cta-espace" href="/deposer-annonce" class="btn btn--cream btn--block">Déposer mon espace →</a>
-          </div>
+          </Panel>
 
           <!-- Remplacement -->
-          <div class="panel" id="panel-remp" style="display:none;margin-top:16px;">
+          <Panel id="panel-remp" style="display:none;margin-top:16px;">
             <div style="display:flex;align-items:flex-start;gap:12px;">
               <span style="font-size:1.4rem;flex-shrink:0;">🔄</span>
               <div>
@@ -110,13 +111,13 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
                 <p style="margin:0;font-size:0.82rem;color:var(--color-text-soft);">Ce praticien peut assurer des remplacements ponctuels.</p>
               </div>
             </div>
-          </div>
+          </Panel>
 
           <!-- Retour annuaire -->
-          <div class="panel" style="margin-top:16px;text-align:center;background:var(--color-bg-alt);border:none;">
+          <Panel style="margin-top:16px;text-align:center;background:var(--color-bg-alt);border:none;">
             <p style="color:var(--color-text-soft);font-size:0.85rem;margin-bottom:12px;">Découvrez d'autres praticiens</p>
             <a href="/annuaire" class="btn btn--outline btn--block">← Voir l'annuaire</a>
-          </div>
+          </Panel>
 
         </aside>
       </div>
