@@ -90,6 +90,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <!-- État : liste -->
       <div id="ann-grid" class="grid grid--3" style="display:none;gap:20px;"></div>
 
+      <!-- Bouton charger plus -->
+      <div id="ann-load-more-wrap" style="display:none;text-align:center;margin:24px 0;">
+        <button id="ann-load-more" class="btn btn--outline" style="min-width:180px;">
+          Charger plus de praticiens
+        </button>
+      </div>
+
       <!-- État : aucun résultat -->
       <div id="ann-empty" style="display:none;text-align:center;padding:60px 24px;">
         <div style="font-size:3rem;margin-bottom:16px;">🔍</div>
@@ -184,46 +191,72 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     `;
   }
 
-  // ── Chargement et affichage ──────────────────────────────────────────────────
+  // ── Chargement et affichage (paginé) ────────────────────────────────────────
+  const PAGE_SIZE = 50;
   let allProfiles: any[] = [];
+  let _annOffset = 0;
+  let _annTotal  = 0;
   let _annuaireController: AbortController | null = null;
 
-  async function loadProfiles() {
+  const loadMoreWrap = document.getElementById('ann-load-more-wrap') as HTMLElement;
+  const loadMoreBtn  = document.getElementById('ann-load-more') as HTMLButtonElement;
+
+  function updateAnnLoadMore() {
+    if (!loadMoreWrap) return;
+    loadMoreWrap.style.display = _annOffset < _annTotal ? 'block' : 'none';
+  }
+
+  async function loadProfiles(append = false) {
     _annuaireController?.abort();
     _annuaireController = new AbortController();
     const { signal } = _annuaireController;
 
-    loadingEl.style.display = 'block';
-    gridEl.style.display    = 'none';
-    emptyEl.style.display   = 'none';
-    errorEl.style.display   = 'none';
+    if (!append) {
+      _annOffset  = 0;
+      allProfiles = [];
+      loadingEl.style.display = 'block';
+      gridEl.style.display    = 'none';
+      emptyEl.style.display   = 'none';
+      errorEl.style.display   = 'none';
+      if (loadMoreWrap) loadMoreWrap.style.display = 'none';
+    } else {
+      if (loadMoreBtn) { loadMoreBtn.disabled = true; loadMoreBtn.textContent = 'Chargement…'; }
+    }
 
     try {
       const { data, error, count } = await supabase
         .from('profiles')
-        .select('id, prenom, nom, specialite, ville, bio, disponible_remplacement', { count: 'exact' })
+        .select('id, prenom, nom, specialite, ville, bio, disponible_remplacement', { count: append ? undefined : 'exact' })
         .eq('visible_annuaire', true)
         .eq('role', 'praticien')
         .not('prenom', 'is', null)
         .order('created_at', { ascending: false })
+        .range(_annOffset, _annOffset + PAGE_SIZE - 1)
         .abortSignal(signal);
 
       if (signal.aborted) return;
       if (error) throw error;
 
-      allProfiles = data || [];
-
-      // Compteur hero
-      if (countEl) countEl.textContent = String(count ?? allProfiles.length);
+      if (!append && count !== null) {
+        _annTotal = count ?? 0;
+        if (countEl) countEl.textContent = String(_annTotal);
+      }
+      _annOffset += (data?.length ?? 0);
+      allProfiles = append ? [...allProfiles, ...(data || [])] : (data || []);
 
       renderFiltered();
+      updateAnnLoadMore();
     } catch (e: any) {
       if (e?.name === 'AbortError') return;
       console.error('Annuaire error:', e);
       loadingEl.style.display = 'none';
       errorEl.style.display   = 'block';
+    } finally {
+      if (loadMoreBtn) { loadMoreBtn.disabled = false; loadMoreBtn.textContent = 'Charger plus de praticiens'; }
     }
   }
+
+  loadMoreBtn?.addEventListener('click', () => loadProfiles(true));
 
   function renderFiltered() {
     const specialite = specSelect.value.toLowerCase();
@@ -241,38 +274,4 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
     if (filtered.length === 0) {
       gridEl.style.display  = 'none';
-      emptyEl.style.display = 'block';
-      if (resultsCt) resultsCt.textContent = '0';
-      return;
-    }
-
-    gridEl.innerHTML        = filtered.map(buildCard).join('');
-    gridEl.style.display    = 'grid';
-    emptyEl.style.display   = 'none';
-    if (resultsCt) resultsCt.textContent = String(filtered.length);
-  }
-
-  // ── Listeners ───────────────────────────────────────────────────────────────
-  searchBtn?.addEventListener('click', renderFiltered);
-  villeInput?.addEventListener('keydown', (e) => { if (e.key === 'Enter') renderFiltered(); });
-  rempl?.addEventListener('change', renderFiltered);
-  resetBtn?.addEventListener('click', () => {
-    specSelect.value  = '';
-    villeInput.value  = '';
-    rempl.checked     = false;
-    renderFiltered();
-  });
-
-  // ── Pré-remplissage depuis ?specialite= (lien depuis /remplacements) ────────
-  const params = new URLSearchParams(window.location.search);
-  const paramSpec = params.get('specialite');
-  if (paramSpec && specSelect) {
-    const match = Array.from(specSelect.options).find(o =>
-      o.text.toLowerCase().includes(paramSpec.toLowerCase())
-    );
-    if (match) specSelect.value = match.value;
-  }
-
-  // Lancement
-  loadProfiles();
-</script>
+      emptyEl.style.display 

@@ -5,12 +5,14 @@
  * via Claude et met à jour la table documents avec le résultat.
  *
  * Variables d'environnement requises (Supabase → Settings → Secrets) :
- *   ANTHROPIC_API_KEY        — clé API Anthropic
- *   SUPABASE_URL             — URL du projet (auto-injectée par Supabase)
+ *   ANTHROPIC_API_KEY         — clé API Anthropic
+ *   SUPABASE_URL              — URL du projet (auto-injectée par Supabase)
  *   SUPABASE_SERVICE_ROLE_KEY — clé service role (auto-injectée)
  *
  * Payload attendu :
- *   { document_id: string, file_path: string, doc_type: "diplome"|"assurance" }
+ *   { document_id: string, file_path: string, doc_type: "diplome"|"assurance", user_id: string }
+ *
+ * Rate limit : 5 analyses / 60 s par utilisateur (chaque analyse coûte des tokens Anthropic).
  *
  * Déploiement :
  *   supabase functions deploy analyze-document
@@ -22,6 +24,32 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 const ANTHROPIC_KEY   = Deno.env.get("ANTHROPIC_API_KEY") ?? "";
 const SUPABASE_URL    = Deno.env.get("SUPABASE_URL") ?? "";
 const SERVICE_KEY     = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
+
+// Rate limiting : 5 analyses / 60 secondes par utilisateur
+const RATE_LIMIT_MAX    = 5;
+const RATE_LIMIT_WINDOW = 60;  // secondes
+
+async function isRateLimited(
+  client: ReturnType<typeof createClient>,
+  userId: string,
+  fnName: string,
+): Promise<boolean> {
+  const key   = `${userId}:${fnName}`;
+  const since = new Date(Date.now() - RATE_LIMIT_WINDOW * 1000).toISOString();
+
+  const { count } = await client
+    .from("rate_limits")
+    .select("id", { count: "exact", head: true })
+    .eq("key", key)
+    .gte("called_at", since);
+
+  if ((count ?? 0) >= RATE_LIMIT_MAX) return true;
+
+  await client.from("rate_limits").insert({ key });
+  client.from("rate_limits").delete().lt("called_at", since).then(() => {});
+
+  return false;
+}
 
 const CORS = {
   "Access-Control-Allow-Origin": "*",
@@ -69,12 +97,18 @@ serve(async (req) => {
       document_id: string;
       file_path: string;
       doc_type: "diplome" | "assurance";
+      user_id: string;
     };
 
-    const { document_id, file_path, doc_type } = body;
+    const { document_id, file_path, doc_type, user_id } = body;
 
     if (!document_id || !file_path || !doc_type) {
       return json({ ok: false, error: "Paramètres manquants." }, 400);
+    }
+
+    // ── Rate limiting ────────────────────────────────────────────────────────
+    if (user_id && await isRateLimited(supabase, user_id, "analyze-document")) {
+      return json({ ok: false, error: "Trop d'analyses en cours. Réessayez dans une minute." }, 429);
     }
 
     // ── 1. URL signée (5 minutes) ──────────────────────────────
@@ -129,41 +163,4 @@ serve(async (req) => {
 
       try {
         const match = raw.match(/\{[\s\S]*\}/);
-        analysis = match ? JSON.parse(match[0]) : analysis;
-      } catch {
-        analysis = { conforme: false, anomalies: ["Réponse IA non parseable"] };
-      }
-
-      // Auto-extraire la date d'expiration pour l'assurance
-      if (doc_type === "assurance" && analysis.date_fin) {
-        await supabase
-          .from("documents")
-          .update({ expires_at: analysis.date_fin })
-          .eq("id", document_id)
-          .is("expires_at", null); // Ne pas écraser si déjà renseignée
-      }
-    } else {
-      console.warn("ANTHROPIC_API_KEY non définie — analyse ignorée");
-      analysis = { conforme: null, anomalies: [], note: "Clé API Anthropic non configurée" };
-    }
-
-    // ── 4. Mettre à jour la table documents ───────────────────
-    await supabase.from("documents").update({
-      ai_analyse:    analysis,
-      ai_analyse_at: new Date().toISOString(),
-    }).eq("id", document_id);
-
-    return json({ ok: true, analyse: analysis });
-
-  } catch (err) {
-    console.error("analyze-document error:", err);
-    return json({ ok: false, error: String(err) }, 500);
-  }
-});
-
-function json(data: unknown, status = 200) {
-  return new Response(JSON.stringify(data), {
-    status,
-    headers: { "Content-Type": "application/json", ...CORS },
-  });
-}
+        analysis = match ? JSON.parse(matc

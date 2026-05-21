@@ -253,6 +253,13 @@ const SPACE_TYPES = [
         <p id="no-results" style="display:none;text-align:center;color:var(--color-text-soft);padding:40px 0;">
           Aucun espace ne correspond à ces critères. Essayez d'élargir votre recherche.
         </p>
+
+        <!-- Bouton charger plus -->
+        <div id="load-more-wrap" style="display:none;text-align:center;margin:24px 0;">
+          <button id="load-more-spaces" class="btn btn--outline" style="min-width:180px;">
+            Charger plus d'espaces
+          </button>
+        </div>
       </div>
 
       <!-- Bouton visite guidée flottant -->
@@ -778,44 +785,69 @@ if (qType   && typeSelect) {
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
-//  Chargement depuis Supabase
+//  Chargement depuis Supabase (paginé — PAGE_SIZE résultats par page)
 // ══════════════════════════════════════════════════════════════════════════════
+const PAGE_SIZE = 50;
+let _spacesOffset = 0;
+let _spacesTotal  = 0;
 let _spacesController: AbortController | null = null;
 
-async function loadSpaces() {
+const loadMoreWrap = document.getElementById('load-more-wrap') as HTMLElement;
+const loadMoreBtn  = document.getElementById('load-more-spaces') as HTMLButtonElement;
+
+function updateLoadMoreBtn() {
+  if (!loadMoreWrap) return;
+  loadMoreWrap.style.display = _spacesOffset < _spacesTotal ? 'block' : 'none';
+}
+
+async function loadSpaces(append = false) {
   _spacesController?.abort();
   _spacesController = new AbortController();
   const { signal } = _spacesController;
 
-  loadingEl.style.display = 'block';
-  grid.style.display      = 'none';
-  noResults.style.display = 'none';
   const emptyEl = document.getElementById('empty-state') as HTMLElement;
   const errorEl = document.getElementById('error-state') as HTMLElement;
-  if (emptyEl) emptyEl.style.display = 'none';
-  if (errorEl) errorEl.style.display = 'none';
+
+  if (!append) {
+    _spacesOffset = 0;
+    allSpaces = [];
+    loadingEl.style.display = 'block';
+    grid.style.display      = 'none';
+    noResults.style.display = 'none';
+    if (emptyEl) emptyEl.style.display = 'none';
+    if (errorEl) errorEl.style.display = 'none';
+    if (loadMoreWrap) loadMoreWrap.style.display = 'none';
+  } else {
+    if (loadMoreBtn) { loadMoreBtn.disabled = true; loadMoreBtn.textContent = 'Chargement…'; }
+  }
 
   try {
-    const { data, error } = await supabase
+    const { data, error, count } = await supabase
       .from('annonces')
       .select(`
         id, titre, type_espace, ville, region, departement,
         superficie, capacite, tarif_type, equipements,
         jours_disponibles, lat, lng, photos,
         profiles:user_id ( role )
-      `)
+      `, { count: append ? undefined : 'exact' })
       .eq('status', 'publie')
       .order('created_at', { ascending: false })
+      .range(_spacesOffset, _spacesOffset + PAGE_SIZE - 1)
       .abortSignal(signal);
 
     if (signal.aborted) return;
     if (error) throw error;
 
-    allSpaces = (data || []).map(mapSpace);
+    if (!append && count !== null) _spacesTotal = count ?? 0;
+    _spacesOffset += (data?.length ?? 0);
 
-    if (allSpaces.length === 0) {
+    const newSpaces = (data || []).map(mapSpace);
+    allSpaces = append ? [...allSpaces, ...newSpaces] : newSpaces;
+
+    if (!append && allSpaces.length === 0) {
       loadingEl.style.display = 'none';
       if (emptyEl) emptyEl.style.display = 'block';
+      updateLoadMoreBtn();
       return;
     }
   } catch (e: any) {
@@ -824,11 +856,16 @@ async function loadSpaces() {
     loadingEl.style.display = 'none';
     if (errorEl) errorEl.style.display = 'block';
     return;
+  } finally {
+    if (loadMoreBtn) { loadMoreBtn.disabled = false; loadMoreBtn.textContent = 'Charger plus d\'espaces'; }
   }
 
   loadingEl.style.display = 'none';
   applyFilters();
+  updateLoadMoreBtn();
 }
+
+loadMoreBtn?.addEventListener('click', () => loadSpaces(true));
 
 (window as any).loadSpaces = loadSpaces;
 loadSpaces();
@@ -1082,42 +1119,4 @@ loadSpaces();
     color: var(--color-primary);
   }
 
-  /* ── Texte d'aide ────────────────────────────────────────────────────────────*/
-  .filter-hint {
-    margin: 0;
-    font-size: 0.78rem;
-    color: var(--color-text-soft);
-    font-style: italic;
-  }
-
-  /* ── Badge nombre de filtres actifs ──────────────────────────────────────────*/
-  .filters-active-badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 18px;
-    height: 18px;
-    padding: 0 5px;
-    border-radius: 999px;
-    background: var(--color-primary);
-    color: #fff;
-    font-size: 0.72rem;
-    font-weight: 700;
-    line-height: 1;
-  }
-
-  /* ── Résumé des filtres actifs ───────────────────────────────────────────────*/
-  .filters-summary {
-    margin: 0;
-    font-size: 0.82rem;
-    color: var(--color-text-soft);
-    font-style: italic;
-    flex: 1;
-  }
-
-  /* ── Responsive ──────────────────────────────────────────────────────────────*/
-  @media (max-width: 640px) {
-    .filters-bar-inner { gap: 14px; padding: 12px 14px 14px; }
-    .filter-h-input    { max-width: 100%; }
-    .filter-distance-controls { flex-direction: column; }
-    .f
+  /* ── Texte d'aide ─────────�

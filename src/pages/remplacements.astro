@@ -134,6 +134,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <!-- Grille -->
       <div id="rpl-grid" class="grid grid--3" style="display:none;gap:20px;"></div>
 
+      <!-- Bouton charger plus -->
+      <div id="rpl-load-more-wrap" style="display:none;text-align:center;margin:24px 0;">
+        <button id="rpl-load-more" class="btn btn--outline" style="min-width:180px;">
+          Charger plus de praticiens
+        </button>
+      </div>
+
       <!-- Vide -->
       <div id="rpl-empty" style="display:none;text-align:center;padding:48px 24px;">
         <div style="font-size:3rem;margin-bottom:12px;">🔍</div>
@@ -231,77 +238,62 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     `;
   }
 
-  // ── Données ──────────────────────────────────────────────────────────────────
+  // ── Données (paginées) ───────────────────────────────────────────────────────
+  const PAGE_SIZE = 50;
   let allProfiles: any[] = [];
   let isLoggedIn = false;
+  let _replOffset = 0;
+  let _replTotal  = 0;
   let _replController: AbortController | null = null;
 
-  async function load() {
+  const loadMoreWrap = document.getElementById('rpl-load-more-wrap') as HTMLElement;
+  const loadMoreBtn  = document.getElementById('rpl-load-more') as HTMLButtonElement;
+
+  function updateRplLoadMore() {
+    if (!loadMoreWrap) return;
+    loadMoreWrap.style.display = _replOffset < _replTotal ? 'block' : 'none';
+  }
+
+  async function load(append = false) {
     _replController?.abort();
     _replController = new AbortController();
     const { signal } = _replController;
 
-    loadingEl.style.display = 'block';
-    gridEl.style.display    = 'none';
-    emptyEl.style.display   = 'none';
+    if (!append) {
+      _replOffset  = 0;
+      allProfiles  = [];
+      loadingEl.style.display = 'block';
+      gridEl.style.display    = 'none';
+      emptyEl.style.display   = 'none';
+      if (loadMoreWrap) loadMoreWrap.style.display = 'none';
+    } else {
+      if (loadMoreBtn) { loadMoreBtn.disabled = true; loadMoreBtn.textContent = 'Chargement…'; }
+    }
 
     // Vérifie si l'utilisateur est connecté (pour afficher les contacts)
-    const { data: { session } } = await supabase.auth.getSession();
-    isLoggedIn = !!session?.user;
+    if (!append) {
+      const { data: { session } } = await supabase.auth.getSession();
+      isLoggedIn = !!session?.user;
+    }
 
     try {
-      const { data, error } = await supabase
+      const { data, error, count } = await supabase
         .from('profiles')
-        .select('id, prenom, nom, specialite, ville, bio, email, telephone')
+        .select('id, prenom, nom, specialite, ville, bio, email, telephone', { count: append ? undefined : 'exact' })
         .eq('disponible_remplacement', true)
         .eq('visible_annuaire', true)
         .not('prenom', 'is', null)
         .order('created_at', { ascending: false })
+        .range(_replOffset, _replOffset + PAGE_SIZE - 1)
         .abortSignal(signal);
 
       if (signal.aborted) return;
       if (error) throw error;
-      allProfiles = data || [];
+
+      if (!append && count !== null) _replTotal = count ?? 0;
+      _replOffset += (data?.length ?? 0);
+      allProfiles = append ? [...allProfiles, ...(data || [])] : (data || []);
+
       renderFiltered();
-    } catch (e: any) {
-      if (e?.name === 'AbortError') return;
-      console.error('Remplacements error:', e);
-      loadingEl.style.display = 'none';
-      if (countEl) countEl.textContent = '0';
-    }
-  }
-
-  function renderFiltered() {
-    const spec  = specSel.value.toLowerCase();
-    const ville = villeIn.value.toLowerCase().trim();
-
-    const filtered = allProfiles.filter(p => {
-      const sm = !spec  || (p.specialite || '').toLowerCase() === spec;
-      const vm = !ville || (p.ville || '').toLowerCase().includes(ville);
-      return sm && vm;
-    });
-
-    loadingEl.style.display = 'none';
-    if (countEl) countEl.textContent = String(filtered.length);
-
-    if (filtered.length === 0) {
-      gridEl.style.display  = 'none';
-      emptyEl.style.display = 'block';
-      return;
-    }
-
-    gridEl.innerHTML     = filtered.map(buildCard).join('');
-    gridEl.style.display = 'grid';
-    emptyEl.style.display = 'none';
-  }
-
-  searchBtn?.addEventListener('click', renderFiltered);
-  villeIn?.addEventListener('keydown', (e) => { if (e.key === 'Enter') renderFiltered(); });
-  resetBtn?.addEventListener('click', () => {
-    specSel.value = '';
-    villeIn.value = '';
-    renderFiltered();
-  });
-
-  load();
-</script>
+      updateRplLoadMore();
+   
