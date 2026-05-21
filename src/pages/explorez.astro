@@ -282,6 +282,9 @@ const SPACE_TYPES = [
 
 </BaseLayout>
 
+<!-- Visite guidée : script système -->
+<script src="/scripts/tour.js" is:inline></script>
+
 <!-- Étapes de la visite guidée + auto-lancement (is:inline = exécution immédiate, pas de bundling) -->
 <script is:inline>
   window._exploreTourSteps = [
@@ -1117,6 +1120,4 @@ loadSpaces();
     .filters-bar-inner { gap: 14px; padding: 12px 14px 14px; }
     .filter-h-input    { max-width: 100%; }
     .filter-distance-controls { flex-direction: column; }
-    .filters-row--actions { flex-direction: column-reverse; align-items: flex-start; }
-  }
-</style>
+    .f

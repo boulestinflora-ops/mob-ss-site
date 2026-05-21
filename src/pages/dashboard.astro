@@ -1473,6 +1473,9 @@ const spacesMapJson = JSON.stringify(
   }
 </style>
 
+<!-- Visite guidée : script système -->
+<script src="/scripts/tour.js" is:inline></script>
+
 <!-- Étapes de la visite guidée dashboard (is:inline = exécution immédiate) -->
 <script is:inline>
   window._dashTourSteps = [
@@ -1527,6 +1530,15 @@ const spacesMapJson = JSON.stringify(
     _dashController = new AbortController();
     window.addEventListener('beforeunload', () => _dashController?.abort(), { once: true });
     return _dashController.signal;
+  }
+
+  // ── Visite guidée : lancement automatique (commun praticien + hôte) ────────
+  function maybeLaunchTour() {
+    const fabDash = document.getElementById('tour-fab-dash') as HTMLElement;
+    if (fabDash) fabDash.style.display = '';
+    if (!localStorage.getItem('mobss_tour_dashboard')) {
+      setTimeout(function () { if (window.startTour) window.startTour(window._dashTourSteps, 'mobss_tour_dashboard'); }, 1200);
+    }
   }
 
   const spacesMap: Record<string, string> = JSON.parse(
@@ -1729,14 +1741,7 @@ const spacesMapJson = JSON.stringify(
   async function loadPraticien(session: any, profile: any) {
     pratEl.style.display = 'block';
     initNav(pratEl);
-
-    // ── Visite guidée ──────────────────────────────────────────────────────
-    const fabDash = document.getElementById('tour-fab-dash') as HTMLElement;
-    if (fabDash) fabDash.style.display = '';
-    if (!localStorage.getItem('mobss_tour_dashboard')) {
-      setTimeout(function() { if (window.startTour) window.startTour(window._dashTourSteps, 'mobss_tour_dashboard'); }, 1200);
-    }
-    // ───────────────────────────────────────────────────────────────────────
+    maybeLaunchTour();
 
     // ── Chargement des documents ───────────────────────────────────────────
     loadDocuments(session.user.id);
@@ -2090,14 +2095,7 @@ const spacesMapJson = JSON.stringify(
   async function loadHote(session: any, profile: any) {
     hoteEl.style.display = 'block';
     initNav(hoteEl);
-
-    // ── Visite guidée ──────────────────────────────────────────────────────
-    const fabDash = document.getElementById('tour-fab-dash') as HTMLElement;
-    if (fabDash) fabDash.style.display = '';
-    if (!localStorage.getItem('mobss_tour_dashboard')) {
-      setTimeout(function() { if (window.startTour) window.startTour(window._dashTourSteps, 'mobss_tour_dashboard'); }, 1200);
-    }
-    // ───────────────────────────────────────────────────────────────────────
+    maybeLaunchTour();
 
     const prenom    = profile?.prenom || session.user.email?.split('@')[0] || 'vous';
     const initiales = ((profile?.prenom?.[0] || '') + (profile?.nom?.[0] || '')).toUpperCase() || '?';
@@ -2564,3 +2562,4 @@ const spacesMapJson = JSON.stringify(
     }
   });
 </script>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
