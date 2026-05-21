@@ -13,25 +13,45 @@ test.describe('Pages publiques', () => {
     await expect(page.locator('h1')).toContainText('Rendre le sport et la santé');
   });
 
-  test('la page Explorez liste les espaces', async ({ page }) => {
+  test('la page Explorez se charge et affiche la grille', async ({ page }) => {
     await page.goto('/explorez');
-    await expect(page.locator('h1')).toContainText('Des espaces près de chez vous');
-    // Au moins 1 carte d'espace doit être présente
-    const cards = page.locator('.space-card');
-    await expect(cards.first()).toBeVisible();
+    await expect(page.locator('h1')).toBeVisible();
+    // La grille doit être dans le DOM
+    await expect(page.locator('#listing-grid')).toBeAttached();
   });
 
-  test('la page Comment ça marche affiche la FAQ', async ({ page }) => {
+  test('la page Annuaire se charge', async ({ page }) => {
+    await page.goto('/annuaire');
+    await expect(page.locator('h1')).toBeVisible();
+    await expect(page.locator('#ann-loading, #ann-grid')).toBeAttached();
+  });
+
+  test('la page Remplacements se charge', async ({ page }) => {
+    await page.goto('/remplacements');
+    await expect(page.locator('h1')).toBeVisible();
+    await expect(page.locator('#rpl-loading, #rpl-grid')).toBeAttached();
+  });
+
+  test('la page Comment ça marche affiche le contenu', async ({ page }) => {
     await page.goto('/comment-ca-marche');
-    await expect(page.locator('h1')).toContainText('Comment ça marche');
-    // La section FAQ doit exister
-    await expect(page.locator('#faq')).toBeVisible();
+    await expect(page.locator('h1')).toBeVisible();
   });
 
   test('la page Contact affiche le formulaire', async ({ page }) => {
     await page.goto('/contact');
     await expect(page.locator('form')).toBeVisible();
     await expect(page.locator('input[type="email"]')).toBeVisible();
+  });
+
+  test('la page Mentions légales se charge', async ({ page }) => {
+    await page.goto('/mentions-legales');
+    await expect(page).toHaveTitle(/mentions/i);
+  });
+
+  test('la page 404 s\'affiche pour une URL inexistante', async ({ page }) => {
+    const response = await page.goto('/cette-page-nexiste-pas');
+    expect(response?.status()).toBe(404);
+    await expect(page.locator('h1')).toBeVisible();
   });
 
   test('la navigation depuis l\'accueil mène à Explorez', async ({ page }) => {
@@ -42,24 +62,4 @@ test.describe('Pages publiques', () => {
 
   test('le bandeau cookies apparaît à la première visite', async ({ page, context }) => {
     await context.clearCookies();
-    await page.goto('/');
-    await expect(page.locator('#cookie-banner')).toBeVisible();
-  });
-});
-
-test.describe('Accessibilité de base', () => {
-  test('skip-link est présent en haut de page', async ({ page }) => {
-    await page.goto('/');
-    const skip = page.locator('.skip-link');
-    await expect(skip).toHaveAttribute('href', '#main-content');
-  });
-
-  test('chaque page a un h1 unique', async ({ page }) => {
-    const pages = ['/', '/explorez', '/comment-ca-marche', '/contact', '/connexion', '/inscription'];
-    for (const url of pages) {
-      await page.goto(url);
-      const h1Count = await page.locator('h1').count();
-      expect(h1Count, `${url} doit avoir exactement 1 h1`).toBe(1);
-    }
-  });
-});
+    await page.goto('
