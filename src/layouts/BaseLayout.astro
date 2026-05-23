@@ -10,10 +10,9 @@ import CookieBanner from '../components/CookieBanner.astro';
 import '../styles/style.css';
 
 // Polices auto-hébergées (évite la dépendance Google Fonts)
-// Installées via : npm install @fontsource-variable/dm-sans @fontsource/playfair-display
+// Installées via : npm install @fontsource-variable/dm-sans @fontsource-variable/outfit
 import '@fontsource-variable/dm-sans';
-import '@fontsource/playfair-display/700.css';
-import '@fontsource/playfair-display/800.css';
+import '@fontsource-variable/outfit';
 
 const POSTHOG_KEY = import.meta.env.PUBLIC_POSTHOG_KEY ?? '';
 const POSTHOG_HOST = 'https://eu.posthog.com';
@@ -145,4 +144,5 @@ const BETA_MODE = import.meta.env.PUBLIC_BETA_MODE !== 'false';
 
   <!-- PostHog — analytics privacy-first (EU cloud, ne charge pas si clé absente) -->
   {POSTHOG_KEY && (
-    <script is:inline define:vars={{ POSTHOG_KEY, POSTHOG_
+    <script is:inline define:vars={{ POSTHOG_KEY, POSTHOG_HOST }}>
+      !function(t,e){var o,n,p,r;e.__SV||(window

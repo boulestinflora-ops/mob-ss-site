@@ -31,13 +31,15 @@ import BaseLayout from '../layouts/BaseLayout.astro';
               <input id="mdp" name="password" type="password" required autocomplete="current-password" minlength="8" />
             </div>
 
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;font-size:0.9rem;">
-              <label class="option" style="display:flex;gap:6px;margin:0;">
+            <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:18px;font-size:0.9rem;">
+              <label class="option" style="display:flex;gap:6px;margin:0;align-items:center;">
                 <input type="checkbox" /> Se souvenir de moi
               </label>
-              <button type="button" id="show-reset" style="background:none;border:none;color:var(--color-primary);font-size:0.9rem;cursor:pointer;padding:0;">
-                Mot de passe oublié&nbsp;?
-              </button>
+              <div style="text-align:center;">
+                <button type="button" id="show-reset" style="background:none;border:none;color:var(--color-primary);font-size:0.9rem;cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:3px;">
+                  Mot de passe oublié&nbsp;?
+                </button>
+              </div>
             </div>
 
             <button type="submit" class="btn btn--primary btn--block btn--lg">Se connecter</button>
@@ -186,7 +188,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       btn.textContent = 'Envoi…';
 
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/completer-profil`,
+        redirectTo: `${window.location.origin}/reset-password`,
       });
 
       btn.disabled    = false;
@@ -226,8 +228,4 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       if (error) {
         showMsg('error', `Erreur : ${error.message}`);
       } else {
-        showMsg('success', `✓ Email de confirmation renvoyé à ${email}. Vérifiez vos spams si besoin.`);
-      }
-    });
-  }
-</script>
+        showMsg
