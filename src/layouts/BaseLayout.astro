@@ -32,6 +32,39 @@ const canonicalUrl = new URL(Astro.url.pathname, siteUrl).href;
 // ⚠️ BETA — Empêche l'indexation par Google pendant la phase de test.
 // Pour désactiver, mettre PUBLIC_BETA_MODE=false dans .env (ou supprimer la variable).
 const BETA_MODE = import.meta.env.PUBLIC_BETA_MODE !== 'false';
+
+// JSON-LD construit dans le frontmatter pour éviter que Vite parse le JSON
+// comme du JS (erreur "invalid JS syntax at astro.config.mjs:1:1")
+const jsonLd = JSON.stringify({
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": `${siteUrl}/#organization`,
+      "name": "MOB'SS",
+      "url": siteUrl,
+      "logo": { "@type": "ImageObject", "url": `${siteUrl}/logo.svg` },
+      "description": "MOB'SS connecte les espaces inoccupés des collectivités et des entreprises avec les professionnels du sport et de la santé — gratuitement, partout en France.",
+      "email": "contact@mobss.fr",
+      "sameAs": [
+        "https://www.linkedin.com/company/mobss",
+        "https://www.instagram.com/mobss.france"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": `${siteUrl}/#website`,
+      "url": siteUrl,
+      "name": "MOB'SS",
+      "publisher": { "@id": `${siteUrl}/#organization` },
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": { "@type": "EntryPoint", "urlTemplate": `${siteUrl}/explorez?q={search_term_string}` },
+        "query-input": "required name=search_term_string"
+      }
+    }
+  ]
+});
 ---
 
 <!DOCTYPE html>
@@ -70,43 +103,8 @@ const BETA_MODE = import.meta.env.PUBLIC_BETA_MODE !== 'false';
   <meta name="twitter:description" content={description} />
   <meta name="twitter:image"       content={`${siteUrl}/og-image.png`} />
 
-  <!-- JSON-LD — Organisation + moteur de recherche -->
-  <script type="application/ld+json" set:html={JSON.stringify({
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "Organization",
-        "@id": `${siteUrl}/#organization`,
-        "name": "MOB'SS",
-        "url": siteUrl,
-        "logo": {
-          "@type": "ImageObject",
-          "url": `${siteUrl}/logo.svg`
-        },
-        "description": "MOB'SS connecte les espaces inoccupés des collectivités et des entreprises avec les professionnels du sport et de la santé — gratuitement, partout en France.",
-        "email": "contact@mobss.fr",
-        "sameAs": [
-          "https://www.linkedin.com/company/mobss",
-          "https://www.instagram.com/mobss.france"
-        ]
-      },
-      {
-        "@type": "WebSite",
-        "@id": `${siteUrl}/#website`,
-        "url": siteUrl,
-        "name": "MOB'SS",
-        "publisher": { "@id": `${siteUrl}/#organization` },
-        "potentialAction": {
-          "@type": "SearchAction",
-          "target": {
-            "@type": "EntryPoint",
-            "urlTemplate": `${siteUrl}/explorez?q={search_term_string}`
-          },
-          "query-input": "required name=search_term_string"
-        }
-      }
-    ]
-  })} />
+  <!-- JSON-LD — Organisation + moteur de recherche (Fragment évite le parsing Vite) -->
+  <Fragment set:html={`<script type="application/ld+json">${jsonLd}</script>`} />
 
   <!-- Noindex bêta — RETIRER cette ligne au lancement officiel (mettre BETA_MODE = false) -->
   {BETA_MODE && <meta name="robots" content="noindex, nofollow" />}
@@ -138,8 +136,4 @@ const BETA_MODE = import.meta.env.PUBLIC_BETA_MODE !== 'false';
     <slot />
   </main>
 
-  <!-- Pied de page (identique sur toutes les pages) -->
-  <Footer />
-
-  <!-- Bandeau cookies RGPD (identique sur toutes les pages) -->
-  <CookieBanner /
+  <!-- Pied de page (identique sur toutes les 
