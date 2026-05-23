@@ -129,6 +129,26 @@ const equipements = [
           </div>
         </div>
 
+        <!-- ── Upload photos ── -->
+        <div class="field">
+          <label>Photos de l'espace <span style="font-weight:400;color:var(--color-text-soft);">(1 minimum, 8 max)</span></label>
+          <div id="photo-drop-zone" style="border:2px dashed var(--color-border);border-radius:var(--radius-md);padding:28px 20px;text-align:center;cursor:pointer;transition:border-color 0.2s,background 0.2s;background:var(--color-bg-alt);" role="button" tabindex="0" aria-label="Zone de dépôt de photos">
+            <div id="photo-drop-content">
+              <p style="font-size:1.5rem;margin:0 0 6px;">📷</p>
+              <p style="margin:0 0 4px;font-weight:600;font-size:0.95rem;">Glissez vos photos ici</p>
+              <p style="margin:0 0 12px;font-size:0.85rem;color:var(--color-text-soft);">JPG, PNG, WebP · 5 Mo max par photo</p>
+              <label class="btn btn--outline" style="cursor:pointer;font-size:0.88rem;">
+                Choisir des fichiers
+                <input id="photo-input" type="file" accept="image/jpeg,image/png,image/webp" multiple style="display:none;" aria-label="Sélectionner des photos" />
+              </label>
+            </div>
+          </div>
+          <!-- Prévisualisations -->
+          <div id="photo-previews" style="display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;"></div>
+          <p id="photo-count" style="font-size:0.82rem;color:var(--color-text-soft);margin:6px 0 0;">0 / 8 photo(s)</p>
+          <p id="photo-error" style="display:none;font-size:0.85rem;color:#A02323;margin:6px 0 0;" role="alert"></p>
+        </div>
+
         <div id="msg-2" class="step-msg" role="status" aria-live="polite" aria-atomic="true" style="display:none;"></div>
         <div style="display:flex;justify-content:space-between;margin-top:32px;">
           <button class="btn btn--ghost btn-prev" data-to="1">← Retour</button>
@@ -424,14 +444,76 @@ const equipements = [
     hideMsg('msg-1'); return true;
   }
 
+  // ─── Upload photos ───────────────────────────────────────────────────────────
+  const MAX_PHOTOS   = 8;
+  const MAX_SIZE_MB  = 5;
+  const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+  let selectedFiles: File[] = [];
+
+  function renderPhotoPreview() {
+    const container = document.getElementById('photo-previews') as HTMLElement;
+    const countEl   = document.getElementById('photo-count') as HTMLElement;
+    container.innerHTML = selectedFiles.map((f, i) => `
+      <div style="position:relative;width:90px;height:90px;border-radius:var(--radius-sm);overflow:hidden;border:1px solid var(--color-border);">
+        <img src="${URL.createObjectURL(f)}" alt="${f.name}" style="width:100%;height:100%;object-fit:cover;" />
+        <button type="button" data-idx="${i}" aria-label="Supprimer cette photo"
+          style="position:absolute;top:4px;right:4px;background:rgba(31,21,24,0.7);border:none;border-radius:50%;width:20px;height:20px;color:#fff;font-size:0.75rem;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;">✕</button>
+      </div>
+    `).join('');
+    countEl.textContent = `${selectedFiles.length} / ${MAX_PHOTOS} photo(s)`;
+
+    container.querySelectorAll<HTMLButtonElement>('button[data-idx]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const idx = Number(btn.dataset.idx);
+        selectedFiles.splice(idx, 1);
+        renderPhotoPreview();
+      });
+    });
+  }
+
+  function addFiles(files: FileList | File[]) {
+    const errEl = document.getElementById('photo-error') as HTMLElement;
+    errEl.style.display = 'none';
+    const errors: string[] = [];
+
+    Array.from(files).forEach(f => {
+      if (selectedFiles.length >= MAX_PHOTOS) { errors.push(`Maximum ${MAX_PHOTOS} photos.`); return; }
+      if (!ALLOWED_TYPES.includes(f.type))    { errors.push(`${f.name} : format non accepté (JPG, PNG, WebP uniquement).`); return; }
+      if (f.size > MAX_SIZE_MB * 1024 * 1024) { errors.push(`${f.name} : fichier trop lourd (max ${MAX_SIZE_MB} Mo).`); return; }
+      // Éviter les doublons
+      if (!selectedFiles.find(sf => sf.name === f.name && sf.size === f.size)) {
+        selectedFiles.push(f);
+      }
+    });
+
+    if (errors.length) { errEl.textContent = errors[0]; errEl.style.display = 'block'; }
+    renderPhotoPreview();
+  }
+
+  // Drop zone
+  const dropZone  = document.getElementById('photo-drop-zone') as HTMLElement;
+  const fileInput = document.getElementById('photo-input')     as HTMLInputElement;
+
+  fileInput?.addEventListener('change', () => { if (fileInput.files) addFiles(fileInput.files); fileInput.value = ''; });
+
+  dropZone?.addEventListener('dragover', e => { e.preventDefault(); dropZone.style.borderColor = 'var(--color-primary)'; dropZone.style.background = 'var(--color-cream-soft)'; });
+  dropZone?.addEventListener('dragleave', () => { dropZone.style.borderColor = ''; dropZone.style.background = ''; });
+  dropZone?.addEventListener('drop', e => {
+    e.preventDefault();
+    dropZone.style.borderColor = ''; dropZone.style.background = '';
+    if (e.dataTransfer?.files) addFiles(e.dataTransfer.files);
+  });
+  dropZone?.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') fileInput?.click(); });
+
   // ─── Validation étape 2 ──────────────────────────────────────────────────────
   function validateStep2(): boolean {
     const titre       = (document.getElementById('titre')       as HTMLInputElement).value.trim();
     const description = (document.getElementById('description') as HTMLTextAreaElement).value.trim();
     const superficie  = (document.getElementById('superficie')  as HTMLInputElement).value.trim();
-    if (!titre)       { showMsg('msg-2', 'error', 'Le nom de l\'espace est requis.'); return false; }
-    if (!description) { showMsg('msg-2', 'error', 'La description est requise.'); return false; }
-    if (!superficie)  { showMsg('msg-2', 'error', 'La superficie est requise.'); return false; }
+    if (!titre)                   { showMsg('msg-2', 'error', 'Le nom de l\'espace est requis.'); return false; }
+    if (!description)             { showMsg('msg-2', 'error', 'La description est requise.'); return false; }
+    if (!superficie)              { showMsg('msg-2', 'error', 'La superficie est requise.'); return false; }
+    if (selectedFiles.length < 1) { showMsg('msg-2', 'error', 'Ajoutez au moins une photo de l\'espace.'); return false; }
     hideMsg('msg-2'); return true;
   }
 
@@ -445,6 +527,7 @@ const equipements = [
     if (hDeb >= hFin)       { showMsg('msg-3', 'error', 'L\'heure d\'ouverture doit être avant l\'heure de fermeture.'); return false; }
     hideMsg('msg-3'); return true;
   }
+
 
   // ─── Recap étape 4 ───────────────────────────────────────────────────────────
   function buildRecap() {
@@ -460,7 +543,7 @@ const equipements = [
     const hDeb       = (document.getElementById('heure-debut') as HTMLInputElement).value;
     const hFin       = (document.getElementById('heure-fin')   as HTMLInputElement).value;
     const tarifType  = document.querySelector<HTMLInputElement>('input[name="tarif-type"]:checked')?.value || 'gratuit';
-    const tarif      = (document.getElementById('tarif')       as HTMLInputElement).value.trim();
+    const tarif      = (document.getElementById('tarif') as HTMLInputElement).value.trim();
 
     const rows: [string, string][] = [
       ['Type',          type.replace(/-/g, ' ')],
@@ -472,6 +555,7 @@ const equipements = [
       ['Jours',         jours.join(', ')],
       ['Horaires',      `${hDeb} – ${hFin}`],
       ['Mise à dispo',  tarifType === 'gratuit' ? '🎁 Gratuit' : `💶 Payant${tarif ? ` — ${tarif}` : ''}`],
+      ['Photos',        `${selectedFiles.length} photo(s) ajoutée(s)`],
     ];
 
     const recapEl = document.getElementById('recap') as HTMLElement;
@@ -483,7 +567,7 @@ const equipements = [
     ).join('');
   }
 
-  // ─── Boutons suivant ─────────────────────────────────────────────────────────
+  // ─── Boutons suivant ──────────────────────────────────────────────────────────
   document.querySelectorAll<HTMLButtonElement>('.btn-next').forEach(btn => {
     btn.addEventListener('click', () => {
       const from = Number(btn.dataset.from);
@@ -502,7 +586,7 @@ const equipements = [
     btn.addEventListener('click', () => goToStep(Number(btn.dataset.to)));
   });
 
-  // ─── Publication ─────────────────────────────────────────────────────────────
+  // ─── Publication ──────────────────────────────────────────────────────────────
   document.getElementById('btn-publish')?.addEventListener('click', async () => {
     const btn = document.getElementById('btn-publish') as HTMLButtonElement;
     btn.disabled    = true;
@@ -525,6 +609,19 @@ const equipements = [
     const notes      = (document.getElementById('notes-dispo')  as HTMLTextAreaElement).value.trim();
 
     try {
+      // ── Upload photos vers Supabase Storage ───────────────────────────────────
+      const photoUrls: string[] = [];
+      for (const file of selectedFiles) {
+        const ext  = file.name.split('.').pop() ?? 'jpg';
+        const path = `annonces/${currentUserId}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+        const { error: uploadErr } = await supabase.storage
+          .from('annonces-photos')
+          .upload(path, file, { contentType: file.type, upsert: false });
+        if (uploadErr) { console.warn('Photo upload error:', uploadErr.message); continue; }
+        const { data: urlData } = supabase.storage.from('annonces-photos').getPublicUrl(path);
+        if (urlData?.publicUrl) photoUrls.push(urlData.publicUrl);
+      }
+
       const { error } = await supabase.from('annonces').insert({
         host_id:      currentUserId,
         titre,
@@ -542,15 +639,14 @@ const equipements = [
         tarif_type:   tarifType,
         tarif:        tarif || null,
         notes_dispo:  notes || null,
+        photos:       photoUrls.length ? photoUrls : null,
         statut:       'en_attente',
       });
 
       if (error) throw error;
 
-      // Succès
-      document.getElementById('step-4')!.style.display    = 'none';
-      document.getElementById('steps-indicator')!.style.display = 'none';
-      document.getElementById('step-success')!.style.display   = '';
+      document.getElementById('step-4')!.style.display   = 'none';
+      document.getElementById('step-success')!.style.display = '';
       window.scrollTo({ top: 0, behavior: 'smooth' });
 
     } catch (e: any) {

@@ -1264,6 +1264,7 @@ p  { margin: 0 0 1em; }
 }
 
 /* ---------- Page annonce : galerie + corps + sidebar ---------- */
+/* ── Ancienne galerie (conservée pour compatibilité) ── */
 .annonce-gallery {
   display: grid;
   grid-template-columns: 2fr 1fr 1fr;
@@ -1274,11 +1275,38 @@ p  { margin: 0 0 1em; }
   overflow: hidden;
   position: relative;
 }
+
+/* ── Nouvelle galerie hero plein-largeur ── */
+.annonce-hero-gallery {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 6px;
+  height: 480px;
+  max-height: 60vh;
+  overflow: hidden;
+}
+.annonce-hero-main {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.annonce-hero-grid {
+  display: grid;
+  grid-template-rows: repeat(2, 1fr);
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px;
+}
+.annonce-hero-grid > div {
+  overflow: hidden;
+}
+
 .annonce-body {
   display: grid;
   grid-template-columns: 1.5fr 1fr;
   gap: 48px;
-  margin-top: 40px;
+  margin-top: 0;
 }
 .annonce-sidebar {
   position: sticky;
@@ -1345,6 +1373,8 @@ p  { margin: 0 0 1em; }
     height: 280px;
   }
   .annonce-gallery > div:first-child { grid-row: span 1; }
+  .annonce-hero-gallery { grid-template-columns: 1fr; height: 300px; }
+  .annonce-hero-grid { display: none; }
   .annonce-body { grid-template-columns: 1fr; gap: 32px; }
   .annonce-sidebar { position: static; }
 }
@@ -1398,6 +1428,8 @@ p  { margin: 0 0 1em; }
   .role-picker, .role-picker--3col { grid-template-columns: 1fr; }
   .stat-grid { grid-template-columns: 1fr; }
   .annonce-gallery { height: 200px; grid-template-rows: 200px; }
+  .annonce-hero-gallery { height: 220px; }
+  .annonce-hero-grid { display: none; }
   h1 { font-size: clamp(1.8rem, 7vw, 2.4rem); }
   .hero h1 { font-size: clamp(1.9rem, 7.5vw, 2.8rem); }
   .hero { padding: 48px 0 64px; }
@@ -1694,34 +1726,4 @@ p  { margin: 0 0 1em; }
   font-size: 0.9rem;
 }
 
-/* Déposer une annonce — étapes sur mobile */
-@media (max-width: 640px) {
-  /* Stepper horizontal qui déborde */
-  .stepper {
-    gap: 4px !important;
-  }
-  .stepper__label {
-    display: none !important; /* masquer texte des étapes, garder chiffres */
-  }
-  .stepper__step {
-    flex: 0 0 auto !important;
-    min-width: 36px !important;
-  }
-  /* Grille équipements — 2 colonnes sur mobile */
-  .equipements-grid {
-    grid-template-columns: repeat(2, 1fr) !important;
-  }
-  /* Champs côte à côte → en colonne */
-  .field-row {
-    flex-direction: column !important;
-    gap: 0 !important;
-  }
-  /* Boutons d'action des étapes — pleine largeur */
-  .step-actions {
-    flex-direction: column !important;
-  }
-  .step-actions .btn {
-    width: 100% !important;
-    justify-content: center !important;
-  }
-}
+/* Déposer une annonce — étapes sur mobile

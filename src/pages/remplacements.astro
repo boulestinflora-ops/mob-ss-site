@@ -206,6 +206,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     const initiales = esc(((p.prenom?.[0] || '') + (p.nom?.[0] || '')).toUpperCase() || '?');
     const color     = avatarColor(initiales);
     const profileUrl = p.id ? `/praticien?id=${encodeURIComponent(p.id)}` : '#';
+    const badgeVerif = p.rpps_verifie
+      ? `<span style="display:inline-block;background:#EEF4FF;color:#2B5BD7;border-radius:var(--radius-pill);padding:3px 10px;font-size:0.78rem;font-weight:600;">✓ RPPS vérifié</span>`
+      : '';
 
     return `
       <a class="card" href="${profileUrl}" style="display:flex;flex-direction:column;gap:12px;padding:22px;text-decoration:none;color:inherit;transition:box-shadow 0.15s,border-color 0.15s;" onmouseover="this.style.borderColor='var(--color-primary)';this.style.boxShadow='var(--shadow-sm)';" onmouseout="this.style.borderColor='';this.style.boxShadow='';">
@@ -218,9 +221,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             <span style="font-size:0.85rem;color:var(--color-primary);font-weight:600;">${esc(p.specialite || 'Praticien')}</span>
           </div>
         </div>
-        <span style="display:inline-block;background:#E8F4EA;color:#2D6E3F;border-radius:var(--radius-pill);padding:3px 10px;font-size:0.78rem;font-weight:600;width:fit-content;">
-          🔄 Disponible pour remplacement
-        </span>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;">
+          ${badgeVerif}
+          <span style="display:inline-block;background:#E8F4EA;color:#2D6E3F;border-radius:var(--radius-pill);padding:3px 10px;font-size:0.78rem;font-weight:600;">
+            🔄 Disponible pour remplacement
+          </span>
+        </div>
         ${p.ville ? `<p style="margin:0;font-size:0.88rem;color:var(--color-text-soft);">📍 ${esc(p.ville)}</p>` : ''}
         ${p.bio ? `<p style="margin:0;font-size:0.88rem;color:var(--color-text-soft);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;">${esc(p.bio)}</p>` : ''}
         ${isLoggedIn
@@ -279,21 +285,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     try {
       const { data, error, count } = await supabase
         .from('profiles')
-        .select('id, prenom, nom, specialite, ville, bio, email, telephone', { count: append ? undefined : 'exact' })
+        .select('id, prenom, nom, specialite, ville, bio, email, telephone, rpps_verifie', { count: append ? undefined : 'exact' })
         .eq('disponible_remplacement', true)
         .eq('visible_annuaire', true)
         .not('prenom', 'is', null)
         .order('created_at', { ascending: false })
-        .range(_replOffset, _replOffset + PAGE_SIZE - 1)
-        .abortSignal(signal);
-
-      if (signal.aborted) return;
-      if (error) throw error;
-
-      if (!append && count !== null) _replTotal = count ?? 0;
-      _replOffset += (data?.length ?? 0);
-      allProfiles = append ? [...allProfiles, ...(data || [])] : (data || []);
-
-      renderFiltered();
-      updateRplLoadMore();
-   
+        .range(_replOffset, _replOffset + PAGE_SIZE 

@@ -170,6 +170,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     const badgeRemp = p.disponible_remplacement
       ? `<span style="display:inline-block;background:#E8F4EA;color:#2D6E3F;border-radius:var(--radius-pill);padding:3px 10px;font-size:0.78rem;font-weight:600;margin-top:6px;">🔄 Disponible pour remplacement</span>`
       : '';
+    const badgeVerif = p.rpps_verifie
+      ? `<span style="display:inline-block;background:#EEF4FF;color:#2B5BD7;border-radius:var(--radius-pill);padding:3px 10px;font-size:0.78rem;font-weight:600;">✓ RPPS vérifié</span>`
+      : '';
 
     const profileUrl = p.id ? `/praticien?id=${encodeURIComponent(p.id)}` : '#';
     return `
@@ -183,7 +186,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             <span style="font-size:0.85rem;color:var(--color-primary);font-weight:600;">${esc(p.specialite || 'Praticien')}</span>
           </div>
         </div>
-        ${badgeRemp}
+        <div style="display:flex;flex-wrap:wrap;gap:6px;">
+          ${badgeVerif}
+          ${badgeRemp}
+        </div>
         ${p.ville ? `<p style="margin:0;font-size:0.88rem;color:var(--color-text-soft);">📍 ${esc(p.ville)}</p>` : ''}
         ${p.bio ? `<p style="margin:0;font-size:0.88rem;color:var(--color-text-soft);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;">${esc(p.bio)}</p>` : ''}
         <span style="font-size:0.82rem;color:var(--color-primary);font-weight:600;margin-top:4px;">Voir le profil →</span>
@@ -226,7 +232,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     try {
       const { data, error, count } = await supabase
         .from('profiles')
-        .select('id, prenom, nom, specialite, ville, bio, disponible_remplacement', { count: append ? undefined : 'exact' })
+        .select('id, prenom, nom, specialite, ville, bio, disponible_remplacement, rpps_verifie', { count: append ? undefined : 'exact' })
         .eq('visible_annuaire', true)
         .eq('role', 'praticien')
         .not('prenom', 'is', null)
@@ -264,14 +270,4 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     const remplOnly  = rempl.checked;
 
     const filtered = allProfiles.filter(p => {
-      const specMatch = !specialite || (p.specialite || '').toLowerCase() === specialite;
-      const villeMatch = !ville || (p.ville || '').toLowerCase().includes(ville);
-      const remplMatch = !remplOnly || p.disponible_remplacement;
-      return specMatch && villeMatch && remplMatch;
-    });
-
-    loadingEl.style.display = 'none';
-
-    if (filtered.length === 0) {
-      gridEl.style.display  = 'none';
-      emptyEl.style.display 
+      const specMatch = !specialite || (p.specialite || '').toLowerCase() === specia
