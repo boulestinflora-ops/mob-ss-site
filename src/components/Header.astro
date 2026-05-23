@@ -15,15 +15,15 @@ const navLinks = [
 
     <!-- Logo (SVG inliné — les polices de la page s'appliquent) -->
     <a class="brand" href="/" aria-label="MOB'SS Accueil">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 54" height="42" width="auto" aria-hidden="true" style="display:block;flex-shrink:0;">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 58" height="52" width="auto" aria-hidden="true" style="display:block;flex-shrink:0;">
         <!-- Badge icône -->
-        <rect x="0" y="4" width="46" height="46" rx="10" fill="#9C2E3A"/>
-        <rect x="0" y="0" width="46" height="46" rx="10" fill="#C8424F"/>
-        <text x="23" y="32" font-family="inherit" font-size="24" font-weight="800" fill="#ffffff" text-anchor="middle" letter-spacing="0.5">M</text>
+        <rect x="0" y="5" width="50" height="50" rx="11" fill="#9C2E3A"/>
+        <rect x="0" y="0" width="50" height="50" rx="11" fill="#C8424F"/>
+        <text x="25" y="34" font-family="inherit" font-size="27" font-weight="800" fill="#ffffff" text-anchor="middle" letter-spacing="0.5">M</text>
         <!-- Wordmark -->
-        <text x="58" y="29" font-family="inherit" font-size="22" font-weight="800" font-style="italic" fill="#C8424F" letter-spacing="0.5">MOB'SS</text>
+        <text x="62" y="31" font-family="inherit" font-size="25" font-weight="800" font-style="italic" fill="#C8424F" letter-spacing="0.5">MOB'SS</text>
         <!-- Tagline -->
-        <text x="59" y="43" font-family="inherit" font-size="9" font-weight="400" fill="#6B7280" letter-spacing="1.5">mobile · sport · santé</text>
+        <text x="63" y="46" font-family="inherit" font-size="9.5" font-weight="400" fill="#6B7280" letter-spacing="1.8">mobile · sport · santé</text>
       </svg>
     </a>
 
@@ -234,4 +234,4 @@ const navLinks = [
       if (profile) {
         const prenom = profile.prenom || fallback;
         const initiales = ((prenom[0] || '') + (profile.nom?.[0] || '')).toUpperCase() || '?';
-        if (avatar) avatar.textConten
+        if (avatar) avatar.textCont

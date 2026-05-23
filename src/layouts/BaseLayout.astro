@@ -9,10 +9,10 @@ import Footer from '../components/Footer.astro';
 import CookieBanner from '../components/CookieBanner.astro';
 import '../styles/style.css';
 
-// Polices auto-hébergées (évite la dépendance Google Fonts)
-// Installées via : npm install @fontsource-variable/dm-sans @fontsource-variable/outfit
+// Police corps : auto-hébergée via fontsource
+// Installée via : npm install @fontsource-variable/dm-sans
 import '@fontsource-variable/dm-sans';
-import '@fontsource-variable/outfit';
+// Police display (Outfit) : chargée via Google Fonts (voir <link> dans <head>)
 
 const POSTHOG_KEY = import.meta.env.PUBLIC_POSTHOG_KEY ?? '';
 const POSTHOG_HOST = 'https://eu.posthog.com';
@@ -41,6 +41,11 @@ const BETA_MODE = import.meta.env.PUBLIC_BETA_MODE !== 'false';
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{title}</title>
   <meta name="description" content={description} />
+
+  <!-- Police Outfit (titres) — variable font moderne -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" />
 
   <!-- Favicon -->
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -137,12 +142,4 @@ const BETA_MODE = import.meta.env.PUBLIC_BETA_MODE !== 'false';
   <Footer />
 
   <!-- Bandeau cookies RGPD (identique sur toutes les pages) -->
-  <CookieBanner />
-
-  <!-- Scripts JavaScript globaux -->
-  <script src="/scripts/script.js" is:inline></script>
-
-  <!-- PostHog — analytics privacy-first (EU cloud, ne charge pas si clé absente) -->
-  {POSTHOG_KEY && (
-    <script is:inline define:vars={{ POSTHOG_KEY, POSTHOG_HOST }}>
-      !function(t,e){var o,n,p,r;e.__SV||(window
+  <CookieBanner /
