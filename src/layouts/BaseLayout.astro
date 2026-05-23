@@ -9,10 +9,9 @@ import Footer from '../components/Footer.astro';
 import CookieBanner from '../components/CookieBanner.astro';
 import '../styles/style.css';
 
-// Police corps : auto-hébergée via fontsource
-// Installée via : npm install @fontsource-variable/dm-sans
+// Polices auto-hébergées via fontsource (pas de dépendance Google Fonts)
 import '@fontsource-variable/dm-sans';
-// Police display (Outfit) : chargée via Google Fonts (voir <link> dans <head>)
+import '@fontsource-variable/outfit';
 
 const POSTHOG_KEY = import.meta.env.PUBLIC_POSTHOG_KEY ?? '';
 const POSTHOG_HOST = 'https://eu.posthog.com';
@@ -75,11 +74,6 @@ const jsonLd = JSON.stringify({
   <title>{title}</title>
   <meta name="description" content={description} />
 
-  <!-- Police Outfit (titres) — variable font moderne -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" />
-
   <!-- Favicon -->
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
@@ -136,4 +130,16 @@ const jsonLd = JSON.stringify({
     <slot />
   </main>
 
-  <!-- Pied de page (identique sur toutes les 
+  <!-- Pied de page (identique sur toutes les pages) -->
+  <Footer />
+
+  <!-- Bandeau cookies RGPD (identique sur toutes les pages) -->
+  <CookieBanner />
+
+  <!-- Scripts JavaScript globaux -->
+  <script src="/scripts/script.js" is:inline></script>
+
+  <!-- PostHog — analytics privacy-first (EU cloud, ne charge pas si clé absente) -->
+  {POSTHOG_KEY && (
+    <script is:inline define:vars={{ POSTHOG_KEY, POSTHOG_HOST }}>
+      !function(t,e
