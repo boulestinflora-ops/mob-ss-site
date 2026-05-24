@@ -290,4 +290,63 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         .eq('visible_annuaire', true)
         .not('prenom', 'is', null)
         .order('created_at', { ascending: false })
-        .range(_replOffset, _replOffset + PAGE_SIZE 
+        .range(_replOffset, _replOffset + PAGE_SIZE - 1);
+      if (signal.aborted) return;
+      if (error) throw error;
+
+      if (!append && count !== null) {
+        _replTotal = count ?? 0;
+        if (countEl) countEl.textContent = String(_replTotal);
+      }
+      _replOffset += (data?.length ?? 0);
+      allProfiles = append ? [...allProfiles, ...(data || [])] : (data || []);
+
+      renderFiltered();
+      updateReplLoadMore();
+    } catch (e: any) {
+      if (e?.name === 'AbortError') return;
+      console.error('Remplacements error:', e);
+      loadingEl.style.display = 'none';
+      if (countEl) countEl.textContent = '0';
+    } finally {
+      if (loadMoreBtn) { loadMoreBtn.disabled = false; loadMoreBtn.textContent = 'Charger plus de praticiens'; }
+    }
+  }
+
+  loadMoreBtn?.addEventListener('click', () => load(true));
+
+  function renderFiltered() {
+    const spec  = specSel?.value.toLowerCase() ?? '';
+    const ville = villeIn?.value.toLowerCase().trim() ?? '';
+
+    const filtered = allProfiles.filter(p => {
+      const sm = !spec  || (p.specialite || '').toLowerCase() === spec;
+      const vm = !ville || (p.ville || '').toLowerCase().includes(ville);
+      return sm && vm;
+    });
+
+    loadingEl.style.display = 'none';
+    if (countEl) countEl.textContent = String(filtered.length);
+
+    if (filtered.length === 0) {
+      gridEl.style.display  = 'none';
+      emptyEl.style.display = 'block';
+      return;
+    }
+
+    gridEl.innerHTML      = filtered.map(buildCard).join('');
+    gridEl.style.display  = 'grid';
+    emptyEl.style.display = 'none';
+  }
+
+  // ── Listeners ───────────────────────────────────────────────────────────────
+  searchBtn?.addEventListener('click', renderFiltered);
+  villeIn?.addEventListener('keydown', (e) => { if (e.key === 'Enter') renderFiltered(); });
+  resetBtn?.addEventListener('click', () => {
+    specSel.value = '';
+    villeIn.value = '';
+    renderFiltered();
+  });
+
+  load();
+</script>

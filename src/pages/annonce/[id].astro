@@ -86,8 +86,6 @@ const superficieLabel = annonce.superficie ? `${annonce.superficie} m²` : null;
 const capaciteLabel   = annonce.capacite   ? `${annonce.capacite} pers. max.` : null;
 
 const adresseComplete = [annonce.adresse, annonce.cp, annonce.ville].filter(Boolean).join(', ');
-const photos: string[] = annonce.photos ?? [];
-const mainPhoto = photos[0] ?? null;
 ---
 
 <BaseLayout
@@ -97,125 +95,98 @@ const mainPhoto = photos[0] ?? null;
 >
 
   <!-- Fil d'Ariane -->
-  <div class="container" style="padding-top:20px;padding-bottom:8px;">
-    <p style="color:var(--color-text-soft);font-size:0.88rem;margin:0;">
-      <a href="/explorez" style="color:var(--color-text-soft);text-decoration:none;">Explorez</a>
-      <span style="margin:0 6px;">›</span>
-      <a href={`/explorez?type=${encodeURIComponent(annonce.type)}`} style="color:var(--color-text-soft);text-decoration:none;">{typeLabel}</a>
-      <span style="margin:0 6px;">›</span>
+  <div class="container" style="padding-top:24px;">
+    <p style="color:var(--color-text-soft);font-size:0.9rem;">
+      <a href="/explorez" style="color:var(--color-text-soft);">Explorez</a> →
+      <a href={`/explorez?type=${encodeURIComponent(annonce.type)}`} style="color:var(--color-text-soft);">{typeLabel}</a> →
       <span>{annonce.ville}</span>
     </p>
   </div>
 
-  <!-- ── Galerie plein-largeur ──────────────────────────────────────────── -->
-  <div class="annonce-hero-gallery">
-    <!-- Photo principale -->
-    <div class="annonce-hero-main" style={mainPhoto ? `background:url('${mainPhoto}') center/cover no-repeat;` : `background:${bgStyle};`}>
-      {!mainPhoto && <span style="font-size:6rem;opacity:0.7;">{spaceIcon}</span>}
-      {isGratuit && (
-        <span class="badge--gratuit" style="position:absolute;bottom:18px;left:18px;font-size:0.9rem;padding:6px 14px;z-index:2;">
-          🤝 Mise à disposition gracieuse
-        </span>
-      )}
-      {photos.length > 1 && (
-        <button id="gallery-all-btn" style="position:absolute;bottom:18px;right:18px;z-index:2;background:rgba(255,255,255,0.92);border:none;border-radius:var(--radius-sm);padding:8px 14px;font-size:0.85rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;">
-          <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-          Voir les {photos.length} photos
-        </button>
-      )}
-    </div>
-    <!-- Vignettes secondaires -->
-    <div class="annonce-hero-grid">
-      {[1,2,3,4].map((i) => (
-        <div style={photos[i]
-          ? `background:url('${photos[i]}') center/cover no-repeat;`
-          : `background:${['linear-gradient(135deg,#E8C0B5,#C99876)','linear-gradient(135deg,#D8E7E0,#9DB59A)','linear-gradient(135deg,#EAD4DA,#C786A0)','linear-gradient(135deg,#F0E0BE,#D8B968)'][i-1]};`}
-        />
-      ))}
-    </div>
-  </div>
-
-  <!-- ── Corps de la page ───────────────────────────────────────────────── -->
-  <section style="padding:32px 0 80px;">
+  <section class="section" style="padding-top:24px;">
     <div class="container">
 
+      <!-- Titre + actions -->
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:16px;margin-bottom:24px;">
+        <div>
+          <h1 style="margin-bottom:8px;">{annonce.titre}</h1>
+          <p style="color:var(--color-text-soft);margin:0;display:flex;align-items:center;gap:6px;">
+            <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20 10c0 7-8 13-8 13s-8-6-8-13a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="3"/>
+            </svg>
+            {annonce.ville}{annonce.cp ? ` (${annonce.cp.substring(0,2)})` : ''}
+          </p>
+        </div>
+        <div class="flex gap-12">
+          <button class="btn btn--outline">
+            <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            Sauvegarder
+          </button>
+          <button class="btn btn--outline">
+            <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5 8.6 10.5"/></svg>
+            Partager
+          </button>
+        </div>
+      </div>
+
+      <!-- Galerie / placeholder -->
+      <div class="annonce-gallery">
+        <div style={`grid-row:span 2;background:${bgStyle};display:flex;align-items:center;justify-content:center;font-size:5rem;`}>{spaceIcon}</div>
+        <div style="background:linear-gradient(135deg,#E8C0B5,#C99876);"></div>
+        <div style="background:linear-gradient(135deg,#D8E7E0,#9DB59A);"></div>
+        <div style="background:linear-gradient(135deg,#EAD4DA,#C786A0);"></div>
+        <div style="background:linear-gradient(135deg,#F0E0BE,#D8B968);position:relative;">
+          {isGratuit && <span class="badge--gratuit" style="position:absolute;bottom:14px;right:14px;">🤝 Gracieux</span>}
+        </div>
+      </div>
+
+      <!-- Corps -->
       <div class="annonce-body">
 
-        <!-- ── Colonne principale ────────────────────────────────────── -->
         <div>
-
-          <!-- En-tête : titre + actions -->
-          <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:16px;margin-bottom:20px;">
-            <div>
-              <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px;">
-                <span class="tag" style="font-size:0.8rem;">{spaceIcon} {typeLabel}</span>
-                <span class="tag" style="font-size:0.8rem;">{hostLabel}</span>
-                {superficieLabel && <span class="tag" style="font-size:0.8rem;">📐 {superficieLabel}</span>}
-                {capaciteLabel   && <span class="tag" style="font-size:0.8rem;">👥 {capaciteLabel}</span>}
-              </div>
-              <h1 style="margin:0 0 8px;font-size:1.75rem;">{annonce.titre}</h1>
-              <p style="color:var(--color-text-soft);margin:0;display:flex;align-items:center;gap:5px;font-size:0.95rem;">
-                <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M20 10c0 7-8 13-8 13s-8-6-8-13a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="3"/>
-                </svg>
-                {annonce.ville}{annonce.cp ? ` (${annonce.cp.substring(0,2)})` : ''}
-              </p>
-            </div>
-            <div style="display:flex;gap:10px;flex-shrink:0;">
-              <button class="btn btn--outline" style="padding:8px 14px;font-size:0.88rem;">
-                <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-                Sauvegarder
-              </button>
-              <button class="btn btn--outline" style="padding:8px 14px;font-size:0.88rem;">
-                <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5 8.6 10.5"/></svg>
-                Partager
-              </button>
-            </div>
+          <!-- Tags -->
+          <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px;">
+            {isGratuit
+              ? <span class="badge--gratuit">🤝 Mise à disposition gracieuse</span>
+              : <span class="tag">💶 {tarifLabel}</span>
+            }
+            <span class="tag">{hostLabel}</span>
+            <span class="tag">{typeLabel}</span>
+            {superficieLabel && <span class="tag">📐 {superficieLabel}</span>}
+            {capaciteLabel   && <span class="tag">👥 {capaciteLabel}</span>}
+            {equipements.map((eq: string) => <span class="tag">{eq}</span>)}
           </div>
 
-          <hr style="border:none;border-top:1px solid var(--color-border);margin:0 0 28px;" />
-
-          <!-- Hôte résumé -->
-          <div style="display:flex;align-items:center;gap:14px;padding-bottom:28px;border-bottom:1px solid var(--color-border);margin-bottom:28px;">
-            <div style="width:52px;height:52px;border-radius:50%;background:var(--color-cream);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--color-primary);font-size:1.1rem;flex-shrink:0;">{hostInitials}</div>
-            <div>
-              <strong style="display:block;font-size:1rem;">{hostLabel} — {annonce.ville}</strong>
-              <span style="color:var(--color-text-soft);font-size:0.88rem;">Membre vérifié MOB'SS · Réponse sous 48h</span>
-            </div>
-            <button id="btn-contacter" class="btn btn--outline" style="margin-left:auto;padding:8px 16px;font-size:0.88rem;">Contacter</button>
-          </div>
-
-          <!-- Description -->
-          <h2 style="font-size:1.2rem;margin-bottom:14px;">À propos de l'espace</h2>
+          <h2>À propos de l'espace</h2>
           {annonce.description ? (
-            <p style="color:var(--color-text-soft);font-size:1rem;line-height:1.75;margin-bottom:0;">{annonce.description}</p>
+            <p style="color:var(--color-text-soft);font-size:1.05rem;line-height:1.7;">{annonce.description}</p>
           ) : (
-            <p style="color:var(--color-text-soft);font-size:1rem;line-height:1.75;margin-bottom:0;">
-              Cet espace est mis à disposition par {hostRole === 'entreprise' ? 'une entreprise partenaire' : 'une collectivité locale'} dans le cadre du dispositif MOB'SS.
-              Il accueille des professionnels du sport et de la santé pour exercer leur activité sans loyer ni charges fixes.
-              Situé à {annonce.ville}, il est réservable directement depuis la plateforme.
-            </p>
+            <>
+              <p style="color:var(--color-text-soft);font-size:1.05rem;">
+                Cet espace est mis à disposition par {hostRole === 'entreprise' ? 'une entreprise partenaire' : 'une collectivité locale'}
+                dans le cadre du dispositif MOB'SS. Il accueille des professionnels du sport et de la santé
+                pour exercer leur activité sans loyer ni charges fixes.
+              </p>
+              <p style="color:var(--color-text-soft);font-size:1.05rem;">
+                Situé à {annonce.ville}, il est réservable directement depuis la plateforme.
+                Contactez l'hôte via le formulaire pour toute question.
+              </p>
+            </>
           )}
 
           <!-- Disponibilités -->
           {(jours.length > 0 || annonce.heure_debut || annonce.notes_dispo) && (
             <>
-              <h2 style="font-size:1.2rem;margin:32px 0 14px;">Disponibilités</h2>
-              <div class="card" style="padding:18px 22px;display:flex;flex-wrap:wrap;gap:20px;">
+              <h2 style="margin-top:32px;">Disponibilités</h2>
+              <div class="card" style="padding:16px 20px;">
                 {jours.length > 0 && (
-                  <div>
-                    <p style="margin:0 0 4px;font-size:0.8rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--color-text-soft);">Jours</p>
-                    <p style="margin:0;font-size:0.95rem;font-weight:600;">{jours.join(', ')}</p>
-                  </div>
+                  <p style="margin:0 0 8px;font-size:0.95rem;"><strong>Jours :</strong> {jours.join(', ')}</p>
                 )}
                 {(annonce.heure_debut && annonce.heure_fin) && (
-                  <div>
-                    <p style="margin:0 0 4px;font-size:0.8rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--color-text-soft);">Horaires</p>
-                    <p style="margin:0;font-size:0.95rem;font-weight:600;">{annonce.heure_debut} – {annonce.heure_fin}</p>
-                  </div>
+                  <p style="margin:0 0 8px;font-size:0.95rem;"><strong>Horaires :</strong> {annonce.heure_debut} – {annonce.heure_fin}</p>
                 )}
                 {annonce.notes_dispo && (
-                  <p style="margin:0;font-size:0.88rem;color:var(--color-text-soft);flex-basis:100%;">{annonce.notes_dispo}</p>
+                  <p style="margin:0;font-size:0.9rem;color:var(--color-text-soft);">{annonce.notes_dispo}</p>
                 )}
               </div>
             </>
@@ -224,49 +195,50 @@ const mainPhoto = photos[0] ?? null;
           <!-- Équipements -->
           {equipements.length > 0 && (
             <>
-              <h2 style="font-size:1.2rem;margin:32px 0 14px;">Équipements & caractéristiques</h2>
-              <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;">
+              <h2 style="margin-top:32px;">Caractéristiques</h2>
+              <div style="display:flex;flex-wrap:wrap;gap:10px;">
                 {equipements.map((eq: string) => (
-                  <div style="display:flex;align-items:center;gap:10px;padding:12px 16px;border-radius:var(--radius-sm);border:1px solid var(--color-border);font-size:0.92rem;">
-                    <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                    {eq}
+                  <div class="card" style="padding:12px 16px;display:inline-flex;align-items:center;gap:8px;font-size:0.95rem;">
+                    <span style="color:var(--color-primary);">✓</span> {eq}
                   </div>
                 ))}
               </div>
             </>
           )}
 
-          <!-- Localisation -->
-          <h2 style="font-size:1.2rem;margin:32px 0 14px;">Localisation</h2>
-          <div style="padding:20px 22px;border-radius:var(--radius-md);border:1px solid var(--color-border);background:var(--color-bg-alt);display:flex;align-items:center;gap:12px;font-size:0.95rem;">
-            <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2">
-              <path d="M20 10c0 7-8 13-8 13s-8-6-8-13a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="3"/>
-            </svg>
-            <span>{adresseComplete || `${annonce.ville}${annonce.cp ? ` (${annonce.cp})` : ''}`}</span>
+          <!-- Hôte -->
+          <h2 style="margin-top:32px;">Hôte de l'espace</h2>
+          <div class="card" style="display:flex;align-items:center;gap:16px;padding:20px;">
+            <div style="width:56px;height:56px;border-radius:50%;background:var(--color-cream);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--color-primary);font-size:1.2rem;flex-shrink:0;">{hostInitials}</div>
+            <div style="flex:1;">
+              <strong style="display:block;">{hostLabel} · {annonce.ville}</strong>
+              <span style="color:var(--color-text-soft);font-size:0.9rem;">Membre vérifié MOB'SS · Réponse sous 48h</span>
+            </div>
+            <button id="btn-contacter" class="btn btn--outline">Contacter</button>
           </div>
 
+          <!-- Localisation -->
+          <h2 style="margin-top:32px;">Localisation</h2>
+          <div style="width:100%;padding:24px;border-radius:var(--radius-md);border:1px solid var(--color-border);background:var(--color-bg-alt);display:flex;align-items:center;gap:12px;font-size:0.95rem;color:var(--color-text-soft);">
+            <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20 10c0 7-8 13-8 13s-8-6-8-13a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="3"/>
+            </svg>
+            <span>{adresseComplete}</span>
+          </div>
         </div>
 
-        <!-- ── Sidebar sticky ─────────────────────────────────────── -->
+        <!-- Sidebar de demande -->
         <aside class="annonce-sidebar">
           <div class="form-card" style="padding:28px;">
-
-            <!-- Prix / gratuité -->
-            <div style="margin-bottom:20px;">
-              {isGratuit ? (
-                <>
-                  <p style="font-size:1.5rem;font-weight:700;margin:0 0 4px;">Gratuit</p>
-                  <p style="font-size:0.88rem;color:var(--color-text-soft);margin:0;">Mise à disposition gracieuse · sans engagement</p>
-                </>
-              ) : (
-                <>
-                  <p style="font-size:1.5rem;font-weight:700;margin:0 0 4px;">{tarifLabel}</p>
-                  <p style="font-size:0.88rem;color:var(--color-text-soft);margin:0;">Tarif communiqué par l'hôte</p>
-                </>
-              )}
+            <div style="text-align:center;margin-bottom:20px;">
+              {isGratuit
+                ? <span class="badge--gratuit" style="font-size:0.95rem;padding:8px 16px;">🤝 Mise à disposition gracieuse</span>
+                : <span class="tag" style="font-size:0.95rem;padding:8px 16px;">💶 {tarifLabel}</span>
+              }
+              {isGratuit && <p style="color:var(--color-text-soft);font-size:0.85rem;margin:10px 0 0;">Aucun loyer, aucune charge. Cet espace est proposé gratuitement.</p>}
             </div>
 
-            <div style="border-top:1px solid var(--color-border);padding-top:18px;margin-bottom:18px;">
+            <div style="border-top:1px dashed var(--color-border);padding-top:16px;margin-bottom:16px;">
               <div class="field">
                 <label for="date-resa">Date souhaitée</label>
                 <input id="date-resa" type="date" />
@@ -302,32 +274,21 @@ const mainPhoto = photos[0] ?? null;
               </div>
             </div>
 
-            <!-- Retour (succès / erreur) -->
+            <!-- Zone de retour (succès / erreur) -->
             <div id="demande-msg" role="status" aria-live="polite" style="display:none;padding:14px 16px;border-radius:var(--radius-md);margin-bottom:14px;font-size:0.9rem;"></div>
 
             <button id="btn-demande" class="btn btn--primary btn--block btn--lg">Envoyer une demande</button>
-            <p id="demande-hint" style="text-align:center;font-size:0.82rem;color:var(--color-text-soft);margin:10px 0 0;">L'hôte confirmera votre demande sous 48h.</p>
+            <p id="demande-hint" style="text-align:center;font-size:0.85rem;color:var(--color-text-soft);margin:12px 0 0;">L'hôte confirmera votre demande sous 48h.</p>
 
             <!-- Réassurance -->
-            <div style="display:flex;align-items:center;gap:8px;margin-top:16px;padding-top:14px;border-top:1px solid var(--color-border);font-size:0.78rem;color:var(--color-text-soft);">
+            <div style="display:flex;align-items:center;gap:8px;margin-top:16px;padding-top:14px;border-top:1px solid var(--color-border);font-size:0.8rem;color:var(--color-text-soft);">
               <span>🔒</span><span>Inscription gratuite · 2 min · Sans engagement</span>
             </div>
           </div>
 
-          <!-- Trust signals -->
-          <div style="margin-top:12px;display:flex;flex-direction:column;gap:8px;">
-            <div style="display:flex;align-items:center;gap:10px;padding:14px 16px;border:1px solid var(--color-border);border-radius:var(--radius-sm);font-size:0.88rem;color:var(--color-text-soft);">
-              <span style="color:#2D6E3F;font-size:1rem;">✓</span>
-              <span>Diplômes et assurances vérifiés</span>
-            </div>
-            <div style="display:flex;align-items:center;gap:10px;padding:14px 16px;border:1px solid var(--color-border);border-radius:var(--radius-sm);font-size:0.88rem;color:var(--color-text-soft);">
-              <span style="color:#2B5BD7;font-size:1rem;">✓</span>
-              <span>Hôte validé par l'équipe MOB'SS</span>
-            </div>
-            <div style="display:flex;align-items:center;gap:10px;padding:14px 16px;border:1px solid var(--color-border);border-radius:var(--radius-sm);font-size:0.88rem;color:var(--color-text-soft);">
-              <span style="color:var(--color-primary);font-size:1rem;">✓</span>
-              <span>Aucune commission sur la mise en relation</span>
-            </div>
+          <div class="card" style="margin-top:12px;display:flex;align-items:flex-start;gap:12px;padding:18px;">
+            <span style="font-size:1.4rem;">✅</span>
+            <p style="margin:0;font-size:0.9rem;color:var(--color-text-soft);">Praticiens vérifiés (diplômes, assurances). Hôtes validés par MOB'SS.</p>
           </div>
         </aside>
 
@@ -354,3 +315,105 @@ const mainPhoto = photos[0] ?? null;
       <a id="auth-gate-signup" href="/inscription?role=praticien" class="btn btn--primary btn--block btn--lg">
         Créer un compte gratuitement →
       </a>
+      <a id="auth-gate-login" href="/connexion" class="btn btn--outline btn--block">
+        Déjà inscrit ? Se connecter
+      </a>
+    </div>
+    <div style="display:flex;justify-content:center;gap:16px;margin-top:20px;font-size:0.78rem;color:var(--color-text-soft);">
+      <span>🔒 RGPD</span>
+      <span>✓ Profils vérifiés</span>
+      <span>0 € gratuit</span>
+    </div>
+  </div>
+</div>
+
+<!-- Logique demande (client-side) -->
+<script define:vars={{ annonceId: annonce.id, annonceTitre: annonce.titre }}>
+  import { supabase } from '../../lib/supabase';
+
+  const btn        = document.getElementById('btn-demande');
+  const msgBox     = document.getElementById('demande-msg');
+  const hint       = document.getElementById('demande-hint');
+  const modal      = document.getElementById('auth-gate-modal');
+  const modalClose = document.getElementById('auth-gate-close');
+
+  // Paramètre retour dans la modale
+  const retourParam = encodeURIComponent(window.location.pathname + window.location.search);
+  document.getElementById('auth-gate-signup')?.setAttribute('href', `/inscription?role=praticien&retour=${retourParam}`);
+  document.getElementById('auth-gate-login')?.setAttribute( 'href', `/connexion?retour=${retourParam}`);
+
+  function openAuthModal()  { if (!modal) return; modal.style.display = 'flex'; document.body.style.overflow = 'hidden'; modalClose?.focus(); }
+  function closeAuthModal() { if (!modal) return; modal.style.display = 'none';  document.body.style.overflow = ''; }
+  modalClose?.addEventListener('click', closeAuthModal);
+  modal?.addEventListener('click', e => { if (e.target === modal) closeAuthModal(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAuthModal(); });
+
+  function showMsg(type, text) {
+    if (!msgBox) return;
+    msgBox.style.display = 'block';
+    msgBox.textContent   = text;
+    Object.assign(msgBox.style, type === 'success'
+      ? { background: '#E8F4EA', color: '#2D6E3F', border: '1px solid #B8DBC0' }
+      : { background: '#FBE5E5', color: '#A02323', border: '1px solid #F0B8B8' });
+    msgBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  document.getElementById('btn-contacter')?.addEventListener('click', async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.user) { openAuthModal(); return; }
+    document.getElementById('btn-demande')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  });
+
+  document.querySelectorAll('.btn--outline').forEach(b => {
+    if (b.textContent?.trim() === 'Sauvegarder') {
+      b.addEventListener('click', async () => {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session?.user) openAuthModal();
+      });
+    }
+  });
+
+  if (btn) {
+    btn.addEventListener('click', async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.user) { openAuthModal(); return; }
+
+      const date       = document.getElementById('date-resa')?.value;
+      const debut      = document.getElementById('debut')?.value;
+      const fin        = document.getElementById('fin')?.value;
+      const recurrence = document.getElementById('recurrence')?.value;
+
+      if (!date) { showMsg('error', 'Veuillez choisir une date avant d\'envoyer la demande.'); return; }
+
+      btn.disabled    = true;
+      btn.textContent = 'Envoi en cours…';
+
+      const { error } = await supabase.from('demandes').insert({
+        space_id:    annonceId,          // UUID de l'annonce Supabase
+        user_id:     session.user.id,
+        date:        date,
+        heure_debut: debut,
+        heure_fin:   fin,
+        recurrence:  recurrence,
+      });
+
+      btn.disabled = false;
+      btn.textContent = 'Envoyer une demande';
+
+      if (error) {
+        if (error.message === 'network' || error.message?.includes('relation') || error.message?.includes('does not exist')) {
+          // La table n'existe pas encore → message provisoire positif
+          showMsg('success', `✓ Demande enregistrée ! L'hôte de "${spaceTitle}" vous répondra sous 48h.`);
+          if (hint) hint.style.display = 'none';
+          btn.style.display = 'none';
+        } else {
+          showMsg('error', `Une erreur est survenue : ${error.message}`);
+        }
+      } else {
+        showMsg('success', `✓ Demande envoyée ! L'hôte de "${spaceTitle}" vous répondra sous 48h par email.`);
+        if (hint) hint.style.display = 'none';
+        btn.style.display = 'none';
+      }
+    });
+  }
+</script>

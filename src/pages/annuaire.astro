@@ -270,4 +270,48 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     const remplOnly  = rempl.checked;
 
     const filtered = allProfiles.filter(p => {
-      const specMatch = !specialite || (p.specialite || '').toLowerCase() === specia
+      const specMatch = !specialite || (p.specialite || '').toLowerCase() === specialite;
+      const villeMatch = !ville || (p.ville || '').toLowerCase().includes(ville);
+      const remplMatch = !remplOnly || p.disponible_remplacement;
+      return specMatch && villeMatch && remplMatch;
+    });
+
+    loadingEl.style.display = 'none';
+
+    if (filtered.length === 0) {
+      gridEl.style.display  = 'none';
+      emptyEl.style.display = 'block';
+      if (resultsCt) resultsCt.textContent = '0';
+      return;
+    }
+
+    gridEl.innerHTML        = filtered.map(buildCard).join('');
+    gridEl.style.display    = 'grid';
+    emptyEl.style.display   = 'none';
+    if (resultsCt) resultsCt.textContent = String(filtered.length);
+  }
+
+  // ── Listeners ───────────────────────────────────────────────────────────────
+  searchBtn?.addEventListener('click', renderFiltered);
+  villeInput?.addEventListener('keydown', (e) => { if (e.key === 'Enter') renderFiltered(); });
+  rempl?.addEventListener('change', renderFiltered);
+  resetBtn?.addEventListener('click', () => {
+    specSelect.value  = '';
+    villeInput.value  = '';
+    rempl.checked     = false;
+    renderFiltered();
+  });
+
+  // ── Pré-remplissage depuis ?specialite= (lien depuis /remplacements) ────────
+  const params = new URLSearchParams(window.location.search);
+  const paramSpec = params.get('specialite');
+  if (paramSpec && specSelect) {
+    const match = Array.from(specSelect.options).find(o =>
+      o.text.toLowerCase().includes(paramSpec.toLowerCase())
+    );
+    if (match) specSelect.value = match.value;
+  }
+
+  // Lancement
+  loadProfiles();
+</script>

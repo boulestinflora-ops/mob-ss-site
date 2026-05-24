@@ -228,4 +228,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       if (error) {
         showMsg('error', `Erreur : ${error.message}`);
       } else {
-        showMsg
+        showMsg('success', \`✓ Email de confirmation renvoyé à ${email}. Vérifiez vos spams si besoin.\`);
+      }
+    });
+  }
+</script>

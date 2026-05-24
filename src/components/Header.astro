@@ -234,4 +234,22 @@ const navLinks = [
       if (profile) {
         const prenom = profile.prenom || fallback;
         const initiales = ((prenom[0] || '') + (profile.nom?.[0] || '')).toUpperCase() || '?';
-        if (avatar) avatar.textCont
+        if (avatar) avatar.textContent = initiales;
+        if (nameEl) nameEl.textContent = prenom;
+
+        // Active state sur Annuaire / Remplacements selon l'URL courante
+        const path = window.location.pathname;
+        if (path.startsWith('/annuaire'))      document.getElementById('nav-annuaire')?.classList.add('is-active');
+        if (path.startsWith('/remplacements')) document.getElementById('nav-remplacements')?.classList.add('is-active');
+
+        // Praticien : cacher "Déposer un espace"
+        if (role === 'praticien') {
+          document.getElementById('deposer-btn-in')?.style.setProperty('display', 'none');
+          document.getElementById('nav-deposer-mobile')?.style.setProperty('display', 'none');
+        }
+      }
+    } catch (e) {
+      console.warn('Profil header non chargé', e);
+    }
+  });
+</script>

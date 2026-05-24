@@ -178,4 +178,10 @@ const faqJsonLd = JSON.stringify({
     btn.addEventListener('keydown', (e: KeyboardEvent) => {
       if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
         e.preventDefault();
-        const next = tabBtns[(idx + (e.key === 'ArrowRight' ? 1 : -1) + tabBtns.length) % tabBtns
+        const next = tabBtns[(idx + (e.key === 'ArrowRight' ? 1 : -1) + tabBtns.length) % tabBtns.length];
+        next.focus();
+        activateCcmTab(next);
+      }
+    });
+  });
+</script>
