@@ -9,4 +9,6 @@ export default defineConfig({
   output: 'hybrid',
   adapter: vercel(),
 
-  // URL du site — utilisée pour les balises cano
+  // URL du site — utilisée pour les balises canoniques et OG
+  site: 'https://mobss.fr',
+});
