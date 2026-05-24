@@ -9,7 +9,9 @@ const spacesMapJson = JSON.stringify(
 ---
 
 <BaseLayout title="Mon espace — MOB'SS" description="Votre tableau de bord MOB'SS.">
-<script type="application/json" id="spaces-map-data" set:html={spacesMapJson}></script>
+<script is:inline define:vars={{ spacesMapJson }}>
+  window.__MOBSS_SPACES_MAP = spacesMapJson;
+</script>
 
 <!-- CHARGEMENT -->
 <div id="dash-loading" style="text-align:center;padding:120px 24px;color:var(--color-text-soft);">
@@ -1542,7 +1544,7 @@ const spacesMapJson = JSON.stringify(
   }
 
   const spacesMap: Record<string, string> = JSON.parse(
-    document.getElementById('spaces-map-data')?.textContent || '{}'
+    (window as any).__MOBSS_SPACES_MAP || '{}'
   );
 
   const loadingEl = document.getElementById('dash-loading') as HTMLElement;
