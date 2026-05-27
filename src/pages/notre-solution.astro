@@ -1,0 +1,258 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="La solution — MOB'SS"
+  description="MOB'SS est une plateforme numérique qui connecte les professionnels de santé et du sport avec les espaces inutilisés des collectivités et entreprises — gratuitement, partout en France."
+  currentPage="solution"
+>
+
+  <!-- HERO -->
+  <section style="background:linear-gradient(135deg,var(--color-primary),var(--color-primary-dark));color:#fff;padding:80px 0 64px;">
+    <div class="container" style="max-width:800px;text-align:center;">
+      <span class="section__eyebrow" style="background:rgba(255,255,255,.18);color:#fff;">Notre réponse</span>
+      <h1 style="color:#fff;margin-top:12px;">MOB'SS fait le lien</h1>
+      <p style="color:rgba(255,255,255,0.88);font-size:1.1rem;max-width:640px;margin:0 auto;line-height:1.65;">
+        Une plateforme numérique de mise en relation entre trois acteurs qui ont tout intérêt à se trouver —
+        professionnels de santé et du sport, gestionnaires d'espaces, et territoires en quête de solutions.
+        Gratuit, sans engagement, 100 % en ligne.
+      </p>
+    </div>
+  </section>
+
+  <!-- LES 3 ACTEURS -->
+  <section class="section section--white" style="padding:72px 0;">
+    <div class="container" style="max-width:960px;">
+      <header class="section__header" style="margin-bottom:48px;">
+        <span class="section__eyebrow">Une plateforme, trois acteurs</span>
+        <h2>Un territoire en mouvement</h2>
+        <p class="section__lead">
+          MOB'SS ne crée pas de nouvelles infrastructures. Elle mobilise ce qui existe déjà,
+          en connectant intelligemment les besoins et les ressources disponibles sur le territoire.
+        </p>
+      </header>
+
+      <div class="actors-grid">
+
+        <div class="actor-card actor-card--pro">
+          <div class="actor-card__num" aria-hidden="true">01</div>
+          <div class="actor-card__icon" aria-hidden="true">⚕️</div>
+          <h3>Les professionnels</h3>
+          <p class="actor-card__sub">Santé &amp; Sport</p>
+          <p>Médecins, kinésithérapeutes, ostéopathes, coachs sportifs, sophrologues, diététiciens…
+          Ils ont les compétences mais pas toujours l'espace pour les exercer là où on en a besoin.</p>
+          <ul class="actor-card__list">
+            <li>Accédez à des espaces vérifiés et conformes à votre pratique</li>
+            <li>Zéro loyer, zéro bail — mise à disposition gracieuse</li>
+            <li>Créneaux ponctuels, récurrents ou à la demi-journée</li>
+            <li>Développez votre patientèle sans contrainte géographique fixe</li>
+          </ul>
+          <a href="/inscription?role=praticien" class="btn btn--primary" style="margin-top:auto;">Créer mon profil →</a>
+        </div>
+
+        <div class="actor-card actor-card--space">
+          <div class="actor-card__num" aria-hidden="true">02</div>
+          <div class="actor-card__icon" aria-hidden="true">🏢</div>
+          <h3>Les espaces</h3>
+          <p class="actor-card__sub">Collectivités · Entreprises · Bailleurs</p>
+          <p>Salles de réunion, gymnases, espaces communaux, locaux de bailleurs sociaux…
+          Ces espaces restent inoccupés en moyenne 65 % du temps. MOB'SS leur donne une utilité sociale.</p>
+          <ul class="actor-card__list">
+            <li>Publiez vos créneaux disponibles en quelques minutes</li>
+            <li>Vérification systématique des praticiens (diplômes, assurances)</li>
+            <li>Tableau d'impact territorial pour vos rapports d'activité</li>
+            <li>Réduction d'impôt mécénat pour les entreprises (art. 238 bis CGI)</li>
+          </ul>
+          <a href="/inscription?role=collectivite" class="btn btn--primary" style="margin-top:auto;">Référencer un espace →</a>
+        </div>
+
+        <div class="actor-card actor-card--territory">
+          <div class="actor-card__num" aria-hidden="true">03</div>
+          <div class="actor-card__icon" aria-hidden="true">🗺️</div>
+          <h3>Les territoires</h3>
+          <p class="actor-card__sub">Communes · Agglomérations · Régions</p>
+          <p>Chaque espace qui s'ouvre, c'est un territoire qui progresse. MOB'SS offre aux élus
+          et acteurs locaux une réponse concrète, mesurable et sans investissement infrastructurel.</p>
+          <ul class="actor-card__list">
+            <li>Indicateurs d'impact social et territorial en temps réel</li>
+            <li>Co-construction avec les acteurs locaux de santé et de sport</li>
+            <li>Solution déployable sans budget d'infrastructure</li>
+            <li>Soutenue par la recherche universitaire</li>
+          </ul>
+          <a href="/contact" class="btn btn--primary" style="margin-top:auto;">Nous contacter →</a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- COMMENT ÇA MARCHE EN 4 ÉTAPES -->
+  <section class="section section--alt" style="padding:72px 0;">
+    <div class="container" style="max-width:860px;">
+      <header class="section__header" style="margin-bottom:48px;">
+        <span class="section__eyebrow">Le fonctionnement</span>
+        <h2>4 étapes simples</h2>
+        <p class="section__lead">
+          De l'inscription à la première consultation — tout se passe en ligne, sans démarche administrative.
+        </p>
+      </header>
+
+      <div class="steps-vertical">
+        <div class="step-v">
+          <div class="step-v__num">1</div>
+          <div class="step-v__content">
+            <h3>Créez votre profil en 2 minutes</h3>
+            <p>Nom, spécialité, zone géographique, diplômes. Vous ajoutez vos documents professionnels à votre rythme.
+            Les hôtes vérifient les profils avant d'accepter les demandes.</p>
+          </div>
+        </div>
+        <div class="step-v__connector" aria-hidden="true"></div>
+
+        <div class="step-v">
+          <div class="step-v__num">2</div>
+          <div class="step-v__content">
+            <h3>Trouvez l'espace qui vous correspond</h3>
+            <p>Filtrez par spécialité, région, équipements, accessibilité PMR. Chaque annonce montre les photos,
+            la superficie, les disponibilités et le profil de l'hôte — avant toute inscription.</p>
+          </div>
+        </div>
+        <div class="step-v__connector" aria-hidden="true"></div>
+
+        <div class="step-v">
+          <div class="step-v__num">3</div>
+          <div class="step-v__content">
+            <h3>Envoyez votre demande</h3>
+            <p>Choisissez votre créneau et envoyez votre demande à l'hôte. Confirmation automatique ou manuelle
+            selon les préférences du gestionnaire d'espace. Rappels automatiques inclus.</p>
+          </div>
+        </div>
+        <div class="step-v__connector" aria-hidden="true"></div>
+
+        <div class="step-v">
+          <div class="step-v__num">4</div>
+          <div class="step-v__content">
+            <h3>Exercez et mesurez votre impact</h3>
+            <p>Agenda centralisé, lieux favoris, statistiques d'usage pour les hôtes. Chaque acteur dispose
+            d'un tableau de bord adapté à ses besoins. Gratuit, sans loyer, sans charge fixe.</p>
+          </div>
+        </div>
+      </div>
+
+      <div style="text-align:center;margin-top:48px;">
+        <a href="/comment-ca-marche" class="btn btn--primary btn--lg">Voir le détail par profil →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- DIFFÉRENCIATION -->
+  <section class="section section--white" style="padding:72px 0;">
+    <div class="container" style="max-width:860px;">
+      <header class="section__header" style="margin-bottom:40px;">
+        <span class="section__eyebrow">Ce qui nous distingue</span>
+        <h2>Pourquoi MOB'SS fonctionne là où d'autres échouent</h2>
+      </header>
+      <div class="diff-grid">
+        <div class="diff-card">
+          <div class="diff-card__icon" aria-hidden="true">🎯</div>
+          <h3>La bonne rencontre, au bon endroit</h3>
+          <p>MOB'SS ne liste pas simplement des espaces. Elle fait correspondre les besoins d'un praticien
+          avec les caractéristiques précises d'un lieu — superficie, équipements, accessibilité, disponibilités.</p>
+        </div>
+        <div class="diff-card">
+          <div class="diff-card__icon" aria-hidden="true">🔒</div>
+          <h3>Confiance et vérification</h3>
+          <p>Chaque praticien est vérifié (diplômes, assurance professionnelle). Chaque annonce est contrôlée
+          avant publication. Les deux parties savent avec qui elles travaillent.</p>
+        </div>
+        <div class="diff-card">
+          <div class="diff-card__icon" aria-hidden="true">🆓</div>
+          <h3>Gratuit par design</h3>
+          <p>Le modèle MOB'SS repose sur la mise à disposition gracieuse. Aucun loyer pour les praticiens,
+          aucun frais pour les hôtes. La gratuité n'est pas une promotion — c'est le modèle.</p>
+        </div>
+        <div class="diff-card">
+          <div class="diff-card__icon" aria-hidden="true">📊</div>
+          <h3>Fondé sur la recherche</h3>
+          <p>Développée en collaboration avec un laboratoire de recherche, MOB'SS intègre des indicateurs
+          d'impact territorial mesurables — pour que chaque espace ouvert soit traçable et valorisable.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="section" style="background:linear-gradient(135deg,var(--color-primary),var(--color-primary-dark));color:#fff;padding:64px 0;">
+    <div class="container text-center" style="max-width:600px;">
+      <h2 style="color:#fff;">Prêt à rejoindre MOB'SS ?</h2>
+      <p style="color:rgba(255,255,255,0.88);margin:0 auto 28px;line-height:1.65;">
+        Inscription gratuite, sans engagement. En 2 minutes, vous êtes dans l'écosystème.
+      </p>
+      <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
+        <a href="/inscription?role=praticien" class="btn btn--cream btn--lg">Je suis praticien →</a>
+        <a href="/inscription?role=collectivite" class="btn btn--lg" style="background:rgba(255,255,255,0.15);color:#fff;border:1.5px solid rgba(255,255,255,0.5);">Je propose un espace →</a>
+      </div>
+    </div>
+  </section>
+
+</BaseLayout>
+
+<style>
+  /* Acteurs */
+  .actors-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  .actor-card {
+    background: #fff;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: 32px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .actor-card--pro       { border-top: 4px solid var(--color-primary); }
+  .actor-card--space     { border-top: 4px solid var(--color-text); }
+  .actor-card--territory { border-top: 4px solid #22c55e; }
+  .actor-card__num { font-size: 0.72rem; font-weight: 700; letter-spacing: .1em; color: var(--color-text-soft); }
+  .actor-card__icon { font-size: 2rem; line-height: 1; }
+  .actor-card h3 { font-size: 1.1rem; margin: 0; }
+  .actor-card__sub { font-size: 0.8rem; color: var(--color-text-soft); font-weight: 600; text-transform: uppercase; letter-spacing: .06em; margin: 0; }
+  .actor-card p { font-size: 0.93rem; color: var(--color-text-soft); line-height: 1.55; margin: 0; }
+  .actor-card__list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; flex: 1; }
+  .actor-card__list li { font-size: 0.9rem; color: var(--color-text-soft); padding-left: 20px; position: relative; line-height: 1.45; }
+  .actor-card__list li::before { content: "✓"; position: absolute; left: 0; color: var(--color-success); font-weight: 700; }
+
+  /* Steps vertical */
+  .steps-vertical { display: flex; flex-direction: column; gap: 0; }
+  .step-v { display: flex; gap: 20px; align-items: flex-start; }
+  .step-v__num {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: var(--color-primary); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 1.1rem; flex-shrink: 0;
+  }
+  .step-v__content { padding-bottom: 8px; }
+  .step-v__content h3 { margin: 8px 0 6px; font-size: 1.05rem; }
+  .step-v__content p { color: var(--color-text-soft); font-size: 0.93rem; line-height: 1.6; margin: 0; }
+  .step-v__connector { width: 44px; height: 32px; border-left: 2px dashed var(--color-border); margin-left: 21px; flex-shrink: 0; }
+
+  /* Différenciation */
+  .diff-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+  .diff-card {
+    background: var(--color-bg-soft);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: 28px 24px;
+  }
+  .diff-card__icon { font-size: 1.8rem; margin-bottom: 10px; }
+  .diff-card h3 { font-size: 1rem; margin-bottom: 8px; }
+  .diff-card p { font-size: 0.93rem; color: var(--color-text-soft); line-height: 1.6; margin: 0; }
+
+  @media (max-width: 860px) {
+    .actors-grid { grid-template-columns: 1fr; }
+    .diff-grid { grid-template-columns: 1fr; }
+  }
+</style>

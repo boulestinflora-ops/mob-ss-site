@@ -4,9 +4,17 @@ const { currentPage = '' } = Astro.props;
 const navLinks = [
   { href: '/', label: 'Accueil', key: 'accueil' },
   { href: '/explorez', label: 'Espaces', key: 'explorez' },
-  { href: '/comment-ca-marche', label: 'Comment ça marche', key: 'comment' },
   { href: '/contact', label: 'Contact', key: 'contact' }
 ];
+
+const commentLinks = [
+  { href: '/comment-ca-marche', label: 'Comment ça marche', desc: 'Le fonctionnement pas à pas', icon: '⚙️' },
+  { href: '/le-probleme', label: 'Le problème', desc: 'Le paradoxe des territoires français', icon: '\U0001f4ca' },
+  { href: '/notre-solution', label: 'La solution', desc: "Comment MOB'SS fait le lien", icon: '\U0001f517' },
+  { href: '/notre-impact', label: 'Notre impact', desc: "Ce que MOB'SS change concrètement", icon: '\U0001f3af' },
+];
+
+const isCommentActive = ['comment','probleme','solution','impact'].includes(currentPage);
 // Annuaire et Remplacements sont visibles pour tous (état actif géré par JS)
 ---
 
@@ -41,6 +49,31 @@ const navLinks = [
           {link.label}
         </a>
       ))}
+
+      <!-- Dropdown "Comment ça marche" -->
+      <div class="nav-dropdown" id="nav-comment-dropdown">
+        <button
+          type="button"
+          class={`nav-dropdown__trigger${isCommentActive ? ' is-active' : ''}`}
+          aria-expanded="false"
+          aria-haspopup="true"
+          id="nav-comment-btn"
+        >
+          Comment ça marche
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="nav-dropdown__panel" id="nav-comment-panel" role="menu">
+          {commentLinks.map(link => (
+            <a href={link.href} class={`nav-dropdown__item${currentPage === link.key ? ' is-active' : ''}`} role="menuitem">
+              <span class="nav-dropdown__item-icon" aria-hidden="true">{link.icon}</span>
+              <span class="nav-dropdown__item-text">
+                <strong>{link.label}</strong>
+                <span>{link.desc}</span>
+              </span>
+            </a>
+          ))}
+        </div>
+      </div>
 
       <!-- Annuaire et Remplacements — visibles pour tous, le JS gère uniquement l'état actif -->
       <a href="/annuaire" id="nav-annuaire" style="white-space:nowrap;">Annuaire</a>
@@ -103,6 +136,123 @@ const navLinks = [
 </header>
 
 <style>
+  /* ── Nav dropdown "Comment ça marche" ── */
+  .nav-dropdown {
+    position: relative;
+  }
+  .nav-dropdown__trigger {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 0;
+    background: none;
+    border: none;
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    color: var(--color-text);
+    cursor: pointer;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    transition: color .15s;
+  }
+  .nav-dropdown__trigger:hover,
+  .nav-dropdown__trigger.is-active {
+    color: var(--color-primary);
+  }
+  .nav-dropdown__trigger.is-active {
+    border-bottom-color: var(--color-primary);
+  }
+  .nav-dropdown__trigger[aria-expanded="true"] svg {
+    transform: rotate(180deg);
+  }
+  .nav-dropdown__trigger svg {
+    transition: transform .2s ease;
+    flex-shrink: 0;
+  }
+  .nav-dropdown__panel {
+    display: none;
+    position: absolute;
+    top: calc(100% + 12px);
+    left: 50%;
+    transform: translateX(-50%);
+    min-width: 280px;
+    background: #fff;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 12px 32px rgba(31,21,24,0.12);
+    z-index: 200;
+    padding: 8px;
+    animation: dropIn .15s ease;
+  }
+  .nav-dropdown__panel.is-open { display: block; }
+  .nav-dropdown__item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    transition: background .12s;
+  }
+  .nav-dropdown__item:hover,
+  .nav-dropdown__item.is-active {
+    background: var(--color-cream-soft);
+  }
+  .nav-dropdown__item-icon {
+    font-size: 1.3rem;
+    width: 36px;
+    height: 36px;
+    background: var(--color-bg-soft);
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .nav-dropdown__item-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .nav-dropdown__item-text strong {
+    font-size: 0.9rem;
+    color: var(--color-text);
+    font-weight: 600;
+  }
+  .nav-dropdown__item-text span {
+    font-size: 0.78rem;
+    color: var(--color-text-soft);
+  }
+  .nav-dropdown__item.is-active .nav-dropdown__item-text strong {
+    color: var(--color-primary);
+  }
+
+  /* Mobile — dropdown en liste verticale */
+  @media (max-width: 1024px) {
+    .nav-dropdown__trigger {
+      font-size: 1rem;
+      padding: 10px 0;
+      border-bottom: none;
+      border-top: 1px solid var(--color-border);
+      width: 100%;
+      justify-content: space-between;
+    }
+    .nav-dropdown__panel {
+      position: static;
+      transform: none;
+      box-shadow: none;
+      border: none;
+      border-radius: 0;
+      padding: 0 0 0 12px;
+      background: transparent;
+      animation: none;
+    }
+    .nav-dropdown__panel.is-open { display: block; }
+    .nav-dropdown__item { padding: 8px 0; }
+    .nav-dropdown__item-icon { display: none; }
+  }
+
   /* Uniformiser les boutons Se connecter / S'inscrire */
   #user-loggedout .btn--outline {
     padding: 10px 18px;
@@ -180,7 +330,7 @@ const navLinks = [
   document.getElementById('logout-btn')?.addEventListener('click', doLogout);
   document.getElementById('logout-mobile')?.addEventListener('click', doLogout);
 
-  // Dropdown menu toggle
+  // Dropdown user menu toggle
   const trigger  = document.getElementById('user-menu-trigger');
   const dropdown = document.getElementById('user-dropdown');
   trigger?.addEventListener('click', (e) => {
@@ -198,6 +348,27 @@ const navLinks = [
     if (e.key === 'Escape') {
       dropdown?.classList.remove('is-open');
       trigger?.setAttribute('aria-expanded', 'false');
+    }
+  });
+
+  // Dropdown "Comment ça marche"
+  const commentBtn   = document.getElementById('nav-comment-btn');
+  const commentPanel = document.getElementById('nav-comment-panel');
+  commentBtn?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const open = commentPanel?.classList.toggle('is-open');
+    commentBtn.setAttribute('aria-expanded', String(open));
+  });
+  document.addEventListener('click', (e) => {
+    if (!document.getElementById('nav-comment-dropdown')?.contains(e.target as Node)) {
+      commentPanel?.classList.remove('is-open');
+      commentBtn?.setAttribute('aria-expanded', 'false');
+    }
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      commentPanel?.classList.remove('is-open');
+      commentBtn?.setAttribute('aria-expanded', 'false');
     }
   });
 
