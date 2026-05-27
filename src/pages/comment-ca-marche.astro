@@ -166,4 +166,20 @@ const faqJsonLd = JSON.stringify({
       b.setAttribute('aria-selected', active ? 'true' : 'false');
       b.setAttribute('tabindex', active ? '0' : '-1');
     });
-    document.querySelectorAll<HTMLElem
+    document.querySelectorAll<HTMLElement>('.ccm-panel').forEach(p => {
+      p.style.display = p.id === ('tab-' + (btn as HTMLElement & {dataset: {tab:string}}).dataset.tab) ? '' : 'none';
+    });
+  }
+
+  tabBtns.forEach((btn, idx) => {
+    btn.addEventListener('click', () => activateCcmTab(btn));
+    btn.addEventListener('keydown', (e: KeyboardEvent) => {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+        e.preventDefault();
+        const next = tabBtns[(idx + (e.key === 'ArrowRight' ? 1 : -1) + tabBtns.length) % tabBtns.length];
+        next.focus();
+        activateCcmTab(next);
+      }
+    });
+  });
+</script>
