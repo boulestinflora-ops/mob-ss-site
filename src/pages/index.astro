@@ -10,8 +10,8 @@ import steps from '../data/steps.json';
 ---
 
 <BaseLayout
-  title="MOB'SS — Des espaces gratuits pour exercer, partout en France"
-  description="MOB'SS connecte les espaces inoccupés des collectivités et des entreprises avec les professionnels du sport et de la santé."
+  title="MOB'SS — Rendre le sport et la santé accessibles à tous"
+  description="MOB'SS connecte les professionnels de santé et du sport avec les espaces inutilisés des collectivités et entreprises — gratuitement, partout en France."
   currentPage="accueil"
 >
 
@@ -21,24 +21,37 @@ import steps from '../data/steps.json';
       <p class="hero__brand-meaning" aria-label="MOB'SS — Mobilité Sport &amp; Santé">
         MOB'SS — <em>Mobilité Sport &amp; Santé</em>
       </p>
-      <h1>Rendre le sport et la santé<br />accessibles à tous.</h1>
+      <h1>Exercez là où<br />on a besoin de vous.</h1>
       <p class="lead">
-        Des millions de Français n'ont plus accès à un médecin ou à un coach à proximité.
-        Des milliers de salles, gymnases et bureaux restent vides chaque semaine.
-        MOB'SS connecte ces deux réalités pour que le soin et l'effort arrivent
-        <strong style="color:var(--color-cream);">là où on en a besoin</strong>.
+        Des espaces conformes, vérifiés, mis à disposition
+        <strong style="color:var(--color-cream);">gratuitement</strong>
+        par des collectivités et entreprises partenaires — dans les territoires qui manquent de professionnels.
+        Zéro loyer. Zéro bail.
       </p>
       <div class="hero__cta">
-        <a href="/explorez" class="btn btn--cream btn--lg">Trouver un professionnel près de moi →</a>
-        <a href="/inscription" class="btn btn--hero-host btn--lg">
-          Je suis professionnel / je propose un espace
+        <a href="/inscription?role=praticien" class="btn btn--cream btn--lg">Je suis praticien → S'inscrire gratuitement</a>
+        <a href="/inscription?role=collectivite" class="btn btn--hero-host btn--lg">
+          Je propose un espace →
         </a>
       </div>
-      <p class="hero__reassurance">Inscription gratuite · Sans engagement · Données protégées</p>
-      <p class="hero__why-free">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="opacity:.7;vertical-align:middle;margin-right:4px;"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-        44 % des Français estiment vivre dans un désert médical. 84 % des médecins n'ont jamais entendu parler d'une solution pour organiser des consultations hors cabinet.
-      </p>
+      <div class="hero__trust-strip" aria-label="Garanties MOB'SS">
+        <span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+          0 € de loyer
+        </span>
+        <span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+          Espaces vérifiés
+        </span>
+        <span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+          Inscription en 2 min
+        </span>
+        <span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+          Sans engagement
+        </span>
+      </div>
     </div>
   </section>
 
@@ -122,8 +135,8 @@ import steps from '../data/steps.json';
       <header class="section__header">
         <h2>Une plateforme, trois acteurs, un territoire en mouvement</h2>
         <p class="section__lead">
-          Que vous soyez citoyen en recherche d'un professionnel, praticien sans espace fixe,
-          ou gestionnaire d'un local inoccupé — il y a une place pour vous dans l'écosystème MOB'SS.
+          Praticien sans espace fixe ou gestionnaire d'un local inoccupé —
+          il y a une place pour vous dans l'écosystème MOB'SS.
         </p>
       </header>
       <div class="grid grid--3">
@@ -146,7 +159,7 @@ import steps from '../data/steps.json';
         {steps.map(step => <Step {...step} />)}
       </div>
       <div class="text-center mt-32" style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
-        <a href="/explorez" class="btn btn--primary btn--lg">Chercher un espace maintenant</a>
+        <a href="/inscription?role=praticien" class="btn btn--primary btn--lg">Créer mon profil praticien →</a>
         <a href="/comment-ca-marche" class="btn btn--ghost" style="font-size:0.95rem;">En savoir plus →</a>
       </div>
     </div>
@@ -272,7 +285,7 @@ import steps from '../data/steps.json';
           <span class="cta-final-card__eyebrow">Vous êtes professionnel de santé ou du sport</span>
           <h2 class="cta-final-card__title">Exercez là où vos patients ont besoin de vous</h2>
           <p class="cta-final-card__desc">Médecins, kinésithérapeutes, coachs, diététiciens… Trouvez des espaces conformes, réservez vos créneaux et développez votre patientèle — sans loyer, sans bail, sans contrainte géographique.</p>
-          <a href="/explorez" class="btn btn--cream btn--lg">Parcourir les espaces →</a>
+          <a href="/inscription?role=praticien" class="btn btn--cream btn--lg">Créer mon profil gratuitement →</a>
           <p class="cta-final-card__sub">Inscription gratuite · Sans engagement · 2 min</p>
         </div>
 
@@ -446,12 +459,25 @@ import steps from '../data/steps.json';
     color: rgba(255,255,255,0.85);
   }
 
-  /* Hero — ligne de réassurance sous les CTA */
-  .hero__reassurance {
-    font-size: 0.85rem;
-    color: rgba(255,255,255,0.72);
-    margin-top: 14px;
-    letter-spacing: 0.04em;
+  /* Hero — trust strip (badges de réassurance) */
+  .hero__trust-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 20px;
+    margin-top: 20px;
+    justify-content: center;
+  }
+  .hero__trust-strip span {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.88rem;
+    color: rgba(255,255,255,0.88);
+    font-weight: 500;
+  }
+  .hero__trust-strip svg {
+    color: var(--color-cream);
+    flex-shrink: 0;
   }
 
   /* Bouton hôte dans le hero — blanc/translucide pour contraste sur fond primary */
@@ -757,3 +783,4 @@ import steps from '../data/steps.json';
     sessionStorage.setItem('search_loc',    locInput?.value    || '');
   });
 </script>
+                               
