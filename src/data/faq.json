@@ -11,13 +11,13 @@
   },
   {
     "open": false,
-    "question": "Comment fonctionne le paiement ?",
-    "answer": "Le paiement s'effectue en ligne via notre prestataire sécurisé. Les fonds sont retenus jusqu'à la réalisation de l'intervention, puis reversés au propriétaire de l'espace ou au praticien. Aucune information bancaire n'est conservée par MOB'SS."
+    "question": "L'utilisation de la plateforme est-elle vraiment gratuite ?",
+    "answer": "Oui, MOB'SS est entièrement gratuit pour les praticiens comme pour les hôtes. Il n'y a aucun loyer, aucun abonnement, aucune commission. Les espaces sont mis à disposition gracieusement par les collectivités et les entreprises. Le modèle MOB'SS repose sur la mise en relation, pas sur des transactions financières."
   },
   {
     "open": false,
     "question": "Une commune peut-elle proposer plusieurs salles ?",
-    "answer": "Oui. Les abonnements collectivité permettent de gérer plusieurs espaces (salle des fêtes, gymnase, ancien commerce reconverti…) depuis un seul tableau de bord, avec des indicateurs d'impact social et territorial."
+    "answer": "Oui. Les collectivités et entreprises peuvent gérer plusieurs espaces depuis un seul tableau de bord — salle des fêtes, gymnase, bureaux, local reconverti… Chaque espace dispose de son propre calendrier de disponibilités et de ses indicateurs d'impact territorial. Gratuit, sans engagement."
   },
   {
     "open": false,
