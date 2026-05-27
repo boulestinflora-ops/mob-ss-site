@@ -1,0 +1,64 @@
+{
+  "accesDegradePercent": "76 %",
+  "accesDegradeFull": {
+    "value": "76 %",
+    "label": "des Français estiment que l'accès aux soins s'est dégradé au cours des 10 dernières années",
+    "source": "IFOP / Qare, avril 2025"
+  },
+  "desertMedicalPercent": "44 %",
+  "desertMedicalFull": {
+    "value": "44 %",
+    "label": "des Français estiment vivre dans un désert médical, soit 6 à 8 millions de personnes",
+    "source": "Croix-Rouge / CRÉDOC, 2025"
+  },
+  "medecinsPretsPercent": "64 %",
+  "medecinsPretsFull": {
+    "value": "64 %",
+    "label": "des médecins seraient prêts à aller en désert médical si un espace adapté était disponible",
+    "source": "MACSF, 2023"
+  },
+  "medecinsSansInfoPercent": "84 %",
+  "medecinsSansInfoFull": {
+    "value": "84 %",
+    "label": "des médecins n'ont jamais entendu parler d'une solution pour organiser des consultations hors cabinet",
+    "source": "MACSF, 2023"
+  },
+  "bureauxVidesPercent": "65 %",
+  "bureauxVidesFull": {
+    "value": "65 %",
+    "label": "des surfaces de bureaux sont vides la majeure partie du temps",
+    "source": "Données bureaux, 2023"
+  },
+  "communesDesertFull": {
+    "value": "1/3",
+    "label": "des communes françaises est en désert médical",
+    "source": "Croix-Rouge / CRÉDOC, 2025"
+  },
+  "personnesDesert": "6 à 8 millions",
+  "urgencesFull": {
+    "value": "× 2",
+    "label": "Le nombre de passages aux urgences a doublé en 25 ans — de 10 à 20 millions par an",
+    "source": "Données hospitalières"
+  },
+  "renoncement": {
+    "value": "1 sur 3",
+    "label": "des Français a déjà renoncé à des soins",
+    "source": "Croix-Rouge / CRÉDOC, 2025"
+  },
+  "delaisAttente": {
+    "value": "70 %",
+    "label": "citent les délais d'attente trop longs comme principale difficulté",
+    "source": "IFOP / Qare, avril 2025"
+  },
+  "santePriorite": {
+    "value": "N° 1",
+    "label": "La santé est la première préoccupation des Français, devant le pouvoir d'achat",
+    "source": "Croix-Rouge / CRÉDOC, 2025"
+  },
+  "sources": {
+    "ifop": "IFOP / Qare, avril 2025 (n = 4 007)",
+    "croixRouge": "Croix-Rouge française / CRÉDOC, 2025",
+    "macsf": "Enquête MACSF, sept. 2023 (n = 1 632)",
+    "bureaux": "Données occupation bureaux France, 2023"
+  }
+}

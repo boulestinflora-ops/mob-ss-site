@@ -1,5 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import CTASection from '../components/CTASection.astro';
 ---
 
 <BaseLayout
@@ -9,16 +11,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 >
 
   <!-- HERO -->
-  <section style="background:linear-gradient(135deg,var(--color-primary),var(--color-primary-dark));color:#fff;padding:80px 0 64px;">
-    <div class="container" style="max-width:800px;text-align:center;">
-      <span class="section__eyebrow" style="background:rgba(255,255,255,.18);color:#fff;">Ce que MOB'SS change</span>
-      <h1 style="color:#fff;margin-top:12px;">Un impact concret, pour tous les acteurs</h1>
-      <p style="color:rgba(255,255,255,0.88);font-size:1.1rem;max-width:620px;margin:0 auto;line-height:1.65;">
-        MOB'SS ne part pas d'une intuition — elle part d'un constat chiffré et d'une ambition collective.
-        Chaque espace qui s'ouvre, c'est un territoire qui progresse.
-      </p>
-    </div>
-  </section>
+  <PageHero
+    eyebrow="Ce que MOB'SS change"
+    title="Un impact concret, pour tous les acteurs"
+    lead="MOB'SS ne part pas d'une intuition — elle part d'un constat chiffré et d'une ambition collective. Chaque espace qui s'ouvre, c'est un territoire qui progresse."
+  />
 
   <!-- LES 4 IMPACTS -->
   <section class="section section--white" style="padding:72px 0;">
@@ -168,18 +165,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   </section>
 
   <!-- CTA -->
-  <section class="section" style="background:linear-gradient(135deg,var(--color-primary),var(--color-primary-dark));color:#fff;padding:64px 0;">
-    <div class="container text-center" style="max-width:600px;">
-      <h2 style="color:#fff;">Rejoignez le mouvement.</h2>
-      <p style="color:rgba(255,255,255,0.88);margin:0 auto 28px;line-height:1.65;">
-        Inscription gratuite · Sans engagement · Données protégées
-      </p>
-      <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
-        <a href="/inscription?role=praticien" class="btn btn--cream btn--lg">Je suis praticien →</a>
-        <a href="/inscription?role=collectivite" class="btn btn--lg" style="background:rgba(255,255,255,0.15);color:#fff;border:1.5px solid rgba(255,255,255,0.5);">Je propose un espace →</a>
-      </div>
-    </div>
-  </section>
+  <CTASection title="Rejoignez le mouvement." />
 
 </BaseLayout>
 

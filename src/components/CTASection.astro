@@ -1,0 +1,63 @@
+---
+/**
+ * CTASection — section CTA dégradé rouge finale, partagée entre les pages.
+ *
+ * Props:
+ *   title          — H2 principal (ex. "Rejoignez le mouvement.")
+ *   subtitle       — sous-titre court
+ *   primaryLabel   — texte du bouton principal crème
+ *   primaryHref    — lien du bouton principal (défaut "/inscription?role=praticien")
+ *   secondaryLabel — texte du bouton secondaire (défaut "Je propose un espace →")
+ *   secondaryHref  — lien du bouton secondaire (défaut "/inscription?role=collectivite")
+ *   showContact    — afficher le lien "Nous contacter" en bas (défaut false)
+ */
+interface Props {
+  title:          string;
+  subtitle?:      string;
+  primaryLabel?:  string;
+  primaryHref?:   string;
+  secondaryLabel?: string;
+  secondaryHref?:  string;
+  showContact?:   boolean;
+}
+
+const {
+  title,
+  subtitle       = 'Inscription gratuite · Sans engagement · Données protégées',
+  primaryLabel   = 'Je suis praticien →',
+  primaryHref    = '/inscription?role=praticien',
+  secondaryLabel = 'Je propose un espace →',
+  secondaryHref  = '/inscription?role=collectivite',
+  showContact    = false,
+} = Astro.props;
+---
+
+<section
+  class="section"
+  style="background:linear-gradient(135deg,var(--color-primary),var(--color-primary-dark));color:#fff;padding:64px 0;"
+>
+  <div class="container text-center" style="max-width:600px;">
+    <h2 style="color:#fff;">{title}</h2>
+    {subtitle && (
+      <p style="color:rgba(255,255,255,0.88);margin:0 auto 28px;line-height:1.65;">
+        {subtitle}
+      </p>
+    )}
+    <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
+      <a href={primaryHref} class="btn btn--cream btn--lg">{primaryLabel}</a>
+      <a
+        href={secondaryHref}
+        class="btn btn--lg"
+        style="background:rgba(255,255,255,0.15);color:#fff;border:1.5px solid rgba(255,255,255,0.5);"
+      >
+        {secondaryLabel}
+      </a>
+    </div>
+    {showContact && (
+      <p style="margin-top:16px;font-size:0.83rem;color:rgba(255,255,255,0.55);">
+        Inscription gratuite · Sans engagement ·
+        <a href="/contact" style="color:rgba(255,255,255,0.7);text-decoration:underline;">Nous contacter</a>
+      </p>
+    )}
+  </div>
+</section>

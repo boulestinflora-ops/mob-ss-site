@@ -1,0 +1,49 @@
+---
+/**
+ * PageHero — section hero partagée entre les pages internes.
+ *
+ * Props:
+ *   eyebrow   — petit label au-dessus du titre (ex. "Notre étude de marché")
+ *   title     — H1 de la page
+ *   lead      — paragraphe d'accroche (HTML autorisé via set:html)
+ *   paddingBottom — padding bas de la section (défaut "64px")
+ */
+interface Props {
+  eyebrow:       string;
+  title:         string;
+  lead:          string;
+  paddingBottom?: string;
+}
+
+const {
+  eyebrow,
+  title,
+  lead,
+  paddingBottom = '64px',
+} = Astro.props;
+---
+
+<section
+  style={`background:linear-gradient(135deg,var(--color-primary),var(--color-primary-dark));color:#fff;padding:80px 0 ${paddingBottom};`}
+>
+  <div class="container" style="max-width:800px;text-align:center;">
+    <span class="section__eyebrow" style="background:rgba(255,255,255,.18);color:#fff;">
+      {eyebrow}
+    </span>
+    <h1 style="color:#fff;margin-top:12px;">{title}</h1>
+    <p
+      class="page-hero__lead"
+      set:html={lead}
+    />
+  </div>
+</section>
+
+<style>
+  .page-hero__lead {
+    color: rgba(255, 255, 255, 0.88);
+    font-size: 1.1rem;
+    max-width: 640px;
+    margin: 0 auto;
+    line-height: 1.65;
+  }
+</style>

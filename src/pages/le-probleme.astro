@@ -1,5 +1,8 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import CTASection from '../components/CTASection.astro';
+import stats from '../data/stats.json';
 ---
 
 <BaseLayout
@@ -9,17 +12,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 >
 
   <!-- HERO -->
-  <section style="background:linear-gradient(135deg,var(--color-primary),var(--color-primary-dark));color:#fff;padding:80px 0 64px;">
-    <div class="container" style="max-width:800px;text-align:center;">
-      <span class="section__eyebrow" style="background:rgba(255,255,255,.18);color:#fff;">Notre étude de marché</span>
-      <h1 style="color:#fff;margin-top:12px;">Un paradoxe au cœur des territoires</h1>
-      <p style="color:rgba(255,255,255,0.88);font-size:1.1rem;max-width:620px;margin:0 auto;line-height:1.65;">
-        En France, des millions de personnes n'ont plus accès à un médecin ou à une activité sportive encadrée.
-        Dans le même temps, des milliers de salles et d'espaces restent vides la majeure partie du temps.
-        Le problème n'est pas un manque de professionnels — c'est un manque de mise en relation.
-      </p>
-    </div>
-  </section>
+  <PageHero
+    eyebrow="Notre étude de marché"
+    title="Un paradoxe au cœur des territoires"
+    lead="En France, des millions de personnes n'ont plus accès à un médecin ou à une activité sportive encadrée. Dans le même temps, des milliers de salles et d'espaces restent vides la majeure partie du temps. Le problème n'est pas un manque de professionnels — c'est un manque de mise en relation."
+  />
 
   <!-- STATS CHOC -->
   <section class="section section--white" style="padding:64px 0;">
@@ -154,19 +151,14 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   </section>
 
   <!-- CTA -->
-  <section class="section" style="background:linear-gradient(135deg,var(--color-primary),var(--color-primary-dark));color:#fff;padding:64px 0;">
-    <div class="container text-center" style="max-width:600px;">
-      <h2 style="color:#fff;">MOB'SS apporte une réponse concrète</h2>
-      <p style="color:rgba(255,255,255,0.88);margin:0 auto 28px;line-height:1.65;">
-        Une plateforme numérique qui connecte les espaces disponibles avec les professionnels
-        qui en ont besoin — gratuitement, partout en France.
-      </p>
-      <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
-        <a href="/notre-solution" class="btn btn--cream btn--lg">Voir la solution →</a>
-        <a href="/notre-impact" class="btn btn--lg" style="background:rgba(255,255,255,0.15);color:#fff;border:1.5px solid rgba(255,255,255,0.5);">Notre impact →</a>
-      </div>
-    </div>
-  </section>
+  <CTASection
+    title="MOB'SS apporte une réponse concrète"
+    subtitle="Une plateforme numérique qui connecte les espaces disponibles avec les professionnels qui en ont besoin — gratuitement, partout en France."
+    primaryLabel="Voir la solution →"
+    primaryHref="/notre-solution"
+    secondaryLabel="Notre impact →"
+    secondaryHref="/notre-impact"
+  />
 
 </BaseLayout>
 
