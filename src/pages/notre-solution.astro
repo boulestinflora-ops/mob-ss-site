@@ -2,6 +2,26 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHero from '../components/PageHero.astro';
 import CTASection from '../components/CTASection.astro';
+const breadcrumbLd = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {"@type":"ListItem","position":1,"name":"Accueil","item":"https://mobss.fr/"},
+    {"@type":"ListItem","position":2,"name":"Notre solution","item":"https://mobss.fr/notre-solution"}
+  ]
+});
+const serviceLd = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "name": "MOB\'SS — Mise en relation praticiens & espaces",
+  "description": "Plateforme numérique connectant les professionnels de santé et du sport avec les espaces inutilisés des collectivités et entreprises. Gratuit, sans engagement, 100 % en ligne.",
+  "provider": {"@type":"Organization","name":"MOB\'SS","url":"https://mobss.fr"},
+  "serviceType": "Mise en relation professionnels de santé et du sport",
+  "areaServed": {"@type":"Country","name":"France"},
+  "url": "https://mobss.fr/notre-solution",
+  "offers": {"@type":"Offer","price":"0","priceCurrency":"EUR","description":"Inscription gratuite, sans engagement"}
+});
+
 ---
 
 <BaseLayout
@@ -9,6 +29,8 @@ import CTASection from '../components/CTASection.astro';
   description="MOB'SS est une plateforme numérique qui connecte les professionnels de santé et du sport avec les espaces inutilisés des collectivités et entreprises — gratuitement, partout en France."
   currentPage="solution"
 >
+  <Fragment slot="head" set:html={`<script type="application/ld+json">${breadcrumbLd}</script><script type="application/ld+json">${serviceLd}</script>`} />
+
 
   <!-- HERO -->
   <PageHero

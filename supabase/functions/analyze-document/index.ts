@@ -163,4 +163,41 @@ serve(async (req) => {
 
       try {
         const match = raw.match(/\{[\s\S]*\}/);
-        analysis = match ? JSON.parse(matc
+        analysis = match ? JSON.parse(match[0]) : analysis;
+      } catch {
+        analysis = { conforme: false, anomalies: ["Réponse IA non parseable"] };
+      }
+
+      // Auto-extraire la date d'expiration pour l'assurance
+      if (doc_type === "assurance" && analysis.date_fin) {
+        await supabase
+          .from("documents")
+          .update({ expires_at: analysis.date_fin })
+          .eq("id", document_id)
+          .is("expires_at", null); // Ne pas écraser si déjà renseignée
+      }
+    } else {
+      console.warn("ANTHROPIC_API_KEY non définie — analyse ignorée");
+      analysis = { conforme: null, anomalies: [], note: "Clé API Anthropic non configurée" };
+    }
+
+    // ── 4. Mettre à jour la table documents ───────────────────
+    await supabase.from("documents").update({
+      ai_analyse:    analysis,
+      ai_analyse_at: new Date().toISOString(),
+    }).eq("id", document_id);
+
+    return json({ ok: true, analyse: analysis });
+
+  } catch (err) {
+    console.error("analyze-document error:", err);
+    return json({ ok: false, error: String(err) }, 500);
+  }
+});
+
+function json(data: unknown, status = 200) {
+  return new Response(JSON.stringify(data), {
+    status,
+    headers: { "Content-Type": "application/json", ...CORS },
+  });
+}

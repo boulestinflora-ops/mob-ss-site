@@ -6,38 +6,40 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   title="Inscription — MOB'SS"
   description="Créez votre compte MOB'SS gratuitement et sans engagement."
 >
-  <section class="section">
-    <div class="container" style="max-width:760px;">
-      <div class="text-center" style="margin-bottom:32px;">
-        <span class="section__eyebrow">Inscription</span>
-        <h1>Créez votre compte MOB'SS</h1>
-        <p style="color:var(--color-text-soft);">Gratuit, sans engagement. Choisissez votre profil pour personnaliser votre expérience.</p>
-      </div>
+  <section class="section insc-section">
+    <div class="container insc-container">
 
-      <!-- Badges réassurance -->
-      <div class="trust-badges" role="list" aria-label="Garanties MOB'SS">
-        <div class="trust-badge" role="listitem">
-          <span aria-hidden="true">🔒</span>
-          <span>Données chiffrées · RGPD</span>
+      <!-- ── STEPPER ────────────────────────────────────────────── -->
+      <nav class="insc-stepper" aria-label="Étapes d'inscription">
+        <div class="insc-step is-active" id="stepper-1">
+          <span class="insc-step__num" aria-hidden="true">1</span>
+          <span class="insc-step__label">Mon profil</span>
         </div>
-        <div class="trust-badge" role="listitem">
-          <span aria-hidden="true">✓</span>
-          <span>Profils vérifiés</span>
+        <div class="insc-step__line" id="stepper-line"></div>
+        <div class="insc-step" id="stepper-2">
+          <span class="insc-step__num" aria-hidden="true">2</span>
+          <span class="insc-step__label">Mes coordonnées</span>
         </div>
-        <div class="trust-badge" role="listitem">
-          <span aria-hidden="true">0&nbsp;€</span>
-          <span>100% gratuit</span>
-        </div>
-        <div class="trust-badge" role="listitem">
-          <span aria-hidden="true">⏱</span>
-          <span>Inscription en 2 min</span>
-        </div>
-      </div>
+      </nav>
 
-      <div class="form-card">
-        <h2 style="font-size:1.2rem;margin-bottom:16px;font-family:var(--font-body);">1. Je suis…</h2>
+      <!-- ── ÉTAPE 1 : RÔLE ─────────────────────────────────────── -->
+      <div id="step-1" class="form-card insc-card">
+        <h1 class="insc-card__title">Je suis…</h1>
+        <p class="insc-card__subtitle">
+          Choisissez votre profil pour personnaliser votre expérience.
+        </p>
 
-        <div class="role-picker">
+        <!-- Réassurance -->
+        <div class="trust-badges" role="list" aria-label="Garanties MOB'SS" style="margin-bottom:28px;">
+          <div class="trust-badge" role="listitem"><span aria-hidden="true">🔒</span><span>RGPD</span></div>
+          <div class="trust-badge" role="listitem"><span aria-hidden="true">✓</span><span>Profils vérifiés</span></div>
+          <div class="trust-badge" role="listitem"><span aria-hidden="true">0 €</span><span>Gratuit</span></div>
+          <div class="trust-badge" role="listitem"><span aria-hidden="true">⏱</span><span>2 min</span></div>
+        </div>
+
+        <!-- Sélecteur de rôle -->
+        <div class="role-picker" role="radiogroup" aria-label="Type de profil">
+
           <label class="role-option" data-role="praticien">
             <input type="radio" name="role" value="praticien" />
             <div class="role-option__inner">
@@ -55,9 +57,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             <input type="radio" name="role" value="collectivite" />
             <div class="role-option__inner">
               <svg class="icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M3 21h18"/>
-                <path d="M5 21V8l7-5 7 5v13"/>
-                <path d="M9 21v-6h6v6"/>
+                <path d="M3 21h18"/><path d="M5 21V8l7-5 7 5v13"/><path d="M9 21v-6h6v6"/>
               </svg>
               <div class="role-option__title">Collectivité</div>
               <div class="role-option__desc">Commune, EPCI, département</div>
@@ -76,258 +76,578 @@ import BaseLayout from '../layouts/BaseLayout.astro';
               <div class="role-option__desc">QVCT, sport en entreprise</div>
             </div>
           </label>
+
         </div>
 
-        <h2 style="font-size:1.2rem;margin-bottom:16px;font-family:var(--font-body);">2. Vos coordonnées</h2>
+        <p id="role-error" class="insc-field-error" aria-live="polite" style="display:none;text-align:center;margin-bottom:12px;">
+          Veuillez sélectionner un profil pour continuer.
+        </p>
 
-        <!-- Zone de message (succès ou erreur) injectée par le JS -->
-        <div id="signup-message" style="display:none;padding:14px 18px;border-radius:var(--radius-md);margin-bottom:18px;font-size:0.95rem;"></div>
+        <button type="button" id="btn-next" class="btn btn--primary btn--block btn--lg" style="margin-top:8px;">
+          Continuer →
+        </button>
 
-        <form id="signup-form" novalidate>
-          <div class="field-row">
-            <div class="field">
-              <label for="prenom">Prénom *</label>
-              <input id="prenom" type="text" required autocomplete="given-name" />
-            </div>
-            <div class="field">
-              <label for="nom">Nom *</label>
-              <input id="nom" type="text" required autocomplete="family-name" />
-            </div>
-          </div>
-
-          <div class="field" id="field-organisation" style="display:none;">
-            <label for="organisation">Nom de la structure *</label>
-            <input id="organisation" type="text" autocomplete="organization" placeholder="Mairie de…, Société…" />
-          </div>
-
-          <div class="field" id="field-activite" style="display:none;">
-            <label for="activite">Activité principale *</label>
-            <select id="activite">
-              <option value="">Sélectionner</option>
-              <option>Kinésithérapeute</option>
-              <option>Ostéopathe</option>
-              <option>Coach sportif / sportive</option>
-              <option>Diététicien·ne / nutritionniste</option>
-              <option>Professeur·e de yoga / Pilates</option>
-              <option>Sophrologue</option>
-              <option>Professionnel·le APA</option>
-              <option>Infirmier·ère libéral·e</option>
-              <option>Médecin</option>
-              <option>Psychomotricien·ne</option>
-              <option>Ergothérapeute</option>
-              <option>Autre</option>
-            </select>
-          </div>
-
-          <div class="field">
-            <label for="email">Email professionnel *</label>
-            <input id="email" type="email" required autocomplete="email" />
-          </div>
-
-          <div class="field">
-            <label for="tel">Téléphone *</label>
-            <input id="tel" type="tel" required autocomplete="tel" placeholder="06 12 34 56 78" />
-          </div>
-
-          <div class="field-row">
-            <div class="field">
-              <label for="mdp">Mot de passe *</label>
-              <input id="mdp" type="password" required autocomplete="new-password" minlength="8" />
-              <p class="form-help">8 caractères minimum, 1 chiffre, 1 majuscule.</p>
-            </div>
-            <div class="field">
-              <label for="mdp2">Confirmer *</label>
-              <input id="mdp2" type="password" required autocomplete="new-password" minlength="8" />
-            </div>
-          </div>
-
-          <label class="option" style="display:flex;gap:8px;align-items:flex-start;font-size:0.9rem;color:var(--color-text-soft);margin:8px 0 18px;">
-            <input type="checkbox" required style="margin-top:4px;" />
-            <span>J'accepte les <a href="#">conditions générales</a> et la <a href="/confidentialite">politique de confidentialité</a>.</span>
-          </label>
-
-          <label class="option" style="display:flex;gap:8px;align-items:flex-start;font-size:0.9rem;color:var(--color-text-soft);margin-bottom:18px;">
-            <input type="checkbox" style="margin-top:4px;" />
-            <span>Je souhaite recevoir les actualités et conseils MOB'SS (1 fois par mois maximum).</span>
-          </label>
-
-          <button type="submit" class="btn btn--primary btn--block btn--lg">Créer mon compte</button>
-        </form>
-
-        <div style="text-align:center;margin-top:24px;color:var(--color-text-soft);">
+        <p style="text-align:center;margin-top:20px;font-size:0.9rem;color:var(--color-text-soft);">
           Déjà inscrit&nbsp;? <a href="/connexion">Se connecter</a>
-        </div>
+        </p>
       </div>
 
-      <div style="text-align:center;margin-top:24px;font-size:0.9rem;color:var(--color-text-soft);">
-        🔒 Vos données sont chiffrées et hébergées en France, conformément au RGPD.
+      <!-- ── ÉTAPE 2 : COORDONNÉES ──────────────────────────────── -->
+      <div id="step-2" style="display:none;">
+
+        <!-- Badge récap du rôle sélectionné -->
+        <div id="role-badge" class="insc-role-badge" aria-live="polite"></div>
+
+        <div class="form-card insc-card">
+          <h2 class="insc-card__title" style="font-size:1.35rem;">Vos coordonnées</h2>
+
+          <!-- Message succès / erreur global -->
+          <div id="signup-message" class="insc-msg" style="display:none;" role="alert" aria-live="assertive"></div>
+
+          <form id="signup-form" novalidate>
+
+            <div class="field-row">
+              <div class="field">
+                <label for="prenom">Prénom <span class="req" aria-hidden="true">*</span></label>
+                <input id="prenom" type="text" required autocomplete="given-name" aria-describedby="err-prenom" />
+                <span class="insc-field-error" id="err-prenom" aria-live="polite"></span>
+              </div>
+              <div class="field">
+                <label for="nom">Nom <span class="req" aria-hidden="true">*</span></label>
+                <input id="nom" type="text" required autocomplete="family-name" aria-describedby="err-nom" />
+                <span class="insc-field-error" id="err-nom" aria-live="polite"></span>
+              </div>
+            </div>
+
+            <div class="field" id="field-organisation" style="display:none;">
+              <label for="organisation">Nom de la structure <span class="req" aria-hidden="true">*</span></label>
+              <input id="organisation" type="text" autocomplete="organization" placeholder="Mairie de…, Société…" aria-describedby="err-organisation" />
+              <span class="insc-field-error" id="err-organisation" aria-live="polite"></span>
+            </div>
+
+            <div class="field" id="field-activite" style="display:none;">
+              <label for="activite">Activité principale <span class="req" aria-hidden="true">*</span></label>
+              <select id="activite" aria-describedby="err-activite">
+                <option value="">Sélectionner…</option>
+                <option>Kinésithérapeute</option>
+                <option>Ostéopathe</option>
+                <option>Coach sportif / sportive</option>
+                <option>Diététicien·ne / nutritionniste</option>
+                <option>Professeur·e de yoga / Pilates</option>
+                <option>Sophrologue</option>
+                <option>Professionnel·le APA</option>
+                <option>Infirmier·ère libéral·e</option>
+                <option>Médecin</option>
+                <option>Psychomotricien·ne</option>
+                <option>Ergothérapeute</option>
+                <option>Autre</option>
+              </select>
+              <span class="insc-field-error" id="err-activite" aria-live="polite"></span>
+            </div>
+
+            <div class="field">
+              <label for="email">Email professionnel <span class="req" aria-hidden="true">*</span></label>
+              <input id="email" type="email" required autocomplete="email" aria-describedby="err-email" />
+              <span class="insc-field-error" id="err-email" aria-live="polite"></span>
+            </div>
+
+            <div class="field">
+              <label for="tel">Téléphone <span class="req" aria-hidden="true">*</span></label>
+              <input id="tel" type="tel" required autocomplete="tel" placeholder="06 12 34 56 78" aria-describedby="err-tel" />
+              <span class="insc-field-error" id="err-tel" aria-live="polite"></span>
+            </div>
+
+            <div class="field-row">
+              <div class="field">
+                <label for="mdp">Mot de passe <span class="req" aria-hidden="true">*</span></label>
+                <div class="insc-pwd-wrap">
+                  <input id="mdp" type="password" required autocomplete="new-password" minlength="8" aria-describedby="err-mdp" />
+                  <button type="button" class="insc-pwd-toggle" aria-label="Afficher le mot de passe" data-target="mdp">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  </button>
+                </div>
+                <p class="form-help">8 caractères min · 1 chiffre · 1 majuscule</p>
+                <span class="insc-field-error" id="err-mdp" aria-live="polite"></span>
+              </div>
+              <div class="field">
+                <label for="mdp2">Confirmer <span class="req" aria-hidden="true">*</span></label>
+                <div class="insc-pwd-wrap">
+                  <input id="mdp2" type="password" required autocomplete="new-password" minlength="8" aria-describedby="err-mdp2" />
+                  <button type="button" class="insc-pwd-toggle" aria-label="Afficher la confirmation" data-target="mdp2">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  </button>
+                </div>
+                <span class="insc-field-error" id="err-mdp2" aria-live="polite"></span>
+              </div>
+            </div>
+
+            <!-- Force indicator -->
+            <div class="insc-pwd-strength" id="pwd-strength" style="display:none;">
+              <div class="insc-pwd-strength__bar">
+                <div class="insc-pwd-strength__fill" id="pwd-strength-fill"></div>
+              </div>
+              <span id="pwd-strength-label"></span>
+            </div>
+
+            <label class="option" style="display:flex;gap:10px;align-items:flex-start;font-size:0.9rem;color:var(--color-text-soft);margin:16px 0 10px;">
+              <input type="checkbox" id="cgu" required style="margin-top:3px;flex-shrink:0;" aria-describedby="err-cgu" />
+              <span>J'accepte les <a href="/mentions-legales">conditions générales</a> et la <a href="/confidentialite">politique de confidentialité</a>.</span>
+            </label>
+            <span class="insc-field-error" id="err-cgu" aria-live="polite" style="display:block;margin:-6px 0 10px 26px;"></span>
+
+            <label class="option" style="display:flex;gap:10px;align-items:flex-start;font-size:0.9rem;color:var(--color-text-soft);margin-bottom:20px;">
+              <input type="checkbox" id="newsletter" style="margin-top:3px;flex-shrink:0;" />
+              <span>Je souhaite recevoir les actualités MOB'SS (1 fois par mois max).</span>
+            </label>
+
+            <button type="submit" id="btn-submit" class="btn btn--primary btn--block btn--lg">
+              Créer mon compte
+            </button>
+
+          </form>
+        </div>
+
+        <button type="button" id="btn-back" class="btn insc-btn-back">
+          ← Retour
+        </button>
+
       </div>
+
+      <p style="text-align:center;margin-top:28px;font-size:0.85rem;color:var(--color-text-soft);">
+        🔒 Données chiffrées · Hébergement France · RGPD
+      </p>
+
     </div>
   </section>
 </BaseLayout>
 
-<!--
-  Script d'inscription : connecté à Supabase
-  Quand l'utilisateur soumet le formulaire :
-   1. On vérifie qu'un rôle est sélectionné
-   2. On appelle supabase.auth.signUp()
-   3. Supabase crée le compte et envoie un email de confirmation
-   4. Notre trigger SQL crée automatiquement la ligne dans la table profiles
--->
+<style>
+  /* ── Layout ── */
+  .insc-section { background: var(--color-bg-soft, #faf9f7); padding: 56px 0 80px; }
+  .insc-container { max-width: 600px; }
+  .insc-card { margin-top: 0; }
+  .insc-card__title { font-size: 1.55rem; margin-bottom: 6px; }
+  .insc-card__subtitle { color: var(--color-text-soft); margin-bottom: 24px; }
+
+  /* ── Stepper ── */
+  .insc-stepper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    margin-bottom: 32px;
+  }
+  .insc-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+  .insc-step__num {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.875rem; font-weight: 700;
+    background: var(--color-border, #e5e0d8);
+    color: var(--color-text-soft);
+    transition: background 0.25s, color 0.25s;
+  }
+  .insc-step__label {
+    font-size: 0.78rem;
+    color: var(--color-text-soft);
+    font-weight: 500;
+    transition: color 0.25s;
+  }
+  .insc-step.is-active .insc-step__num {
+    background: var(--color-primary);
+    color: #fff;
+  }
+  .insc-step.is-active .insc-step__label { color: var(--color-primary); font-weight: 600; }
+  .insc-step.is-done .insc-step__num {
+    background: var(--color-primary);
+    color: #fff;
+  }
+  .insc-step__line {
+    flex: 1;
+    height: 2px;
+    background: var(--color-border, #e5e0d8);
+    margin: 0 12px;
+    margin-bottom: 22px;
+    min-width: 60px;
+    transition: background 0.25s;
+  }
+  .insc-step__line.is-done { background: var(--color-primary); }
+
+  /* ── Inline field errors ── */
+  .insc-field-error {
+    display: block;
+    font-size: 0.82rem;
+    color: #b91c1c;
+    margin-top: 4px;
+    min-height: 1.2em;
+  }
+  .insc-field-error:empty { display: none; }
+  input.has-error, select.has-error {
+    border-color: #ef4444 !important;
+    background: #fff5f5;
+  }
+  input.is-valid { border-color: #22c55e !important; }
+
+  /* ── Global message ── */
+  .insc-msg {
+    padding: 14px 18px;
+    border-radius: var(--radius-md);
+    margin-bottom: 18px;
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+  .insc-msg--success { background:#E8F4EA; color:#2D6E3F; border:1px solid #B8DBC0; }
+  .insc-msg--error   { background:#FBE5E5; color:#A02323; border:1px solid #F0B8B8; }
+
+  /* ── Role badge (step 2 recap) ── */
+  .insc-role-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--color-primary-light, #fdf3f0);
+    border: 1px solid var(--color-primary);
+    color: var(--color-primary);
+    border-radius: var(--radius-pill, 999px);
+    padding: 6px 16px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 16px;
+    cursor: pointer;
+  }
+  .insc-role-badge:hover { opacity: 0.85; }
+
+  /* ── Password wrap ── */
+  .insc-pwd-wrap { position: relative; }
+  .insc-pwd-wrap input { padding-right: 40px; }
+  .insc-pwd-toggle {
+    position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+    background: none; border: none; cursor: pointer;
+    color: var(--color-text-soft); padding: 2px;
+  }
+  .insc-pwd-toggle:hover { color: var(--color-primary); }
+
+  /* ── Password strength ── */
+  .insc-pwd-strength {
+    display: flex; align-items: center; gap: 10px;
+    margin: -4px 0 12px;
+    font-size: 0.8rem; color: var(--color-text-soft);
+  }
+  .insc-pwd-strength__bar {
+    flex: 1; height: 4px; background: var(--color-border, #e5e0d8);
+    border-radius: 2px; overflow: hidden;
+  }
+  .insc-pwd-strength__fill {
+    height: 100%; width: 0%; border-radius: 2px;
+    transition: width 0.3s, background 0.3s;
+  }
+
+  /* ── Back button ── */
+  .insc-btn-back {
+    display: block; width: 100%;
+    margin-top: 12px;
+    background: none; border: none;
+    color: var(--color-text-soft);
+    font-size: 0.9rem; cursor: pointer;
+    text-align: center; padding: 8px;
+  }
+  .insc-btn-back:hover { color: var(--color-primary); }
+
+  /* ── Required asterisk ── */
+  .req { color: var(--color-primary); margin-left: 2px; }
+</style>
+
 <script>
   import { supabase } from '../lib/supabase';
-  import { showMessage as _showMsg, validateEmail, validatePassword } from '../lib/forms';
+  import { validateEmail, validatePassword } from '../lib/forms';
 
-  // ─── Pré-sélection du rôle via ?role= dans l'URL ─────────────────────────────
-  const params = new URLSearchParams(window.location.search);
-  const roleParam = params.get('role'); // "praticien", "collectivite", "entreprise"
+  // ─── Elements ────────────────────────────────────────────────────────────────
+  const step1       = document.getElementById('step-1')!;
+  const step2       = document.getElementById('step-2')!;
+  const stepper1    = document.getElementById('stepper-1')!;
+  const stepper2    = document.getElementById('stepper-2')!;
+  const stepperLine = document.getElementById('stepper-line')!;
+  const roleBadge   = document.getElementById('role-badge')!;
+  const roleError   = document.getElementById('role-error')!;
+  const msgBox      = document.getElementById('signup-message')!;
+  const form        = document.getElementById('signup-form') as HTMLFormElement;
+  const btnNext     = document.getElementById('btn-next')!;
+  const btnBack     = document.getElementById('btn-back')!;
+  const btnSubmit   = document.getElementById('btn-submit') as HTMLButtonElement;
+  const fieldOrga   = document.getElementById('field-organisation')!;
+  const fieldAct    = document.getElementById('field-activite')!;
+  const inputOrga   = document.getElementById('organisation') as HTMLInputElement;
+  const inputAct    = document.getElementById('activite') as HTMLSelectElement;
+
+  // ─── Role labels ─────────────────────────────────────────────────────────────
+  const ROLE_LABELS: Record<string, string> = {
+    praticien:    '⚕️ Praticien',
+    collectivite: '🏛️ Collectivité',
+    entreprise:   '🏢 Entreprise',
+  };
+
+  // ─── Pré-sélection via ?role= ─────────────────────────────────────────────
+  const params    = new URLSearchParams(window.location.search);
+  const roleParam = params.get('role');
   if (roleParam) {
-    const radioToCheck = document.querySelector<HTMLInputElement>(`input[name="role"][value="${roleParam}"]`);
-    if (radioToCheck) {
-      radioToCheck.checked = true;
-      radioToCheck.closest('.role-option')?.classList.add('is-selected');
+    const radio = document.querySelector<HTMLInputElement>(`input[name="role"][value="${roleParam}"]`);
+    if (radio) { radio.checked = true; radio.closest('.role-option')?.classList.add('is-selected'); }
+  }
+
+  // ─── Inline field validation ─────────────────────────────────────────────
+  type ValidateFn = (val: string) => string | null; // returns error string or null
+
+  function setFieldError(id: string, msg: string | null) {
+    const input = document.getElementById(id) as HTMLInputElement | HTMLSelectElement | null;
+    const errEl = document.getElementById(`err-${id}`);
+    if (!input || !errEl) return;
+    if (msg) {
+      errEl.textContent = msg;
+      input.classList.add('has-error');
+      input.classList.remove('is-valid');
+      input.setAttribute('aria-invalid', 'true');
+    } else {
+      errEl.textContent = '';
+      input.classList.remove('has-error');
+      if (input.value.trim()) input.classList.add('is-valid');
+      input.removeAttribute('aria-invalid');
     }
   }
 
-  // ─── Champs conditionnels selon le rôle ──────────────────────────────────────
-  const fieldOrga    = document.getElementById('field-organisation') as HTMLElement | null;
-  const fieldActivite = document.getElementById('field-activite') as HTMLElement | null;
-  const inputOrga    = document.getElementById('organisation') as HTMLInputElement | null;
-  const inputActivite = document.getElementById('activite') as HTMLSelectElement | null;
-
-  function applyRole(role: string) {
-    const isPraticien  = role === 'praticien';
-    const isStructure  = role === 'collectivite' || role === 'entreprise';
-
-    if (fieldActivite) fieldActivite.style.display = isPraticien  ? '' : 'none';
-    if (fieldOrga)     fieldOrga.style.display     = isStructure  ? '' : 'none';
-    if (inputActivite) inputActivite.required       = isPraticien;
-    if (inputOrga)     inputOrga.required           = isStructure;
-
-    // Style visuel des cartes
-    document.querySelectorAll<HTMLElement>('.role-option').forEach(label => {
-      const radio = label.querySelector<HTMLInputElement>('input[type="radio"]');
-      label.classList.toggle('is-selected', radio?.value === role);
-    });
+  function attachInlineValidation(id: string, fn: ValidateFn) {
+    const el = document.getElementById(id) as HTMLInputElement | HTMLSelectElement | null;
+    if (!el) return;
+    let touched = false;
+    el.addEventListener('blur', () => { touched = true; setFieldError(id, fn(el.value)); });
+    el.addEventListener('input', () => { if (touched) setFieldError(id, fn(el.value)); });
   }
 
-  // Initialisation si un rôle est déjà coché (URL ou navigateur)
-  const alreadyChecked = document.querySelector<HTMLInputElement>('input[name="role"]:checked');
-  if (alreadyChecked) applyRole(alreadyChecked.value);
+  // Validators
+  const required = (label: string) => (v: string) => v.trim() ? null : `${label} est requis.`;
+  const emailFn  = (v: string) => !v.trim() ? 'Email requis.' : !validateEmail(v) ? 'Format invalide (ex : vous@exemple.fr).' : null;
+  const telFn    = (v: string) => !v.trim() ? 'Téléphone requis.' : !/^[\d\s\+\-\(\)\.]{8,}$/.test(v) ? 'Numéro invalide.' : null;
+  const mdpFn    = (v: string) => {
+    if (!v) return 'Mot de passe requis.';
+    const r = validatePassword(v);
+    return r.valid ? null : r.error ?? 'Mot de passe invalide.';
+  };
+  const mdp2Fn   = (v: string) => {
+    const mdp = (document.getElementById('mdp') as HTMLInputElement)?.value ?? '';
+    return !v ? 'Confirmation requise.' : v !== mdp ? 'Les mots de passe ne correspondent pas.' : null;
+  };
 
-  // Écoute les changements de rôle
-  document.querySelectorAll<HTMLInputElement>('input[name="role"]').forEach(radio => {
-    radio.addEventListener('change', () => applyRole(radio.value));
-    // Clic sur toute la carte (pas seulement le radio caché)
-    radio.closest('.role-option')?.addEventListener('click', () => {
-      radio.checked = true;
-      applyRole(radio.value);
+  attachInlineValidation('prenom', required('Prénom'));
+  attachInlineValidation('nom', required('Nom'));
+  attachInlineValidation('email', emailFn);
+  attachInlineValidation('tel', telFn);
+  attachInlineValidation('mdp', mdpFn);
+  attachInlineValidation('mdp2', mdp2Fn);
+
+  // ─── Password strength meter ──────────────────────────────────────────────
+  const pwdInput    = document.getElementById('mdp') as HTMLInputElement;
+  const pwdStrength = document.getElementById('pwd-strength')!;
+  const pwdFill     = document.getElementById('pwd-strength-fill')!;
+  const pwdLabel    = document.getElementById('pwd-strength-label')!;
+
+  pwdInput?.addEventListener('input', () => {
+    const v = pwdInput.value;
+    if (!v) { pwdStrength.style.display = 'none'; return; }
+    pwdStrength.style.display = 'flex';
+    let score = 0;
+    if (v.length >= 8) score++;
+    if (/[A-Z]/.test(v)) score++;
+    if (/[0-9]/.test(v)) score++;
+    if (/[^A-Za-z0-9]/.test(v)) score++;
+    const levels = [
+      { pct: '25%', color: '#ef4444', label: 'Trop court' },
+      { pct: '50%', color: '#f97316', label: 'Faible' },
+      { pct: '75%', color: '#eab308', label: 'Moyen' },
+      { pct: '100%', color: '#22c55e', label: 'Fort' },
+    ];
+    const lv = levels[Math.max(0, score - 1)];
+    pwdFill.style.width     = lv.pct;
+    pwdFill.style.background = lv.color;
+    pwdLabel.textContent    = lv.label;
+  });
+
+  // ─── Show/hide password ───────────────────────────────────────────────────
+  document.querySelectorAll<HTMLButtonElement>('.insc-pwd-toggle').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = document.getElementById(btn.dataset.target!) as HTMLInputElement | null;
+      if (!target) return;
+      const show = target.type === 'password';
+      target.type = show ? 'text' : 'password';
+      btn.setAttribute('aria-label', show ? 'Masquer le mot de passe' : 'Afficher le mot de passe');
     });
   });
 
-  const form = document.getElementById('signup-form') as HTMLFormElement | null;
-  const messageBox = document.getElementById('signup-message') as HTMLDivElement | null;
-
-  function showMessage(type: 'success' | 'error', text: string) {
-    if (!messageBox) return;
-    messageBox.style.display = 'block';
-    messageBox.textContent = text;
-    if (type === 'success') {
-      messageBox.style.background = '#E8F4EA';
-      messageBox.style.color = '#2D6E3F';
-      messageBox.style.border = '1px solid #B8DBC0';
-    } else {
-      messageBox.style.background = '#FBE5E5';
-      messageBox.style.color = '#A02323';
-      messageBox.style.border = '1px solid #F0B8B8';
-    }
-    messageBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  // ─── Role selection ───────────────────────────────────────────────────────
+  function getRole(): string {
+    return (document.querySelector<HTMLInputElement>('input[name="role"]:checked'))?.value ?? '';
   }
 
+  function applyRole(role: string) {
+    const isPraticien = role === 'praticien';
+    const isStructure = role === 'collectivite' || role === 'entreprise';
+    fieldAct.style.display  = isPraticien ? '' : 'none';
+    fieldOrga.style.display = isStructure ? '' : 'none';
+    inputAct.required  = isPraticien;
+    inputOrga.required = isStructure;
+    document.querySelectorAll<HTMLElement>('.role-option').forEach(lbl => {
+      const r = lbl.querySelector<HTMLInputElement>('input[type="radio"]');
+      lbl.classList.toggle('is-selected', r?.value === role);
+    });
+    // Update role badge
+    roleBadge.textContent = `${ROLE_LABELS[role] ?? role} — Changer ›`;
+  }
+
+  document.querySelectorAll<HTMLInputElement>('input[name="role"]').forEach(radio => {
+    radio.addEventListener('change', () => applyRole(radio.value));
+    radio.closest('.role-option')?.addEventListener('click', () => {
+      radio.checked = true; applyRole(radio.value);
+    });
+  });
+
+  const alreadyChecked = document.querySelector<HTMLInputElement>('input[name="role"]:checked');
+  if (alreadyChecked) applyRole(alreadyChecked.value);
+
+  // ─── Stepper navigation ───────────────────────────────────────────────────
+  function goToStep2() {
+    const role = getRole();
+    if (!role) {
+      roleError.style.display = 'block';
+      return;
+    }
+    roleError.style.display = 'none';
+    applyRole(role);
+
+    step1.style.display = 'none';
+    step2.style.display = 'block';
+    stepper1.classList.remove('is-active');
+    stepper1.classList.add('is-done');
+    stepper2.classList.add('is-active');
+    stepperLine.classList.add('is-done');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function goToStep1() {
+    step2.style.display = 'none';
+    step1.style.display = 'block';
+    stepper1.classList.remove('is-done');
+    stepper1.classList.add('is-active');
+    stepper2.classList.remove('is-active');
+    stepperLine.classList.remove('is-done');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  btnNext.addEventListener('click', goToStep2);
+  btnBack.addEventListener('click', goToStep1);
+  roleBadge.addEventListener('click', goToStep1);
+
+  // ─── Global message ───────────────────────────────────────────────────────
+  function showMsg(type: 'success' | 'error', html: string) {
+    msgBox.style.display = 'block';
+    msgBox.innerHTML = html;
+    msgBox.className = `insc-msg insc-msg--${type}`;
+    msgBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  // ─── Form submit ─────────────────────────────────────────────────────────
   if (form) {
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
 
-      // Récupère les valeurs du formulaire
-      const role = (document.querySelector('input[name="role"]:checked') as HTMLInputElement)?.value;
+      const role   = getRole();
       const prenom = (document.getElementById('prenom') as HTMLInputElement).value.trim();
-      const nom = (document.getElementById('nom') as HTMLInputElement).value.trim();
-      const email = (document.getElementById('email') as HTMLInputElement).value.trim();
-      const tel = (document.getElementById('tel') as HTMLInputElement).value.trim();
-      const mdp = (document.getElementById('mdp') as HTMLInputElement).value;
-      const mdp2 = (document.getElementById('mdp2') as HTMLInputElement).value;
+      const nom    = (document.getElementById('nom') as HTMLInputElement).value.trim();
+      const email  = (document.getElementById('email') as HTMLInputElement).value.trim();
+      const tel    = (document.getElementById('tel') as HTMLInputElement).value.trim();
+      const mdp    = (document.getElementById('mdp') as HTMLInputElement).value;
+      const mdp2   = (document.getElementById('mdp2') as HTMLInputElement).value;
+      const cgu    = (document.getElementById('cgu') as HTMLInputElement).checked;
 
-      // Validations basiques
-      if (!role) {
-        showMessage('error', 'Veuillez sélectionner votre profil (Praticien, Collectivité ou Entreprise).');
-        return;
+      // Validate all fields
+      const errors: { id: string; msg: string | null }[] = [
+        { id: 'prenom', msg: required('Prénom')(prenom) },
+        { id: 'nom',    msg: required('Nom')(nom) },
+        { id: 'email',  msg: emailFn(email) },
+        { id: 'tel',    msg: telFn(tel) },
+        { id: 'mdp',    msg: mdpFn(mdp) },
+        { id: 'mdp2',   msg: mdp2Fn(mdp2) },
+      ];
+
+      if (role === 'praticien') {
+        errors.push({ id: 'activite', msg: inputAct.value ? null : 'Activité requise.' });
       }
-      if (!validateEmail(email)) {
-        showMessage('error', 'Adresse email invalide. Vérifiez le format (ex : vous@exemple.fr).');
-        return;
+      if (role === 'collectivite' || role === 'entreprise') {
+        errors.push({ id: 'organisation', msg: required('Structure')(inputOrga.value) });
       }
-      if (mdp !== mdp2) {
-        showMessage('error', 'Les deux mots de passe ne correspondent pas.');
-        return;
-      }
-      const pwdCheck = validatePassword(mdp);
-      if (!pwdCheck.valid) {
-        showMessage('error', `Mot de passe invalide : ${pwdCheck.error}`);
+
+      errors.forEach(({ id, msg }) => setFieldError(id, msg));
+      const firstError = errors.find(e => e.msg);
+      if (firstError) {
+        document.getElementById(firstError.id)?.focus();
         return;
       }
 
-      const submitBtn = form.querySelector('button[type="submit"]') as HTMLButtonElement;
-      submitBtn.disabled = true;
-      submitBtn.textContent = 'Création du compte…';
+      // CGU
+      const cguErr = document.getElementById('err-cgu')!;
+      if (!cgu) {
+        cguErr.textContent = 'Vous devez accepter les conditions générales.';
+        return;
+      } else {
+        cguErr.textContent = '';
+      }
 
-      // Appel Supabase : crée le compte + envoie email de confirmation
-      // Récupère la spécialité si l'utilisateur est praticien
-      const specialite = role === 'praticien'
-        ? (document.getElementById('activite') as HTMLSelectElement)?.value || null
-        : null;
+      btnSubmit.disabled = true;
+      btnSubmit.textContent = 'Création du compte…';
+
+      const specialite = role === 'praticien' ? inputAct.value || null : null;
+      const organisation = (role === 'collectivite' || role === 'entreprise') ? inputOrga.value.trim() : null;
 
       const { data, error } = await supabase.auth.signUp({
         email,
         password: mdp,
         options: {
-          data: {
-            role,
-            prenom,
-            nom,
-            telephone: tel,
-            specialite,
-          },
+          data: { role, prenom, nom, telephone: tel, specialite, organisation },
           emailRedirectTo: `${window.location.origin}/completer-profil`,
         },
       });
 
-      submitBtn.disabled = false;
-      submitBtn.textContent = 'Créer mon compte';
+      btnSubmit.disabled = false;
+      btnSubmit.textContent = 'Créer mon compte';
 
       if (error) {
         if (error.message.includes('already registered')) {
-          showMessage('error', 'Cet email est déjà utilisé. Essayez de vous connecter.');
+          showMsg('error', 'Cet email est déjà utilisé. <a href="/connexion" style="color:inherit;font-weight:600;">Se connecter →</a>');
         } else {
-          showMessage('error', `Erreur : ${error.message}`);
+          showMsg('error', `Erreur : ${error.message}`);
         }
         return;
       }
 
-      // Succès
       if (data.user && data.user.identities && data.user.identities.length === 0) {
-        showMessage('error', 'Cet email est déjà utilisé. Essayez de vous connecter.');
-      } else {
-        showMessage(
-          'success',
-          `✓ Compte créé ! Un email de confirmation a été envoyé à ${email}. Cliquez sur le lien dans l'email pour activer votre compte.`
-        );
-        form.reset();
-        // Retour à la page d'origine si ?retour= était présent
-        const retourParam = new URLSearchParams(window.location.search).get('retour');
-        if (retourParam) {
-          setTimeout(() => { window.location.href = retourParam; }, 3000);
-        }
+        showMsg('error', 'Cet email est déjà utilisé. <a href="/connexion" style="color:inherit;font-weight:600;">Se connecter →</a>');
+        return;
       }
+
+      // ── Succès — redirect selon le rôle ──────────────────────────────────
+      const redirectUrl = role === 'praticien'
+        ? '/completer-profil?welcome=1'
+        : '/dashboard?welcome=1';
+
+      showMsg('success',
+        `✓ Compte créé ! Un email de confirmation a été envoyé à <strong>${email}</strong>.<br>
+         Cliquez sur le lien dans l'email pour activer votre compte.<br>
+         <span style="font-size:0.88rem;opacity:0.8;">Redirection automatique dans 4 secondes…</span>`
+      );
+
+      form.reset();
+      setTimeout(() => { window.location.href = redirectUrl; }, 4000);
     });
   }
 </script>

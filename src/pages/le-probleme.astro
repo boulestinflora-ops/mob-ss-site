@@ -3,6 +3,25 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHero from '../components/PageHero.astro';
 import CTASection from '../components/CTASection.astro';
 import stats from '../data/stats.json';
+const breadcrumbLd = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {"@type":"ListItem","position":1,"name":"Accueil","item":"https://mobss.fr/"},
+    {"@type":"ListItem","position":2,"name":"Le problème","item":"https://mobss.fr/le-probleme"}
+  ]
+});
+const articleLd = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Un paradoxe au cœur des territoires",
+  "description": "76 % des Français estiment que l'accès aux soins s'est dégradé. Pourtant, 65 % des espaces professionnels sont vides.",
+  "author": {"@type":"Organization","name":"MOB\'SS","url":"https://mobss.fr"},
+  "publisher": {"@type":"Organization","name":"MOB\'SS","url":"https://mobss.fr"},
+  "url": "https://mobss.fr/le-probleme",
+  "inLanguage": "fr-FR"
+});
+
 ---
 
 <BaseLayout
@@ -10,6 +29,8 @@ import stats from '../data/stats.json';
   description="76 % des Français estiment que l'accès aux soins s'est dégradé. Pourtant, 65 % des espaces professionnels sont vides. MOB'SS analyse ce paradoxe et y répond."
   currentPage="probleme"
 >
+  <Fragment slot="head" set:html={`<script type="application/ld+json">${breadcrumbLd}</script><script type="application/ld+json">${articleLd}</script>`} />
+
 
   <!-- HERO -->
   <PageHero

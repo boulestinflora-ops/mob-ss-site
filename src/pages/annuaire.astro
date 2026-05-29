@@ -1,5 +1,22 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+const breadcrumbLd = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {"@type":"ListItem","position":1,"name":"Accueil","item":"https://mobss.fr/"},
+    {"@type":"ListItem","position":2,"name":"Annuaire","item":"https://mobss.fr/annuaire"}
+  ]
+});
+const itemListLd = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "name": "Annuaire des praticiens MOB\'SS",
+  "description": "Liste des professionnels de santé et du sport inscrits sur MOB\'SS",
+  "url": "https://mobss.fr/annuaire",
+  "numberOfItems": "0"
+});
+
 ---
 
 <BaseLayout
@@ -7,6 +24,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   description="Trouvez un praticien du sport ou de la santé près de chez vous : kinésithérapeutes, ostéopathes, coachs sportifs, soprhologues et bien d'autres."
   currentPage="annuaire"
 >
+  <Fragment slot="head" set:html={`<script type="application/ld+json">${breadcrumbLd}</script><script type="application/ld+json">${itemListLd}</script>`} />
+
 
   <!-- Hero -->
   <section style="background:var(--color-primary);color:#fff;padding:60px 0 70px;">

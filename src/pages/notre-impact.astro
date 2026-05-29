@@ -2,6 +2,24 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHero from '../components/PageHero.astro';
 import CTASection from '../components/CTASection.astro';
+const breadcrumbLd = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {"@type":"ListItem","position":1,"name":"Accueil","item":"https://mobss.fr/"},
+    {"@type":"ListItem","position":2,"name":"Notre impact","item":"https://mobss.fr/notre-impact"}
+  ]
+});
+const webpageLd = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "Notre impact — MOB\'SS",
+  "description": "Ce que MOB\'SS change concrètement : pour les professionnels de santé et du sport, pour les collectivités et entreprises, et pour les territoires touchés par les déserts médicaux.",
+  "url": "https://mobss.fr/notre-impact",
+  "inLanguage": "fr-FR",
+  "isPartOf": {"@type":"WebSite","name":"MOB\'SS","url":"https://mobss.fr"}
+});
+
 ---
 
 <BaseLayout
@@ -9,6 +27,8 @@ import CTASection from '../components/CTASection.astro';
   description="Ce que MOB'SS change concrètement : pour les professionnels de santé et du sport, pour les collectivités et entreprises, et pour les territoires touchés par les déserts médicaux."
   currentPage="impact"
 >
+  <Fragment slot="head" set:html={`<script type="application/ld+json">${breadcrumbLd}</script><script type="application/ld+json">${webpageLd}</script>`} />
+
 
   <!-- HERO -->
   <PageHero
