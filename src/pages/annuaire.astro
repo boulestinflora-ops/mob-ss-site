@@ -118,12 +118,16 @@ const itemListLd = JSON.stringify({
 
       <!-- État : aucun résultat -->
       <div id="ann-empty" style="display:none;text-align:center;padding:60px 24px;">
-        <div style="font-size:3rem;margin-bottom:16px;">🔍</div>
-        <h3>Aucun praticien trouvé</h3>
-        <p style="color:var(--color-text-soft);margin-bottom:24px;">
-          Essayez avec une spécialité ou une ville différente,<br />ou élargissez votre recherche.
+        <div style="font-size:3rem;margin-bottom:16px;" aria-hidden="true">🔍</div>
+        <h3 style="font-size:1.2rem;margin-bottom:8px;">Aucun praticien trouvé</h3>
+        <p style="color:var(--color-text-soft);max-width:380px;margin:0 auto 28px;line-height:1.6;">
+          Essayez avec une spécialité ou une ville différente,
+          ou revenez plus tard — de nouveaux praticiens rejoignent MOB'SS chaque semaine.
         </p>
-        <button id="ann-reset" class="btn btn--outline">Réinitialiser la recherche</button>
+        <div style="display:flex;flex-wrap:wrap;gap:12px;justify-content:center;">
+          <button id="ann-reset" class="btn btn--primary">Réinitialiser la recherche</button>
+          <a href="/rejoindre" class="btn btn--outline">Rejoindre l'annuaire →</a>
+        </div>
       </div>
 
       <!-- État : erreur -->
@@ -312,8 +316,16 @@ const itemListLd = JSON.stringify({
 
   // ── Listeners ───────────────────────────────────────────────────────────────
   searchBtn?.addEventListener('click', renderFiltered);
-  villeInput?.addEventListener('keydown', (e) => { if (e.key === 'Enter') renderFiltered(); });
+  specSelect?.addEventListener('change', renderFiltered);      // live filter
   rempl?.addEventListener('change', renderFiltered);
+
+  // Debounced live filter on ville input
+  let _villeTimer: ReturnType<typeof setTimeout>;
+  villeInput?.addEventListener('input', () => {
+    clearTimeout(_villeTimer);
+    _villeTimer = setTimeout(renderFiltered, 320);
+  });
+  villeInput?.addEventListener('keydown', (e) => { if (e.key === 'Enter') { clearTimeout(_villeTimer); renderFiltered(); } });
   resetBtn?.addEventListener('click', () => {
     specSelect.value  = '';
     villeInput.value  = '';

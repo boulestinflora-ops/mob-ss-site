@@ -250,9 +250,26 @@ const SPACE_TYPES = [
         <!-- Grille (remplie dynamiquement) — min-height évite le CLS au chargement -->
         <div class="listing-grid" id="listing-grid" style="display:none;min-height:600px;"></div>
 
-        <p id="no-results" style="display:none;text-align:center;color:var(--color-text-soft);padding:40px 0;">
-          Aucun espace ne correspond à ces critères. Essayez d'élargir votre recherche.
-        </p>
+        <!-- État vide filtres -->
+        <div id="no-results" style="display:none;text-align:center;padding:56px 24px 40px;">
+          <div style="font-size:3rem;margin-bottom:16px;" aria-hidden="true">🔍</div>
+          <h3 style="font-size:1.2rem;margin-bottom:8px;">Aucun espace ne correspond à ces critères</h3>
+          <p style="color:var(--color-text-soft);max-width:360px;margin:0 auto 28px;line-height:1.6;">
+            Essayez d'élargir votre zone géographique, de retirer certains filtres,
+            ou revenez plus tard — de nouveaux espaces s'ajoutent régulièrement.
+          </p>
+          <div style="display:flex;flex-wrap:wrap;gap:12px;justify-content:center;">
+            <button id="empty-reset-filters" class="btn btn--primary">
+              Réinitialiser les filtres
+            </button>
+            <a href="/deposer-annonce" class="btn btn--outline">
+              Vous avez un espace à proposer ? →
+            </a>
+          </div>
+          <p style="margin-top:24px;font-size:0.82rem;color:var(--color-text-soft);">
+            <a href="/contact" style="color:var(--color-primary);">Nous contacter</a> si vous cherchez un type d'espace précis.
+          </p>
+        </div>
 
         <!-- Bouton charger plus -->
         <div id="load-more-wrap" style="display:none;text-align:center;margin:24px 0;">
@@ -754,6 +771,10 @@ document.getElementById('sort-select')?.addEventListener('change', applyFilters)
 document.getElementById('search-btn')?.addEventListener('click', applyFilters);
 
 // ── Reset ─────────────────────────────────────────────────────────────────────
+document.getElementById('empty-reset-filters')?.addEventListener('click', () => {
+  document.getElementById('reset-filters')?.click();
+});
+
 document.getElementById('reset-filters')?.addEventListener('click', () => {
   locInput.value = '';
   typeSelect.value = '';
