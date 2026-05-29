@@ -97,7 +97,16 @@ const spacesMapJson = JSON.stringify(
           <h1 style="font-size:clamp(1.4rem,3vw,1.9rem);">Bonjour <span id="prat-prenom">—</span> 👋</h1>
           <p style="margin:0;color:var(--color-text-soft);">Voici votre activité sur MOB'SS.</p>
         </div>
-        <a href="/explorez" class="btn btn--primary">+ Réserver un espace</a>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <button id="notif-bell-prat" class="notif-bell" aria-label="Notifications" style="display:none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22" aria-hidden="true">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+            </svg>
+            <span id="notif-count-prat" class="notif-bell__badge" style="display:none;">0</span>
+          </button>
+          <a href="/explorez" class="btn btn--primary">+ Réserver un espace</a>
+        </div>
       </div>
 
       <!-- ── Vue d'ensemble ── -->
@@ -774,7 +783,16 @@ const spacesMapJson = JSON.stringify(
           <h1 style="font-size:clamp(1.4rem,3vw,1.9rem);">Bonjour <span id="hote-prenom">—</span> 👋</h1>
           <p style="margin:0;color:var(--color-text-soft);">Activité de votre structure sur MOB'SS.</p>
         </div>
-        <a href="/deposer-annonce" class="btn btn--primary">+ Déposer un espace</a>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <button id="notif-bell-hote" class="notif-bell" aria-label="Notifications" style="display:none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22" aria-hidden="true">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+            </svg>
+            <span id="notif-count-hote" class="notif-bell__badge" style="display:none;">0</span>
+          </button>
+          <a href="/deposer-annonce" class="btn btn--primary">+ Déposer un espace</a>
+        </div>
       </div>
 
       <!-- Vue d'ensemble hôte -->
@@ -946,6 +964,9 @@ const spacesMapJson = JSON.stringify(
   aria-label="Lancer la visite guidée du tableau de bord">
   🧭 Visite guidée
 </button>
+
+<!-- Toast container -->
+<div id="notif-toast-container" aria-live="polite" aria-atomic="false"></div>
 
 </BaseLayout>
 
@@ -1473,6 +1494,75 @@ const spacesMapJson = JSON.stringify(
   @media (max-width: 540px) {
     .stat-grid { grid-template-columns: 1fr; }
   }
+
+  /* ── Notification Bell ──────────────────────────────────────────────────── */
+  .notif-bell {
+    position: relative;
+    background: none;
+    border: 1.5px solid var(--color-border, #e5e0d8);
+    border-radius: var(--radius-md);
+    padding: 7px 9px;
+    cursor: pointer;
+    color: var(--color-text-soft);
+    display: flex; align-items: center;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .notif-bell:hover { border-color: var(--color-primary); color: var(--color-primary); }
+  .notif-bell.has-new { animation: bell-ring 0.6s ease; color: var(--color-primary); border-color: var(--color-primary); }
+  .notif-bell__badge {
+    position: absolute; top: -6px; right: -6px;
+    background: var(--color-primary); color: #fff;
+    border-radius: 10px; padding: 1px 5px;
+    font-size: 0.68rem; font-weight: 700;
+    min-width: 16px; text-align: center;
+    border: 2px solid #fff;
+  }
+  @keyframes bell-ring {
+    0%,100% { transform: rotate(0); }
+    20%      { transform: rotate(12deg); }
+    40%      { transform: rotate(-10deg); }
+    60%      { transform: rotate(8deg); }
+    80%      { transform: rotate(-6deg); }
+  }
+
+  /* ── Toast notifications ────────────────────────────────────────────────── */
+  #notif-toast-container {
+    position: fixed; bottom: 24px; right: 24px;
+    z-index: 9999;
+    display: flex; flex-direction: column; gap: 10px;
+    pointer-events: none;
+    max-width: 340px; width: calc(100vw - 48px);
+  }
+  .notif-toast {
+    background: #fff;
+    border-radius: var(--radius-md);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.13);
+    padding: 14px 16px;
+    display: flex; align-items: flex-start; gap: 12px;
+    pointer-events: all;
+    animation: toast-in 0.3s cubic-bezier(0.34,1.56,0.64,1) forwards;
+    border-left: 4px solid var(--color-primary);
+  }
+  .notif-toast--success { border-left-color: #22c55e; }
+  .notif-toast--warning { border-left-color: #f59e0b; }
+  .notif-toast--error   { border-left-color: #ef4444; }
+  .notif-toast__icon  { font-size: 1.3rem; flex-shrink: 0; margin-top: 1px; }
+  .notif-toast__body  { flex: 1; min-width: 0; }
+  .notif-toast__title { font-weight: 600; font-size: 0.9rem; margin-bottom: 2px; }
+  .notif-toast__msg   { font-size: 0.82rem; color: var(--color-text-soft); line-height: 1.4; }
+  .notif-toast__close {
+    flex-shrink: 0; background: none; border: none; cursor: pointer;
+    color: var(--color-text-soft); font-size: 1.1rem; padding: 0;
+    opacity: 0.6;
+  }
+  .notif-toast__close:hover { opacity: 1; }
+  .notif-toast.is-leaving { animation: toast-out 0.25s ease forwards; }
+  @keyframes toast-in  { from { opacity:0; transform:translateX(40px); } to { opacity:1; transform:none; } }
+  @keyframes toast-out { from { opacity:1; transform:none; } to { opacity:0; transform:translateX(40px); } }
+  @media (max-width: 480px) {
+    #notif-toast-container { bottom: 16px; right: 16px; left: 16px; max-width: none; width: auto; }
+  }
+
 </style>
 
 <!-- Visite guidée : script système — defer = non-bloquant, s'exécute après le DOM -->
@@ -1760,6 +1850,8 @@ const spacesMapJson = JSON.stringify(
 
     // En-tête
     (document.getElementById('prat-prenom') as HTMLElement).textContent = prenom;
+    subscribePraticienRealtime(session.user.id);
+    updateBell('notif-bell-prat', 'notif-count-prat', 0); // show bell (no pending for praticien at load)
 
     // ── Section profil ────────────────────────────────────────────────────────────
 
@@ -2186,6 +2278,8 @@ const spacesMapJson = JSON.stringify(
         }
 
         renderHoteDemandes(allHoteDemandes, 'all');
+        subscribeHoteRealtime(spaceIds.map(String));
+        updateBell('notif-bell-hote', 'notif-count-hote', pending);
       } catch (e) {
         listEl.innerHTML = `<p style="color:#991B1B;padding:24px;text-align:center;">⚠️ Erreur de chargement. Réessayez plus tard.</p>`;
       }
@@ -2563,4 +2657,94 @@ const spacesMapJson = JSON.stringify(
       loadPraticien(session, null);
     }
   });
+  // ── Toast system ───────────────────────────────────────────────────────────
+  type ToastType = 'info' | 'success' | 'warning' | 'error';
+  const TOAST_ICONS: Record<ToastType, string> = {
+    info: '🔔', success: '✅', warning: '⏳', error: '❌'
+  };
+
+  function showToast(type: ToastType, title: string, msg: string, duration = 6000) {
+    const container = document.getElementById('notif-toast-container');
+    if (!container) return;
+    const toast = document.createElement('div');
+    toast.className = `notif-toast notif-toast--${type}`;
+    toast.innerHTML = `
+      <span class="notif-toast__icon" aria-hidden="true">${TOAST_ICONS[type]}</span>
+      <div class="notif-toast__body">
+        <div class="notif-toast__title">${title}</div>
+        ${msg ? `<div class="notif-toast__msg">${msg}</div>` : ''}
+      </div>
+      <button class="notif-toast__close" aria-label="Fermer">×</button>`;
+    container.appendChild(toast);
+
+    function dismiss() {
+      toast.classList.add('is-leaving');
+      toast.addEventListener('animationend', () => toast.remove(), { once: true });
+    }
+    toast.querySelector('.notif-toast__close')?.addEventListener('click', dismiss);
+    if (duration > 0) setTimeout(dismiss, duration);
+  }
+
+  function updateBell(bellId: string, badgeId: string, count: number) {
+    const bell  = document.getElementById(bellId);
+    const badge = document.getElementById(badgeId);
+    if (!bell || !badge) return;
+    bell.style.display = 'flex';
+    if (count > 0) {
+      badge.textContent = count > 99 ? '99+' : String(count);
+      badge.style.display = 'block';
+      bell.classList.add('has-new');
+      setTimeout(() => bell.classList.remove('has-new'), 800);
+    } else {
+      badge.style.display = 'none';
+    }
+  }
+
+  // ── Supabase Realtime — praticien ──────────────────────────────────────────
+  function subscribePraticienRealtime(userId: string) {
+    supabase
+      .channel(`praticien-demandes-${userId}`)
+      .on('postgres_changes', {
+        event: 'UPDATE',
+        schema: 'public',
+        table: 'demandes',
+        filter: `user_id=eq.${userId}`,
+      }, (payload: any) => {
+        const newStatut = payload.new?.statut;
+        const space     = payload.new?.space_id || 'votre espace';
+        if (newStatut === 'acceptee') {
+          showToast('success', 'Demande acceptée !', `Votre demande pour ${window.__MOBSS_SPACES_MAP?.[space] || space} a été acceptée.`);
+        } else if (newStatut === 'refusee') {
+          showToast('warning', 'Demande refusée', `Votre demande pour ${window.__MOBSS_SPACES_MAP?.[space] || space} a été refusée.`);
+        }
+      })
+      .subscribe();
+  }
+
+  // ── Supabase Realtime — hôte ───────────────────────────────────────────────
+  function subscribeHoteRealtime(spaceIds: string[]) {
+    if (!spaceIds.length) return;
+    let pendingCount = 0;
+
+    supabase
+      .channel(`hote-demandes-${spaceIds[0]}`)
+      .on('postgres_changes', {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'demandes',
+      }, (payload: any) => {
+        if (!spaceIds.includes(payload.new?.space_id)) return;
+        pendingCount++;
+        const praticien = payload.new?.praticien_nom || 'Un praticien';
+        const space     = window.__MOBSS_SPACES_MAP?.[payload.new?.space_id] || 'votre espace';
+        showToast('info', 'Nouvelle demande !', `${praticien} souhaite réserver ${space}.`);
+        // Update badge
+        const existingBadge = document.getElementById('hote-badge-pending');
+        const currentCount  = parseInt(existingBadge?.textContent || '0') + 1;
+        if (existingBadge) { existingBadge.textContent = String(currentCount); existingBadge.style.display = 'inline'; }
+        updateBell('notif-bell-hote', 'notif-count-hote', currentCount);
+      })
+      .subscribe();
+  }
+
 </script>
