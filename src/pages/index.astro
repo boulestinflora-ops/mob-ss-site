@@ -242,29 +242,24 @@ import steps from '../data/steps.json';
         </div>
         <div class="ambassador-qr">
           <p class="ambassador-qr-label">Scanner pour partager</p>
-          <div id="qrcode-container"></div>
+          <div class="ambassador-qr-img-wrap">
+            <img
+              src="https://api.qrserver.com/v1/create-qr-code/?size=128x128&data=https%3A%2F%2Fmobss.vercel.app%2Finscription&bgcolor=faf7f2&color=1a1a2e&margin=2&qzone=1"
+              alt="QR code — s'inscrire sur MOB'SS"
+              width="128"
+              height="128"
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
           <p class="ambassador-qr-url">mobss.vercel.app/inscription</p>
         </div>
       </div>
     </div>
   </section>
 
-  <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script is:inline>
     (function () {
-      // QR Code
-      var container = document.getElementById('qrcode-container');
-      if (container && typeof QRCode !== 'undefined') {
-        new QRCode(container, {
-          text: 'https://mobss.vercel.app/inscription',
-          width: 128,
-          height: 128,
-          colorDark: '#1a1a2e',
-          colorLight: '#faf7f2',
-          correctLevel: QRCode.CorrectLevel.M
-        });
-      }
-
       // Copy link button
       var btn = document.getElementById('copy-link-btn');
       var label = document.getElementById('copy-link-label');
@@ -278,7 +273,6 @@ import steps from '../data/steps.json';
               btn.classList.remove('ambassador-copy-btn--success');
             }, 2500);
           }).catch(function () {
-            // fallback
             label.textContent = 'mobss.vercel.app/inscription';
             setTimeout(function () { label.textContent = 'Copier le lien'; }, 3000);
           });
@@ -813,7 +807,7 @@ import steps from '../data/steps.json';
     letter-spacing: .06em;
     color: var(--color-text-soft);
   }
-  #qrcode-container {
+  .ambassador-qr-img-wrap {
     width: 128px;
     height: 128px;
     border-radius: 12px;
@@ -823,8 +817,7 @@ import steps from '../data/steps.json';
     align-items: center;
     justify-content: center;
   }
-  #qrcode-container canvas,
-  #qrcode-container img { display: block; border-radius: 8px; }
+  .ambassador-qr-img-wrap img { display: block; border-radius: 8px; width: 128px; height: 128px; }
   .ambassador-qr-url {
     font-size: 0.72rem;
     color: var(--color-text-soft);
