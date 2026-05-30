@@ -428,15 +428,10 @@ initExplorez();
   }
   .filters-bar-body {
     border-top: 1px solid var(--color-border);
-    overflow: hidden;
-    transition: max-height 0.3s ease, opacity 0.25s ease;
-    max-height: 500px;
-    opacity: 1;
+    display: block;
   }
   .filters-bar-body--closed {
-    max-height: 0;
-    opacity: 0;
-    border-top: none;
+    display: none;
   }
   .filters-bar-inner {
     display: flex;
@@ -495,10 +490,6 @@ initExplorez();
   }
 
   /* ── Lignes de filtres ─────────────────────────────────────────────────────── */
-  .filters-bar-body {
-    /* augmenté pour les 5 lignes de filtres */
-    max-height: 800px;
-  }
   .filters-row {
     display: flex;
     flex-wrap: wrap;
