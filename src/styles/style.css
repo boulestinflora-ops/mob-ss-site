@@ -5,6 +5,29 @@
    Contrastes WCAG AA vérifié : primary sur blanc = 5.2:1 ✓
    ========================================================= */
 
+/* ─────────────────────────────────────────────────────────────────────────
+   TABLE DES MATIÈRES  —  Ctrl+F le numéro ou le titre pour naviguer
+   ─────────────────────────────────────────────────────────────────────────
+    1. DESIGN TOKENS        :root — palette, ombres, polices, espacements
+    2. RESET & BASE         reset, accessibilité, skip-link, typographie
+    3. MISE EN PAGE         .container, .section, grilles génériques
+    4. NAVIGATION           site-header, brand, nav, menu mobile
+    5. COMPOSANTS UI        boutons, hero, cards, filtres, formulaires, onglets
+    6. PAGES                explorez, annonce, dashboard, FAQ, footer, misc
+    7. VISITE GUIDÉE        tour interactif, spotlight, tooltip, FAB
+    8. UTILITAIRES          helpers, banners, cookie, mentions légales
+    9. RESPONSIVE           breakpoints 1024 → 375px
+   10. MICRO-INTERACTIONS   hover, animations, skeleton loading
+   ─────────────────────────────────────────────────────────────────────────
+*/
+
+
+
+
+/* ══════════════════════════════════════════════════════════════════
+   1. DESIGN TOKENS — Palette, ombres, polices, espacements
+   ══════════════════════════════════════════════════════════════════ */
+
 :root {
   /* Couleurs WCAG AA — primary assombri pour contraste 5.2:1 sur blanc */
   --color-primary: #B53040;        /* ratio 5.2:1 sur blanc — conforme WCAG AA */
@@ -43,6 +66,12 @@
   --container: 1200px;
   --header-h: 88px;
 }
+
+
+
+/* ══════════════════════════════════════════════════════════════════
+   2. RESET & BASE — Reset, accessibilité, skip-link, typographie
+   ══════════════════════════════════════════════════════════════════ */
 
 /* ---------- Reset ---------- */
 *, *::before, *::after { box-sizing: border-box; }
@@ -130,6 +159,12 @@ h3 { font-size: 1.25rem; }
 h4 { font-size: 1.05rem; }
 p  { margin: 0 0 1em; }
 
+
+
+/* ══════════════════════════════════════════════════════════════════
+   3. MISE EN PAGE — Container, sections, grilles génériques
+   ══════════════════════════════════════════════════════════════════ */
+
 /* ---------- Layout ---------- */
 .container {
   max-width: var(--container);
@@ -166,6 +201,12 @@ p  { margin: 0 0 1em; }
   max-width: 580px;
   margin: 0 auto;
 }
+
+
+
+/* ══════════════════════════════════════════════════════════════════
+   4. NAVIGATION — Header, brand, nav, menu mobile
+   ══════════════════════════════════════════════════════════════════ */
 
 /* ---------- Header / Navigation ---------- */
 .site-header {
@@ -279,6 +320,12 @@ p  { margin: 0 0 1em; }
   animation: fadeIn 0.2s ease;
 }
 .nav-backdrop.is-open { display: block; }
+
+
+
+/* ══════════════════════════════════════════════════════════════════
+   5. COMPOSANTS UI — Boutons, hero, cards, filtres, formulaires, onglets
+   ══════════════════════════════════════════════════════════════════ */
 
 /* ---------- Buttons ---------- */
 .btn {
@@ -745,6 +792,12 @@ p  { margin: 0 0 1em; }
 .role-option__title { font-weight: 700; margin-bottom: 4px; }
 .role-option__desc { font-size: 0.85rem; color: var(--color-text-soft); }
 
+
+
+/* ══════════════════════════════════════════════════════════════════
+   6. PAGES — Dashboard, FAQ, footer, annonce, composants de page
+   ══════════════════════════════════════════════════════════════════ */
+
 /* ---------- Dashboard ---------- */
 .dash-layout {
   display: grid;
@@ -1011,7 +1064,7 @@ p  { margin: 0 0 1em; }
 }
 
 /* ═══════════════════════════════════════════════════════
-   VISITE GUIDÉE — Tour interactif
+   7. VISITE GUIDÉE — Tour interactif, spotlight, tooltip, FAB
    ═══════════════════════════════════════════════════════ */
 
 /* Overlay sombre */
@@ -1204,6 +1257,12 @@ p  { margin: 0 0 1em; }
   to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 
+
+
+/* ══════════════════════════════════════════════════════════════════
+   8. UTILITAIRES — Helpers, banners, cookie, mentions légales
+   ══════════════════════════════════════════════════════════════════ */
+
 /* ---------- Bandeau développement (beta) ---------- */
 .dev-banner {
   position: relative;
@@ -1247,7 +1306,7 @@ p  { margin: 0 0 1em; }
 .stack-24 > * + * { margin-top: 24px; }
 
 /* =========================================================
-   RESPONSIVE
+    9. RESPONSIVE — Breakpoints 1024 → 375px
    ========================================================= */
 
 /* ---------- Nav mobile actions (cachées sur desktop) ---------- */
@@ -1536,7 +1595,7 @@ p  { margin: 0 0 1em; }
 }
 
 /* ═══════════════════════════════════════════════════════════
-   MICRO-INTERACTIONS — Feedback visuel & animations
+   10. MICRO-INTERACTIONS — Hover, animations, skeleton loading
    Toutes désactivées si prefers-reduced-motion (déjà géré globalement)
    ═══════════════════════════════════════════════════════════ */
 
@@ -1726,9 +1785,6 @@ p  { margin: 0 0 1em; }
   }
 }
 
-/* ── Polices display : Outfit (titres) + DM Sans (corps) ── */
-/* H1 et H2 : Outfit — moderne, géométrique */
-
 /* ── Galerie hero annonce (layout Peerspace) ── */
 .annonce-hero-gallery {
   display: grid;
@@ -1763,31 +1819,6 @@ p  { margin: 0 0 1em; }
   .annonce-hero-gallery { height: 220px; }
 }
 
-/* ── Trust badges (inscription, deposer-annonce) ── */
-.trust-badges {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 24px;
-}
-.trust-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  font-size: 0.82rem;
-  font-weight: 600;
-  color: var(--color-text-soft);
-  background: var(--color-bg-soft);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-pill);
-  padding: 6px 14px;
-}
-.trust-badge span:first-child {
-  font-style: normal;
-  font-size: 0.9rem;
-}
 
 /* Déposer une annonce — étapes sur mobile */
 @media (max-width: 768px) {
