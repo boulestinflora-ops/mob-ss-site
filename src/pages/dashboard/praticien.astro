@@ -7,7 +7,7 @@ import Panel from '../../components/Panel.astro';
 import spaces from '../../data/spaces.json';
 
 const spacesMapJson = JSON.stringify(
-  Object.fromEntries(spaces.map((s: any) => [s.id, s.title]))
+  Object.fromEntries((spaces as { id: string; title: string }[]).map(s => [s.id, s.title]))
 );
 ---
 
@@ -637,6 +637,7 @@ const spacesMapJson = JSON.stringify(
 </script>
 
 <script>
+import type { DbDemande, DbDocument } from '../../types/supabase';
   import { supabase } from '../../lib/supabase';
 
   // ── Toast & Bell helpers ───────────────────────────────────────────────────
@@ -733,7 +734,7 @@ const spacesMapJson = JSON.stringify(
     return `<span class="dem-statut dem-statut--${cls}">${label}</span>`;
   }
 
-  function renderDemRow(d: any): string {
+  function renderDemRow(d: DbDemande): string {
     const nom = spacesMap[d.space_id] || d.space_id || 'Espace';
     const horaire = d.heure_debut && d.heure_fin ? ` · ${d.heure_debut}–${d.heure_fin}` : '';
     const recur = d.recurrence && d.recurrence !== 'Une seule fois' ? ` · ${d.recurrence}` : '';
@@ -742,8 +743,8 @@ const spacesMapJson = JSON.stringify(
 
   async function loadDocuments(userId: string) {
     const { data: docs } = await supabase.from('documents').select('type, file_name, status, status_note, expires_at, uploaded_at').eq('user_id', userId);
-    const diplome   = docs?.find((d: any) => d.type === 'diplome');
-    const assurance = docs?.find((d: any) => d.type === 'assurance');
+    const diplome   = docs?.find((d: DbDocument) => d.type === 'diplome');
+    const assurance = docs?.find((d: DbDocument) => d.type === 'assurance');
 
     const diplomeLabel = document.getElementById('doc-diplome-label') as HTMLElement;
     const diplomeBadge = document.getElementById('doc-diplome-badge') as HTMLElement;
@@ -792,7 +793,7 @@ const spacesMapJson = JSON.stringify(
   }
 
   // ── Calendrier ────────────────────────────────────────────────────────────────
-  let calDemandes: any[] = [], calYear = new Date().getFullYear(), calMonth = new Date().getMonth(), calSelectedDate: string | null = null;
+  let calDemandes: DbDemande[] = [], calYear = new Date().getFullYear(), calMonth = new Date().getMonth(), calSelectedDate: string | null = null;
   const MOIS = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
   function calKey(d: Date) { return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
 
@@ -801,7 +802,7 @@ const spacesMapJson = JSON.stringify(
     const label = document.getElementById('cal-month-label') as HTMLElement;
     if (!grid) return;
     label.textContent = `${MOIS[calMonth]} ${calYear}`;
-    const byDate: Record<string, any[]> = {};
+    const byDate: Record<string, DbDemande[]> = {};
     calDemandes.forEach(d => { if (!d.date_debut) return; const k = d.date_debut.slice(0,10); if (!byDate[k]) byDate[k]=[]; byDate[k].push(d); });
     const mk = `${calYear}-${String(calMonth+1).padStart(2,'0')}`;
     let acc=0, pend=0; const days = new Set<string>();
@@ -826,7 +827,7 @@ const spacesMapJson = JSON.stringify(
     }
   }
 
-  function showCalDay(key: string, events: any[]) {
+  function showCalDay(key: string, events: DbDemande[]) {
     calSelectedDate=key; buildCalendar();
     const title = document.getElementById('cal-detail-title') as HTMLElement;
     const content = document.getElementById('cal-detail-content') as HTMLElement;
@@ -847,7 +848,7 @@ const spacesMapJson = JSON.stringify(
     (document.getElementById('cal-detail-content') as HTMLElement).innerHTML='<p style="color:var(--color-text-soft);font-size:0.88rem;text-align:center;padding:24px 0;">Aucune réservation ce jour.</p>';
   }
 
-  function generateIcal(demandes: any[]): string {
+  function generateIcal(demandes: DbDemande[]): string {
     const lines=['BEGIN:VCALENDAR','VERSION:2.0',"PRODID:-//MOB'SS//Réservations//FR",'CALSCALE:GREGORIAN',"X-WR-CALNAME:MOB'SS — Mes réservations",'X-WR-TIMEZONE:Europe/Paris'];
     demandes.filter(d=>d.statut==='acceptee'&&d.date_debut).forEach(d=>{
       const space=spacesMap[d.space_id]||"Espace MOB'SS";
@@ -858,7 +859,7 @@ const spacesMapJson = JSON.stringify(
     lines.push('END:VCALENDAR'); return lines.join('\r\n');
   }
 
-  function initCalendar(demandes: any[]) {
+  function initCalendar(demandes: DbDemande[]) {
     calDemandes=demandes; buildCalendar();
     document.getElementById('cal-prev')?.addEventListener('click',()=>{ calMonth--; if(calMonth<0){calMonth=11;calYear--;} buildCalendar(); });
     document.getElementById('cal-next')?.addEventListener('click',()=>{ calMonth++; if(calMonth>11){calMonth=0;calYear++;} buildCalendar(); });
@@ -1083,7 +1084,7 @@ const spacesMapJson = JSON.stringify(
 
     document.getElementById('btn-logout-param')?.addEventListener('click', async () => { await supabase.auth.signOut(); window.location.href='/'; });
 
-    let allDemandes: any[] = [];
+    let allDemandes: DbDemande[] = [];
     try {
       const {data,error}=await supabase.from('demandes').select('*').eq('user_id',session.user.id).order('created_at',{ascending:false});
       if(!error&&data){
@@ -1100,7 +1101,7 @@ const spacesMapJson = JSON.stringify(
       }
     } catch { ['stat-total','stat-acceptees','stat-attente'].forEach(id=>((document.getElementById(id) as HTMLElement).textContent='—')); }
 
-    function renderDemandesList(data: any[], filter: string) {
+    function renderDemandesList(data: DbDemande[], filter: string) {
       const listEl=document.getElementById('demandes-list') as HTMLElement;
       const filtered=filter==='all'?data:data.filter(d=>d.statut===filter);
       listEl.innerHTML=filtered.length===0?`<p style="color:var(--color-text-soft);text-align:center;padding:48px;">${filter==='all'?'Aucune demande. <a href="/explorez">Trouver un espace →</a>':'Aucune demande dans cette catégorie.'}</p>`:filtered.map(renderDemRow).join('');

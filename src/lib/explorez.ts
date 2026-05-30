@@ -10,6 +10,7 @@
  *   3. initExplorez() — wiring DOM, filtres, chargement Supabase
  */
 
+import type { DbAnnonceWithProfile, MappedSpace } from '../types/supabase';
 import { supabase } from './supabase';
 
 // ══════════════════════════════════════════════════════════════════════════════
@@ -121,7 +122,7 @@ function esc(str: string): string {
     .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 }
 
-function mapSpace(row: any) {
+function mapSpace(row: DbAnnonceWithProfile): MappedSpace {
   return {
     id:          row.id,
     title:       row.titre || 'Espace disponible',
@@ -164,7 +165,7 @@ const TYPE_ICONS: Record<string,string> = {
   'Espace extérieur':   '🌳',
 };
 
-function buildSpaceCard(space: any): string {
+function buildSpaceCard(space: MappedSpace): string {
   let h = 0;
   for (let i = 0; i < space.id.length; i++) h = space.id.charCodeAt(i) + ((h << 5) - h);
   const gradient = GRADIENTS[Math.abs(h) % GRADIENTS.length];
@@ -342,10 +343,10 @@ export function initExplorez(): void {
       let matchDist = true;
       if (refCoords && f.distance > 0) {
         const km = haversine(refCoords.lat, refCoords.lng, space.lat, space.lng);
-        (space as any)._dist = Math.round(km);
+        space._dist = Math.round(km);
         matchDist = km <= f.distance;
       } else {
-        (space as any)._dist = null;
+        space._dist = null;
       }
 
       const matchEquip = f.equip.length === 0 ||
@@ -361,7 +362,7 @@ export function initExplorez(): void {
     // ── Tri ───────────────────────────────────────────────────────────────────
     if (sort !== 'pertinence') {
       filtered = [...filtered].sort((a, b) => {
-        if (sort === 'distance')        return ((a as any)._dist ?? 999) - ((b as any)._dist ?? 999);
+        if (sort === 'distance')        return (a._dist ?? 999) - (b._dist ?? 999);
         if (sort === 'superficie-desc') return b.superficie - a.superficie;
         if (sort === 'superficie-asc')  return a.superficie - b.superficie;
         if (sort === 'gratuit')         return a.tarif_type === 'gratuit' ? -1 : 1;

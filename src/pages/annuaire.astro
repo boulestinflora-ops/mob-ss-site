@@ -153,6 +153,7 @@ const itemListLd = JSON.stringify({
 </BaseLayout>
 
 <script>
+import type { AnnuaireProfile } from '../types/supabase';
   import { supabase } from '../lib/supabase';
 
   const loadingEl  = document.getElementById('ann-loading')  as HTMLElement;
@@ -185,7 +186,7 @@ const itemListLd = JSON.stringify({
   }
 
   // ── Création d'une carte praticien ──────────────────────────────────────────
-  function buildCard(p: any): string {
+  function buildCard(p: AnnuaireProfile): string {
     const prenom    = esc(p.prenom || 'Praticien');
     const nomInit   = p.nom ? esc(p.nom[0].toUpperCase()) + '.' : '';
     const initiales = esc(((p.prenom?.[0] || '') + (p.nom?.[0] || '')).toUpperCase() || '?');
@@ -222,7 +223,7 @@ const itemListLd = JSON.stringify({
 
   // ── Chargement et affichage (paginé) ────────────────────────────────────────
   const PAGE_SIZE = 50;
-  let allProfiles: any[] = [];
+  let allProfiles: AnnuaireProfile[] = [];
   let _annOffset = 0;
   let _annTotal  = 0;
   let _annuaireController: AbortController | null = null;

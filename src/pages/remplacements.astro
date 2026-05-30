@@ -173,6 +173,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 </BaseLayout>
 
 <script>
+import type { RemplacementProfile } from '../types/supabase';
   import { supabase } from '../lib/supabase';
 
   const loadingEl = document.getElementById('rpl-loading') as HTMLElement;
@@ -200,7 +201,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   }
 
   // ── Carte praticien ──────────────────────────────────────────────────────────
-  function buildCard(p: any): string {
+  function buildCard(p: RemplacementProfile): string {
     const prenom    = esc(p.prenom || 'Praticien');
     const nomInit   = p.nom ? esc(p.nom[0].toUpperCase()) + '.' : '';
     const initiales = esc(((p.prenom?.[0] || '') + (p.nom?.[0] || '')).toUpperCase() || '?');
@@ -246,7 +247,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
   // ── Données (paginées) ───────────────────────────────────────────────────────
   const PAGE_SIZE = 12;
-  let allProfiles: any[] = [];
+  let allProfiles: RemplacementProfile[] = [];
   let isLoggedIn = false;
   let _replOffset = 0;
   let _replTotal  = 0;

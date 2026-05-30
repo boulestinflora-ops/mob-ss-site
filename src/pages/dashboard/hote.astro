@@ -512,6 +512,7 @@ import Panel from '../../components/Panel.astro';
 </script>
 
 <script>
+import type { DbDemande } from '../../types/supabase';
   import { supabase } from '../../lib/supabase';
 
   // ── Toast & Bell helpers ───────────────────────────────────────────────────
@@ -668,7 +669,7 @@ import Panel from '../../components/Panel.astro';
     });
 
     // ── Demandes reçues hôte ──────────────────────────────────────────────────
-    let allHoteDemandes: any[] = [];
+    let allHoteDemandes: DbDemande[] = [];
     let annoncesMap: Record<string, string> = {};
 
     async function loadHoteDemandes() {
@@ -692,8 +693,8 @@ import Panel from '../../components/Panel.astro';
           return;
         }
 
-        annonces.forEach((a: any) => { annoncesMap[a.id] = a.titre || a.id; });
-        const spaceIds = annonces.map((a: any) => a.id);
+        annonces.forEach(a => { annoncesMap[a.id] = a.titre || a.id; });
+        const spaceIds = annonces.map(a => a.id);
 
         const { data: demandes, error: errD } = await supabase
           .from('demandes')
@@ -717,7 +718,7 @@ import Panel from '../../components/Panel.astro';
       }
     }
 
-    function renderHoteDemRow(d: any): string {
+    function renderHoteDemRow(d: DbDemande): string {
       const spaceName = annoncesMap[d.space_id] || d.space_id || 'Espace';
       const horaire   = d.heure_debut && d.heure_fin ? ` · ${d.heure_debut}–${d.heure_fin}` : '';
       const recur     = d.recurrence && d.recurrence !== 'Une seule fois' ? ` · ${d.recurrence}` : '';
@@ -748,7 +749,7 @@ import Panel from '../../components/Panel.astro';
         </div>`;
     }
 
-    function renderHoteDemandes(data: any[], filter: string) {
+    function renderHoteDemandes(data: DbDemande[], filter: string) {
       const listEl   = document.getElementById('hote-demandes-list') as HTMLElement;
       const filtered = filter === 'all' ? data : data.filter(d => d.statut === filter);
       if (filtered.length === 0) {
