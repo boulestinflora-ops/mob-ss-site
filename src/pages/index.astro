@@ -221,6 +221,72 @@ import steps from '../data/steps.json';
     </div>
   </section>
 
+  <!-- AMBASSADEURS — faire grandir la communauté -->
+  <section class="section section--cream ambassador-section">
+    <div class="container">
+      <div class="ambassador-card">
+        <div class="ambassador-text">
+          <span class="section__eyebrow">Rejoignez le mouvement</span>
+          <h2 class="ambassador-title">Aidez-nous à faire grandir<br/>la communauté</h2>
+          <p class="ambassador-desc">
+            Vous connaissez un praticien qui cherche un espace ? Partagez MOB'SS autour de vous —
+            chaque recommandation aide un professionnel à exercer dans de meilleures conditions.
+          </p>
+          <div class="ambassador-actions">
+            <button id="copy-link-btn" class="btn btn--primary ambassador-copy-btn" type="button">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              <span id="copy-link-label">Copier le lien</span>
+            </button>
+            <a href="/inscription" class="btn btn--outline ambassador-join-btn">S'inscrire maintenant</a>
+          </div>
+        </div>
+        <div class="ambassador-qr">
+          <p class="ambassador-qr-label">Scanner pour partager</p>
+          <div id="qrcode-container"></div>
+          <p class="ambassador-qr-url">mobss.vercel.app/inscription</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script is:inline>
+    (function () {
+      // QR Code
+      var container = document.getElementById('qrcode-container');
+      if (container && typeof QRCode !== 'undefined') {
+        new QRCode(container, {
+          text: 'https://mobss.vercel.app/inscription',
+          width: 128,
+          height: 128,
+          colorDark: '#1a1a2e',
+          colorLight: '#faf7f2',
+          correctLevel: QRCode.CorrectLevel.M
+        });
+      }
+
+      // Copy link button
+      var btn = document.getElementById('copy-link-btn');
+      var label = document.getElementById('copy-link-label');
+      if (btn && label) {
+        btn.addEventListener('click', function () {
+          navigator.clipboard.writeText('https://mobss.vercel.app/inscription').then(function () {
+            label.textContent = 'Lien copié !';
+            btn.classList.add('ambassador-copy-btn--success');
+            setTimeout(function () {
+              label.textContent = 'Copier le lien';
+              btn.classList.remove('ambassador-copy-btn--success');
+            }, 2500);
+          }).catch(function () {
+            // fallback
+            label.textContent = 'mobss.vercel.app/inscription';
+            setTimeout(function () { label.textContent = 'Copier le lien'; }, 3000);
+          });
+        });
+      }
+    })();
+  </script>
+
   <!-- POURQUOI MOB'SS — chiffres visuels -->
   <section class="section section--white" style="padding:80px 0;">
     <div class="container">
@@ -690,8 +756,93 @@ import steps from '../data/steps.json';
     opacity: 0.65;
   }
 
+  /* ── Ambassador / share section ─────────────────────────────── */
+  .ambassador-section { padding: 64px 0; }
+  .ambassador-card {
+    display: flex;
+    align-items: center;
+    gap: 56px;
+    background: #fff;
+    border-radius: 20px;
+    padding: 48px 52px;
+    box-shadow: 0 2px 24px rgba(26,26,46,.07);
+  }
+  .ambassador-text { flex: 1; }
+  .ambassador-title {
+    font-size: clamp(1.45rem, 2.6vw, 2rem);
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--color-text);
+    margin: 8px 0 16px;
+  }
+  .ambassador-desc {
+    font-size: 1rem;
+    color: var(--color-text-soft);
+    line-height: 1.65;
+    max-width: 480px;
+    margin-bottom: 28px;
+  }
+  .ambassador-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .ambassador-copy-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .ambassador-copy-btn--success {
+    background: var(--color-success, #22c55e) !important;
+    border-color: var(--color-success, #22c55e) !important;
+  }
+  .ambassador-join-btn { white-space: nowrap; }
+  .ambassador-qr {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+  .ambassador-qr-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: var(--color-text-soft);
+  }
+  #qrcode-container {
+    width: 128px;
+    height: 128px;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #faf7f2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  #qrcode-container canvas,
+  #qrcode-container img { display: block; border-radius: 8px; }
+  .ambassador-qr-url {
+    font-size: 0.72rem;
+    color: var(--color-text-soft);
+    opacity: 0.7;
+  }
+
   /* Responsive */
   @media (max-width: 860px) {
+    .ambassador-card {
+      flex-direction: column;
+      gap: 36px;
+      padding: 36px 28px;
+      text-align: center;
+    }
+    .ambassador-desc { max-width: 100%; }
+    .ambassador-actions {
+      justify-content: center;
+    }
     .explication-grid {
       grid-template-columns: 1fr;
     }
