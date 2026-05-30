@@ -688,7 +688,7 @@ import type { DbDemande, DbDocument } from '../../types/supabase';
 
   // Toast de bienvenue post-inscription
   if (new URLSearchParams(window.location.search).get('welcome') === '1') {
-    setTimeout(() => showToast('success', 'Bienvenue sur MOB'SS ! 🎉', 'Complétez votre profil pour apparaître dans l'annuaire.', 8000), 800);
+    setTimeout(() => showToast('success', `Bienvenue sur MOB'SS ! 🎉`, `Complétez votre profil pour apparaître dans l'annuaire.`, 8000), 800);
     history.replaceState(null,'', window.location.pathname);
   }
 
