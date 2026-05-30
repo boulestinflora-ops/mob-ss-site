@@ -23,7 +23,7 @@ const isCommentActive = ['comment','probleme','solution','impact'].includes(curr
 
     <!-- Logo (SVG inliné — les polices de la page s'appliquent) -->
     <a class="brand" href="/" aria-label="MOB'SS Accueil">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 58" height="52" width="auto" aria-hidden="true" style="display:block;flex-shrink:0;">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 58" height="66" width="auto" aria-hidden="true" style="display:block;flex-shrink:0;">
         <!-- Badge icône -->
         <rect x="0" y="5" width="50" height="50" rx="11" fill="#9C2E3A"/>
         <rect x="0" y="0" width="50" height="50" rx="11" fill="#C8424F"/>
@@ -388,6 +388,9 @@ const isCommentActive = ['comment','probleme','solution','impact'].includes(curr
     if (loggedIn)  loggedIn.style.display  = 'flex';
     if (navLoggedOutMobile) navLoggedOutMobile.style.display = 'none';
     if (navLoggedInMobile)  navLoggedInMobile.style.display  = 'flex';
+    // Cacher "Déposer un espace" pour tout utilisateur connecté
+    document.getElementById('deposer-btn-in')?.style.setProperty('display', 'none');
+    document.getElementById('nav-deposer-mobile')?.style.setProperty('display', 'none');
 
     // Fallback immédiat
     const fallback = session.user.email?.split('@')[0] || '?';
@@ -413,11 +416,7 @@ const isCommentActive = ['comment','probleme','solution','impact'].includes(curr
         if (path.startsWith('/annuaire'))      document.getElementById('nav-annuaire')?.classList.add('is-active');
         if (path.startsWith('/remplacements')) document.getElementById('nav-remplacements')?.classList.add('is-active');
 
-        // Praticien : cacher "Déposer un espace"
-        if (role === 'praticien') {
-          document.getElementById('deposer-btn-in')?.style.setProperty('display', 'none');
-          document.getElementById('nav-deposer-mobile')?.style.setProperty('display', 'none');
-        }
+
       }
     } catch (e) {
       console.warn('Profil header non chargé', e);
