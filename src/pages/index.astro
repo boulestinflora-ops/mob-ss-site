@@ -101,29 +101,29 @@ import steps from '../data/steps.json';
   </div>
 
   <!-- SECTION EXPLICATION DU PROJET -->
-  <section class="section section--white" style="padding:80px 0 72px;">
+  <section class="section section--cream" style="padding:80px 0 72px;">
     <div class="container" style="max-width:960px;">
       <header class="section__header" style="margin-bottom:40px;">
         <span class="section__eyebrow">Le paradoxe français</span>
-        <h2>Des millions de Français sans médecin.<br/>Des milliers de salles vides.<br/><em>Comment est-ce possible dans le même pays ?</em></h2>
+        <h2>Des millions de Français sans accès aux soins.<br/>Des milliers de salles vides.<br/><em>Comment est-ce possible dans le même pays ?</em></h2>
       </header>
       <div class="explication-grid">
         <div class="explication-block">
           <div class="explication-icon" aria-hidden="true">🏢</div>
-          <h3>Des espaces vides</h3>
-          <p>En France, les bureaux, salles de réunion et locaux communaux sont inoccupés en moyenne <strong>65 % du temps</strong>. Le pic d'occupation ne dépasse pas 63 % — les mardis et mercredis seulement.</p>
+          <h3>Des espaces inutilisés partout</h3>
+          <p>Bureaux, salles communales, cabinets partagés — en France, ces espaces sont inoccupés en moyenne <strong>65 % du temps</strong>. Des ressources disponibles, souvent à quelques minutes de chez vous.</p>
         </div>
         <div class="explication-arrow" aria-hidden="true">→</div>
-        <div class="explication-block explication-block--highlight">
+        <div class="explication-block explication-block--highlight explication-block--center">
           <div class="explication-icon" aria-hidden="true">🤝</div>
           <h3>MOB'SS fait le lien</h3>
-          <p>La barrière principale évoquée par les médecins pour exercer en désert médical&nbsp;? <strong>L'absence d'espace local adapté</strong>. MOB'SS résout exactement ça — en mettant en relation les espaces disponibles avec les professionnels qui en ont besoin.</p>
+          <p>La barrière numéro&nbsp;1 pour exercer là où on a besoin de vous&nbsp;? <strong>L'absence d'espace adapté sur place.</strong> MOB'SS connecte les lieux disponibles avec les professionnels qui en ont besoin — gratuitement.</p>
         </div>
         <div class="explication-arrow" aria-hidden="true">→</div>
         <div class="explication-block">
           <div class="explication-icon" aria-hidden="true">🏃</div>
-          <h3>Des praticiens qui peuvent aller partout</h3>
-          <p>64 % des médecins iraient exercer en désert médical si un espace adapté était disponible. Médecins, kinés, coachs sportifs — MOB'SS leur donne accès à des espaces conformes, sans bail ni loyer.</p>
+          <h3>Exercez où vous êtes attendu</h3>
+          <p>Kiné, coach sportif, ostéopathe, infirmier, psychologue — peu importe votre spécialité, MOB'SS vous donne accès à des espaces conformes près de vos patients, <strong>sans bail ni loyer</strong>.</p>
         </div>
       </div>
     </div>
@@ -396,12 +396,13 @@ import steps from '../data/steps.json';
     text-align: center;
   }
   .explication-block--highlight {
-    background: var(--color-primary);
+    background: #fff;
     border-color: var(--color-primary);
-    color: #fff;
+    border-width: 2px;
+    box-shadow: 0 4px 20px rgba(181,48,64,.12);
   }
-  .explication-block--highlight h3 { color: #fff; }
-  .explication-block--highlight p { color: rgba(255,255,255,0.88); }
+  .explication-block--center h3 { color: var(--color-primary); }
+  .explication-block--highlight p { color: var(--color-text-soft); }
   .explication-icon {
     font-size: 2.2rem;
     margin-bottom: 14px;
