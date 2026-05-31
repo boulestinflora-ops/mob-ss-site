@@ -30,9 +30,8 @@ import steps from '../data/steps.json';
       </p>
       <div class="hero__cta">
         <a href="/inscription?role=praticien" class="btn btn--cream btn--lg">Je veux exercer</a>
-        <a href="/hotes" class="btn btn--hero-host">
-          Je propose un espace →
-        </a>
+        <span class="hero__cta-sep" aria-hidden="true">ou</span>
+        <a href="/hotes" class="btn btn--hero-host">Je propose un espace →</a>
       </div>
       <div class="hero__trust-strip" aria-label="Garanties MOB'SS">
         <span>
@@ -220,7 +219,8 @@ import steps from '../data/steps.json';
             <span class="journey-step__when journey-step__when--final">Cette semaine</span>
             <h3 class="journey-step__title">Vous exercez. C'est tout.</h3>
             <p class="journey-step__desc">Un espace conforme, des patients qui vous attendent, zéro loyer, zéro bail, zéro charge fixe. Vous vous déplacez — MOB'SS a fait le reste.</p>
-            <a href="/inscription?role=praticien" class="btn btn--primary journey-cta">Je m'inscris maintenant →</a>
+            <a href="/inscription?role=praticien" class="btn btn--primary btn--lg journey-cta">Je m'inscris maintenant →</a>
+            <p class="journey-cta__note" aria-label="Sans engagement">Gratuit · Sans engagement · 2 minutes</p>
           </div>
         </div>
 
@@ -604,17 +604,28 @@ import steps from '../data/steps.json';
     flex-shrink: 0;
   }
 
-  /* Bouton hôte dans le hero — blanc/translucide pour contraste sur fond primary */
+  /* Séparateur "ou" entre les deux CTAs hero */
+  .hero__cta-sep {
+    color: rgba(255,255,255,0.45);
+    font-size: 0.82rem;
+    align-self: center;
+    user-select: none;
+  }
+
+  /* Bouton hôte dans le hero — blanc/translucide, taille réduite pour hiérarchie */
   .btn--hero-host {
-    background: rgba(255,255,255,0.15);
-    color: #fff;
-    border: 1.5px solid rgba(255,255,255,0.5);
+    background: rgba(255,255,255,0.12);
+    color: rgba(255,255,255,0.9);
+    border: 1.5px solid rgba(255,255,255,0.38);
     backdrop-filter: blur(4px);
+    font-size: 0.88rem;
+    padding: 10px 20px;
+    font-weight: 500;
   }
   .btn--hero-host:hover {
-    background: rgba(255,255,255,0.25);
+    background: rgba(255,255,255,0.22);
     color: #fff;
-    border-color: rgba(255,255,255,0.8);
+    border-color: rgba(255,255,255,0.7);
   }
 
   /* CTA final — double carte côte à côte */
@@ -970,8 +981,16 @@ import steps from '../data/steps.json';
     line-height: 1.5;
   }
   .journey-cta {
-    margin-top: 48px;
+    margin-top: 40px;
+    display: block;
     text-align: center;
+  }
+  .journey-cta__note {
+    margin-top: 10px;
+    text-align: center;
+    font-size: 0.78rem;
+    color: var(--color-text-soft);
+    letter-spacing: 0.03em;
   }
 
   /* ── Tablette 768px–1024px ──────────────────────────────── */
@@ -1042,6 +1061,39 @@ import steps from '../data/steps.json';
     });
     searchInput.closest('form')?.addEventListener('submit', () => {
       sessionStorage.setItem('mobss-search', searchInput.value);
+    });
+  }
+
+  // Validation search card — au moins un champ requis avant soumission
+  const homeForm = document.getElementById('home-search-form');
+  if (homeForm) {
+    const showError = (msg: string) => {
+      let err = document.getElementById('search-error') as HTMLParagraphElement | null;
+      if (!err) {
+        err = document.createElement('p');
+        err.id = 'search-error';
+        err.setAttribute('role', 'alert');
+        err.setAttribute('aria-live', 'polite');
+        err.style.cssText = 'color:var(--color-primary);font-size:0.85rem;text-align:center;margin-top:10px;font-weight:500;';
+        homeForm.appendChild(err);
+      }
+      err.textContent = msg;
+    };
+    const clearError = () => {
+      const err = document.getElementById('search-error');
+      if (err) err.textContent = '';
+    };
+    homeForm.addEventListener('submit', (e: Event) => {
+      const metier = (document.getElementById('search-metier') as HTMLInputElement)?.value.trim();
+      const loc    = (document.getElementById('search-loc')    as HTMLInputElement)?.value.trim();
+      if (!metier && !loc) {
+        e.preventDefault();
+        showError('Saisissez au moins un critère — métier ou localisation.');
+        document.getElementById('search-metier')?.focus();
+      }
+    });
+    ['search-metier', 'search-loc'].forEach(id => {
+      document.getElementById(id)?.addEventListener('input', clearError);
     });
   }
 </script>
