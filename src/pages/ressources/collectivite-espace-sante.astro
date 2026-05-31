@@ -1,0 +1,187 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import CTASection from '../../components/CTASection.astro';
+
+const articleLd = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Collectivités : comment valoriser vos espaces inutilisés pour la santé",
+  "description": "Mairies, EPCI, gymnases, salles polyvalentes — comment mettre vos espaces à disposition des praticiens libéraux. Guide pratique pour les élus et responsables.",
+  "author": { "@type": "Organization", "name": "MOB'SS" },
+  "publisher": { "@type": "Organization", "name": "MOB'SS", "url": "https://mobss.fr" },
+  "datePublished": "2026-04-01",
+  "url": "https://mobss.fr/ressources/collectivite-espace-sante"
+});
+
+const breadcrumbLd = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Accueil", "item": "https://mobss.fr/" },
+    { "@type": "ListItem", "position": 2, "name": "Ressources", "item": "https://mobss.fr/ressources" },
+    { "@type": "ListItem", "position": 3, "name": "Collectivités & espaces santé", "item": "https://mobss.fr/ressources/collectivite-espace-sante" },
+  ]
+});
+---
+
+<BaseLayout
+  title="Collectivités : valoriser vos espaces inutilisés pour la santé — MOB'SS"
+  description="Salle de sport mise à disposition collectivité, gymnase, salle polyvalente : comment mettre vos locaux à disposition de praticiens libéraux. Guide pour élus et DG."
+  currentPage="ressources"
+>
+  <script type="application/ld+json" set:html={articleLd} />
+  <script type="application/ld+json" set:html={breadcrumbLd} />
+
+  <article class="article-layout">
+    <div class="container article-layout__inner">
+
+      <header class="article-header">
+        <nav aria-label="Fil d'Ariane">
+          <ol style="font-size:0.82rem;list-style:none;display:flex;gap:6px;flex-wrap:wrap;padding:0;margin:0 0 24px;">
+            <li><a href="/" style="color:var(--color-text-soft);text-decoration:none;">Accueil</a></li>
+            <li style="color:var(--color-border);">/</li>
+            <li><a href="/ressources" style="color:var(--color-text-soft);text-decoration:none;">Ressources</a></li>
+            <li style="color:var(--color-border);">/</li>
+            <li style="color:var(--color-text);">Collectivités & espaces santé</li>
+          </ol>
+        </nav>
+        <span class="section__eyebrow">Collectivités</span>
+        <h1 style="margin-top:12px;">Comment valoriser vos espaces inutilisés<br/>pour la santé de vos habitants</h1>
+        <div style="display:flex;gap:16px;margin-top:16px;font-size:0.82rem;color:var(--color-text-soft);flex-wrap:wrap;">
+          <span>📅 1er avril 2026</span>
+          <span>⏱ 7 min de lecture</span>
+          <span>✍️ Équipe MOB'SS</span>
+        </div>
+      </header>
+
+      <div class="article-body">
+
+        <p class="article-lead">
+          En France, des dizaines de milliers de salles communales, gymnases et locaux administratifs
+          restent vides plusieurs jours par semaine. Pendant ce temps, des praticiens de santé
+          cherchent un espace pour consulter leurs patients dans des zones sous-dotées. La mise
+          en relation n'a jamais été aussi simple.
+        </p>
+
+        <h2>Quel type d'espace peut être mis à disposition ?</h2>
+        <p>
+          Contrairement à ce qu'on pourrait penser, il n'est pas nécessaire d'avoir un cabinet
+          médical équipé pour accueillir un praticien. La plupart des professionnels de santé
+          et du sport s'adaptent à l'espace disponible :
+        </p>
+        <ul style="padding-left:20px;margin-bottom:18px;display:flex;flex-direction:column;gap:10px;">
+          <li><strong>Salle de sport mise à disposition collectivité</strong> — parfaite pour les kinés, coachs sportifs, ostéopathes en rééducation. Un gymnase hors créneaux scolaires peut accueillir plusieurs praticiens.</li>
+          <li><strong>Salle polyvalente ou salle des fêtes</strong> — idéale pour les consultations qui nécessitent simplement une table et des chaises. Médecins généralistes, diététiciens, psychologues.</li>
+          <li><strong>Local administratif</strong> — bureau disponible en dehors des horaires d'ouverture de la mairie. Discret, calme, accessible.</li>
+          <li><strong>Cabinet médical vacant</strong> — si votre commune dispose d'un cabinet vide suite au départ d'un médecin, c'est la mise à disposition la plus simple et la plus directement opérationnelle.</li>
+          <li><strong>Infirmerie scolaire</strong> — disponible hors temps scolaire pour certains actes paramédicaux.</li>
+        </ul>
+
+        <h2>Le cadre juridique de la mise à disposition gracieuse</h2>
+        <p>
+          Une collectivité peut mettre un espace à disposition d'un professionnel de santé à titre
+          gratuit. C'est une <strong>mise à disposition gracieuse</strong> — distincte d'une location
+          (qui nécessiterait un bail commercial et une autorisation du conseil municipal dans
+          certains cas).
+        </p>
+        <p>
+          La mise à disposition gracieuse se formalise par une <strong>convention d'utilisation</strong>
+          simple, précisant les créneaux horaires, les responsabilités de chaque partie et les
+          conditions d'utilisation. MOB'SS fournit un modèle de convention à chaque collectivité
+          partenaire.
+        </p>
+        <div class="article-callout">
+          <strong>Point juridique :</strong> Le praticien reste couvert par sa propre assurance
+          responsabilité civile professionnelle pendant l'utilisation de l'espace. La collectivité
+          n'est pas responsable des actes médicaux réalisés dans ses locaux.
+        </div>
+
+        <h2>Comment mesurer l'impact sur votre territoire ?</h2>
+        <p>
+          L'un des enjeux pour les élus est de pouvoir documenter et valoriser leur action.
+          MOB'SS propose un <strong>tableau de bord hôte</strong> qui suit :
+        </p>
+        <ul style="padding-left:20px;margin-bottom:18px;display:flex;flex-direction:column;gap:8px;">
+          <li>Le nombre de créneaux mis à disposition et effectivement utilisés</li>
+          <li>Les spécialités médicales et paramédicales accueillies</li>
+          <li>Une estimation du nombre de consultations facilitées</li>
+          <li>L'impact territorial estimé (population couverte)</li>
+        </ul>
+        <p>
+          Ces données sont exploitables dans vos rapports d'activité, vos Plans Locaux de Santé
+          (PLS) et vos bilans d'élus.
+        </p>
+
+        <h2>Comment intégrer ça dans un Plan Local de Santé (PLS) ?</h2>
+        <p>
+          Les Plans Locaux de Santé, pilotés par les Contrats Locaux de Santé (CLS) des ARS,
+          prévoient des actions concrètes contre les déserts médicaux. La mise à disposition
+          d'espaces communaux pour des praticiens itinérants s'inscrit naturellement dans ces
+          dispositifs.
+        </p>
+        <p>
+          Plusieurs collectivités partenaires de MOB'SS ont intégré leur participation dans
+          leur PLS sous la rubrique "amélioration de l'accès aux soins de premier recours".
+          C'est une action valorisable auprès des ARS et des financements européens FEDER dédiés
+          aux territoires ruraux.
+        </p>
+
+        <h2>Les étapes pour commencer</h2>
+        <p>
+          Démarrer avec MOB'SS ne demande pas de décision de conseil municipal ni de budget dédié.
+          Le processus standard est :
+        </p>
+        <ol style="padding-left:20px;margin-bottom:18px;display:flex;flex-direction:column;gap:10px;">
+          <li>Un responsable (DGS, DST, élu référent) crée un compte sur MOB'SS en 2 minutes</li>
+          <li>Il dépose un ou plusieurs espaces disponibles (photos, créneaux, équipements)</li>
+          <li>Les demandes de praticiens arrivent pour validation — le responsable accepte ou refuse en 1 clic</li>
+          <li>À la fin de l'année : export du rapport d'impact pour le bilan</li>
+        </ol>
+
+        <div class="article-related">
+          <h3>À lire aussi</h3>
+          <ul>
+            <li><a href="/hotes">Landing page dédiée aux collectivités et entreprises</a></li>
+            <li><a href="/ressources/desert-medical-solutions">Désert médical : 5 solutions pour les territoires</a></li>
+            <li><a href="/deposer-annonce">Déposer votre premier espace maintenant</a></li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </article>
+
+  <CTASection
+    title="Votre territoire peut agir dès maintenant."
+    subtitle="Gratuit · 5 minutes · Impact mesurable"
+    primaryLabel="Proposer mon espace →"
+    primaryHref="/deposer-annonce"
+    secondaryLabel="En savoir plus"
+    secondaryHref="/hotes"
+  />
+
+</BaseLayout>
+
+<style>
+  .article-layout { padding: 56px 0; }
+  .article-layout__inner { max-width: 760px; }
+  .article-header { margin-bottom: 48px; }
+  .article-body { font-size: 1rem; line-height: 1.8; }
+  .article-body h2 { font-size: clamp(1.2rem, 2.5vw, 1.5rem); margin: 40px 0 14px; }
+  .article-body p { margin: 0 0 18px; }
+  .article-lead {
+    font-size: 1.1rem; line-height: 1.75; color: var(--color-text-soft);
+    border-left: 3px solid var(--color-primary); padding-left: 18px; margin-bottom: 32px;
+  }
+  .article-callout {
+    background: rgba(200,66,79,0.06); border-left: 3px solid var(--color-primary);
+    padding: 16px 20px; border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    margin: 24px 0; font-size: 0.92rem; line-height: 1.65;
+  }
+  .article-related {
+    background: var(--color-bg-soft); border-radius: var(--radius-lg); padding: 24px 28px; margin-top: 40px;
+  }
+  .article-related h3 { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-text-soft); margin: 0 0 12px; }
+  .article-related ul { padding-left: 18px; margin: 0; display: flex; flex-direction: column; gap: 8px; }
+  .article-related a { color: var(--color-primary); font-size: 0.9rem; }
+</style>

@@ -1,0 +1,177 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import CTASection from '../../components/CTASection.astro';
+
+const articleLd = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Praticien libéral sans local fixe : comment développer sa patientèle",
+  "description": "Kiné, ostéo, coach sportif — exercer sans cabinet fixe est possible. Stratégies, avantages, pièges à éviter.",
+  "author": { "@type": "Organization", "name": "MOB'SS" },
+  "publisher": { "@type": "Organization", "name": "MOB'SS", "url": "https://mobss.fr" },
+  "datePublished": "2026-04-15",
+  "url": "https://mobss.fr/ressources/praticien-liberal-sans-local"
+});
+
+const breadcrumbLd = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Accueil", "item": "https://mobss.fr/" },
+    { "@type": "ListItem", "position": 2, "name": "Ressources", "item": "https://mobss.fr/ressources" },
+    { "@type": "ListItem", "position": 3, "name": "Praticien libéral sans local", "item": "https://mobss.fr/ressources/praticien-liberal-sans-local" },
+  ]
+});
+---
+
+<BaseLayout
+  title="Praticien libéral sans local fixe : développer sa patientèle — MOB'SS"
+  description="Kiné, ostéo, coach sportif sans cabinet fixe : comment exercer, trouver des espaces, développer sa patientèle et réduire ses charges fixes. Guide pratique."
+  currentPage="ressources"
+>
+  <script type="application/ld+json" set:html={articleLd} />
+  <script type="application/ld+json" set:html={breadcrumbLd} />
+
+  <article class="article-layout">
+    <div class="container article-layout__inner">
+
+      <header class="article-header">
+        <nav aria-label="Fil d'Ariane">
+          <ol style="font-size:0.82rem;list-style:none;display:flex;gap:6px;flex-wrap:wrap;padding:0;margin:0 0 24px;">
+            <li><a href="/" style="color:var(--color-text-soft);text-decoration:none;">Accueil</a></li>
+            <li style="color:var(--color-border);">/</li>
+            <li><a href="/ressources" style="color:var(--color-text-soft);text-decoration:none;">Ressources</a></li>
+            <li style="color:var(--color-border);">/</li>
+            <li style="color:var(--color-text);">Praticien libéral sans local</li>
+          </ol>
+        </nav>
+        <span class="section__eyebrow">Vie du praticien</span>
+        <h1 style="margin-top:12px;">Praticien libéral sans local fixe :<br/>comment développer sa patientèle</h1>
+        <div style="display:flex;gap:16px;margin-top:16px;font-size:0.82rem;color:var(--color-text-soft);flex-wrap:wrap;">
+          <span>📅 15 avril 2026</span>
+          <span>⏱ 5 min de lecture</span>
+          <span>✍️ Équipe MOB'SS</span>
+        </div>
+      </header>
+
+      <div class="article-body">
+
+        <p class="article-lead">
+          Exercer en libéral sans cabinet fixe n'est plus un compromis — c'est une stratégie
+          délibérée pour des milliers de praticiens. Kiné, ostéopathe, coach sportif, diététicien :
+          comment développer une patientèle solide sans payer de loyer fixe chaque mois ?
+        </p>
+
+        <h2>Pourquoi choisir d'exercer sans local fixe ?</h2>
+        <p>
+          Un cabinet libéral coûte en moyenne entre 500 et 1 500 € par mois selon la région.
+          Pour un praticien qui débute, ces charges fixes peuvent représenter la moitié de son
+          chiffre d'affaires. Exercer sans local fixe permet de :
+        </p>
+        <ul style="padding-left:20px;margin-bottom:18px;display:flex;flex-direction:column;gap:8px;">
+          <li><strong>Réduire drastiquement les charges fixes</strong> — zéro loyer, zéro bail</li>
+          <li><strong>Tester plusieurs zones géographiques</strong> avant de s'installer définitivement</li>
+          <li><strong>Accéder aux déserts médicaux</strong> où le loyer d'un cabinet serait de toute façon inexistant</li>
+          <li><strong>Construire une patientèle fidèle</strong> avant de signer un bail longue durée</li>
+        </ul>
+
+        <h2>Les modèles d'exercice sans local fixe</h2>
+
+        <h3 style="font-size:1rem;margin:24px 0 10px;color:var(--color-primary);">Le praticien itinérant</h3>
+        <p>
+          Le praticien itinérant se déplace entre plusieurs sites — communes, collectivités, entreprises —
+          et utilise les espaces mis à disposition gracieusement. C'est le modèle que MOB'SS facilite :
+          vous déposez votre profil une fois, les espaces disponibles apparaissent sur la carte.
+        </p>
+
+        <h3 style="font-size:1rem;margin:24px 0 10px;color:var(--color-primary);">La location temporaire de cabinet médical</h3>
+        <p>
+          Certains praticiens louent ponctuellement des cabinets médicaux vacants — à l'heure
+          ou à la journée. Cette approche est plus coûteuse qu'un espace mis à disposition
+          gracieuse, mais offre un équipement médical adapté. MOB'SS propose les deux options :
+          espaces gratuits ET espaces avec participation financière symbolique.
+        </p>
+
+        <h3 style="font-size:1rem;margin:24px 0 10px;color:var(--color-primary);">Le modèle hybride</h3>
+        <p>
+          La plupart des praticiens sans local fixe combinent 2 à 3 sites récurrents dans leur zone
+          d'exercice. Ils développent une patientèle géographiquement répartie, avec des créneaux
+          fixes dans chaque lieu. Le patient sait que son kiné est disponible le mardi à Caen et
+          le jeudi à Bayeux.
+        </p>
+
+        <div class="article-callout">
+          <strong>Témoignage :</strong> "Je me suis installé comme ostéopathe sans payer de loyer
+          pendant les 4 premiers mois. Ça m'a permis de construire ma patientèle sereinement avant
+          de signer un bail." — Utilisateur MOB'SS, Normandie
+        </div>
+
+        <h2>Comment trouver des espaces pour exercer ?</h2>
+        <p>
+          Plusieurs options existent pour un praticien libéral sans local :
+        </p>
+        <ul style="padding-left:20px;margin-bottom:18px;display:flex;flex-direction:column;gap:10px;">
+          <li><strong>MOB'SS</strong> — mise en relation gratuite avec les collectivités et entreprises qui mettent leurs locaux à disposition</li>
+          <li><strong>Maisons de santé pluriprofessionnelles (MSP)</strong> — si elles ont de la disponibilité</li>
+          <li><strong>Contacter directement les mairies</strong> — beaucoup sont ouvertes mais ne savent pas comment formaliser la démarche</li>
+          <li><strong>Espaces de coworking santé</strong> — émergents dans les grandes villes, souvent coûteux</li>
+        </ul>
+
+        <h2>Les pièges à éviter</h2>
+        <p>
+          Exercer sans local fixe demande une organisation rigoureuse. Les erreurs courantes :
+        </p>
+        <ul style="padding-left:20px;margin-bottom:18px;display:flex;flex-direction:column;gap:8px;">
+          <li>Changer trop souvent de lieu — les patients n'arrivent pas à vous suivre</li>
+          <li>Ne pas communiquer clairement sur vos lieux d'exercice</li>
+          <li>Oublier de vérifier la conformité de l'espace pour votre activité spécifique</li>
+          <li>Ne pas avoir de convention écrite avec l'hôte (MOB'SS en fournit un modèle)</li>
+        </ul>
+
+        <div class="article-related">
+          <h3>À lire aussi</h3>
+          <ul>
+            <li><a href="/comment-ca-marche">Comment MOB'SS fonctionne pas à pas</a></li>
+            <li><a href="/ressources/desert-medical-solutions">Désert médical : 5 solutions concrètes</a></li>
+            <li><a href="/explorez">Trouver un espace disponible maintenant</a></li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </article>
+
+  <CTASection
+    title="Trouvez votre prochain espace."
+    subtitle="Gratuit · Vérifié · Sans bail"
+    primaryLabel="Rechercher un espace →"
+    primaryHref="/explorez"
+    secondaryLabel="Créer mon profil"
+    secondaryHref="/inscription?role=praticien"
+  />
+
+</BaseLayout>
+
+<style>
+  .article-layout { padding: 56px 0; }
+  .article-layout__inner { max-width: 760px; }
+  .article-header { margin-bottom: 48px; }
+  .article-body { font-size: 1rem; line-height: 1.8; }
+  .article-body h2 { font-size: clamp(1.2rem, 2.5vw, 1.5rem); margin: 40px 0 14px; }
+  .article-body p { margin: 0 0 18px; }
+  .article-lead {
+    font-size: 1.1rem; line-height: 1.75; color: var(--color-text-soft);
+    border-left: 3px solid var(--color-primary); padding-left: 18px; margin-bottom: 32px;
+  }
+  .article-callout {
+    background: rgba(200,66,79,0.06); border-left: 3px solid var(--color-primary);
+    padding: 16px 20px; border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    margin: 24px 0; font-size: 0.92rem; line-height: 1.65;
+  }
+  .article-related {
+    background: var(--color-bg-soft); border-radius: var(--radius-lg); padding: 24px 28px; margin-top: 40px;
+  }
+  .article-related h3 { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-text-soft); margin: 0 0 12px; }
+  .article-related ul { padding-left: 18px; margin: 0; display: flex; flex-direction: column; gap: 8px; }
+  .article-related a { color: var(--color-primary); font-size: 0.9rem; }
+</style>

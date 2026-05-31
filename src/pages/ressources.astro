@@ -1,0 +1,175 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const articles = [
+  {
+    slug: 'desert-medical-solutions',
+    title: 'Désert médical : 5 solutions concrètes pour les territoires sous-dotés',
+    excerpt: "44 % des Français estiment vivre dans un désert médical. Quelles solutions existent réellement pour les collectivités et les praticiens itinérants ? Analyse et pistes d'action.",
+    category: 'Déserts médicaux',
+    readTime: '6 min',
+    date: '2026-05-01',
+    featured: true,
+  },
+  {
+    slug: 'praticien-liberal-sans-local',
+    title: 'Praticien libéral sans local fixe : comment développer sa patientèle',
+    excerpt: "Kiné, ostéo, coach sportif — exercer sans cabinet fixe est possible et de plus en plus courant. Tour d'horizon des stratégies pour se développer sans payer de loyer.",
+    category: 'Vie du praticien',
+    readTime: '5 min',
+    date: '2026-04-15',
+    featured: false,
+  },
+  {
+    slug: 'collectivite-espace-sante',
+    title: "Collectivités : comment valoriser vos espaces inutilisés pour la santé",
+    excerpt: "Mairies, EPCI, établissements scolaires — vos salles polyvalentes et gymnases inoccupés peuvent devenir des ressources de santé pour vos administrés, sans travaux ni budget dédié.",
+    category: 'Collectivités',
+    readTime: '7 min',
+    date: '2026-04-01',
+    featured: false,
+  },
+];
+
+const breadcrumbLd = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Accueil", "item": "https://mobss.fr/" },
+    { "@type": "ListItem", "position": 2, "name": "Ressources", "item": "https://mobss.fr/ressources" },
+  ]
+});
+---
+
+<BaseLayout
+  title="Ressources | Déserts médicaux, praticiens libéraux, collectivités — MOB'SS"
+  description="Guides et analyses sur les déserts médicaux, la vie du praticien libéral sans local et les solutions pour les collectivités. Données, études, pistes concrètes."
+  currentPage="ressources"
+>
+  <script type="application/ld+json" set:html={breadcrumbLd} />
+
+  <!-- Hero -->
+  <section class="section" style="background:var(--color-bg-soft);padding:64px 0 48px;border-bottom:1px solid var(--color-border);">
+    <div class="container" style="max-width:780px;">
+      <span class="section__eyebrow">Ressources &amp; guides</span>
+      <h1 style="margin-top:12px;">Comprendre. Agir. Changer.</h1>
+      <p class="page-hero__lead" style="color:var(--color-text-soft);font-size:1.05rem;line-height:1.7;margin-top:16px;max-width:600px;">
+        Des analyses sur les déserts médicaux en France, des guides pratiques pour les praticiens
+        libéraux sans local, et des ressources pour les collectivités qui veulent agir.
+      </p>
+    </div>
+  </section>
+
+  <!-- Articles -->
+  <section class="section" style="padding:64px 0;">
+    <div class="container">
+      <div class="ressources-grid">
+
+        {articles.map(article => (
+          <article class={`ressource-card${article.featured ? ' ressource-card--featured' : ''}`}>
+            <div class="ressource-card__meta">
+              <span class="ressource-card__category">{article.category}</span>
+              <span class="ressource-card__read">{article.readTime} de lecture</span>
+            </div>
+            <h2 class="ressource-card__title">
+              <a href={`/ressources/${article.slug}`}>{article.title}</a>
+            </h2>
+            <p class="ressource-card__excerpt">{article.excerpt}</p>
+            <a href={`/ressources/${article.slug}`} class="ressource-card__cta">
+              Lire l'article →
+            </a>
+          </article>
+        ))}
+
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA newsletter / alerte -->
+  <section class="section" style="background:var(--color-bg-soft);padding:56px 0;border-top:1px solid var(--color-border);">
+    <div class="container" style="max-width:560px;text-align:center;">
+      <h2>Restez informé</h2>
+      <p style="color:var(--color-text-soft);margin:12px 0 28px;line-height:1.7;">
+        Nouvelles études, analyses terrain, retours d'expérience — recevez les ressources
+        MOB'SS directement dans votre boîte mail.
+      </p>
+      <a href="/inscription" class="btn btn--primary btn--lg">M'inscrire gratuitement →</a>
+      <p style="font-size:0.8rem;color:var(--color-text-soft);margin-top:12px;">Gratuit · Sans engagement · Données protégées</p>
+    </div>
+  </section>
+
+</BaseLayout>
+
+<style>
+  .ressources-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  .ressource-card {
+    background: #fff;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: 28px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    transition: box-shadow .15s, border-color .15s;
+  }
+  .ressource-card:hover {
+    box-shadow: 0 6px 20px rgba(31,21,24,0.08);
+    border-color: var(--color-primary);
+  }
+  .ressource-card--featured {
+    border-color: var(--color-primary);
+    box-shadow: 0 4px 16px rgba(200,66,79,0.1);
+  }
+  .ressource-card__meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .ressource-card__category {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-primary);
+    background: rgba(200,66,79,0.08);
+    padding: 3px 8px;
+    border-radius: 20px;
+  }
+  .ressource-card__read {
+    font-size: 0.78rem;
+    color: var(--color-text-soft);
+  }
+  .ressource-card__title {
+    font-size: 1rem;
+    line-height: 1.35;
+    margin: 0;
+  }
+  .ressource-card__title a {
+    color: var(--color-text);
+    text-decoration: none;
+  }
+  .ressource-card__title a:hover { color: var(--color-primary); }
+  .ressource-card__excerpt {
+    font-size: 0.88rem;
+    color: var(--color-text-soft);
+    line-height: 1.65;
+    flex-grow: 1;
+    margin: 0;
+  }
+  .ressource-card__cta {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    text-decoration: none;
+    margin-top: auto;
+  }
+  .ressource-card__cta:hover { text-decoration: underline; }
+
+  @media (max-width: 1024px) { .ressources-grid { grid-template-columns: 1fr; } }
+  @media (min-width: 640px) and (max-width: 1024px) { .ressources-grid { grid-template-columns: repeat(2, 1fr); } }
+</style>

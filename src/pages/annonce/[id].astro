@@ -86,6 +86,30 @@ const superficieLabel = annonce.superficie ? `${annonce.superficie} m²` : null;
 const capaciteLabel   = annonce.capacite   ? `${annonce.capacite} pers. max.` : null;
 
 const adresseComplete = [annonce.adresse, annonce.cp, annonce.ville].filter(Boolean).join(', ');
+
+// LocalBusiness JSON-LD pour Google (fiche espace = établissement local)
+const localBusinessLd = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "name": annonce.titre,
+  "description": `${typeLabel} mis à disposition par MOB'SS à ${annonce.ville}. ${isGratuit ? 'Mise à disposition gracieuse.' : tarifLabel}`,
+  "url": `https://mobss.fr/annonce/${annonce.id}`,
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress":    annonce.adresse ?? '',
+    "postalCode":       annonce.cp      ?? '',
+    "addressLocality":  annonce.ville   ?? '',
+    "addressCountry":   "FR"
+  },
+  ...(annonce.ville ? { "areaServed": { "@type": "City", "name": annonce.ville } } : {}),
+  "priceRange": isGratuit ? "Gratuit" : tarifLabel,
+  "openingHours": jours.length ? jours.map((j: string) => j.slice(0,2)).join(' ') : undefined,
+  "provider": {
+    "@type": "Organization",
+    "name": "MOB'SS",
+    "url":  "https://mobss.fr"
+  }
+});
 ---
 
 <BaseLayout
@@ -95,6 +119,9 @@ const adresseComplete = [annonce.adresse, annonce.cp, annonce.ville].filter(Bool
 >
 
   <!-- Fil d'Ariane — nav sémantique + JSON-LD -->
+  <!-- LocalBusiness structured data -->
+  <script type="application/ld+json" set:html={localBusinessLd} />
+
   {(() => {
     const bcLd = JSON.stringify({
       "@context": "https://schema.org",

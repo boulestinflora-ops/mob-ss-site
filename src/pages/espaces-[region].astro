@@ -1,0 +1,184 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import CTASection from '../../components/CTASection.astro';
+import {{ createClient }} from '@supabase/supabase-js';
+
+export const prerender = false;
+
+const REGION_CONFIG = {{
+  normandie: {{
+    label: 'Normandie',
+    depts: ['14','27','50','61','76'],
+    villes: ['Caen','Rouen','Le Havre','Cherbourg','Évreux','Alençon','Dieppe'],
+    description: 'Normandie — 3,3 millions d'habitants, 7ème région de France par la superficie. Des zones rurales très touchées par les déserts médicaux, notamment dans l'Orne et la Manche.',
+    stat: '38 %',
+    statLabel: 'de communes normandes classées en zone sous-dotée',
+  }},
+  bretagne: {{
+    label: 'Bretagne',
+    depts: ['22','29','35','56'],
+    villes: ['Rennes','Brest','Quimper','Vannes','Saint-Malo','Lorient'],
+    description: 'Bretagne — 3,4 millions d'habitants. Le Finistère et les Côtes-d'Armor comptent parmi les zones les plus touchées par le manque de médecins généralistes en France.',
+    stat: '41 %',
+    statLabel: 'des Bretons vivent à plus de 30 min d'un spécialiste',
+  }},
+}};
+
+const {{ region }} = Astro.params;
+const config = REGION_CONFIG[region as keyof typeof REGION_CONFIG];
+if (!config) return Astro.redirect('/explorez');
+
+// Requête Supabase — espaces disponibles dans la région
+const supabase = createClient(
+  import.meta.env.PUBLIC_SUPABASE_URL,
+  import.meta.env.PUBLIC_SUPABASE_ANON_KEY,
+);
+
+const {{ data: espaces }} = await supabase
+  .from('annonces')
+  .select('id, titre, type, ville, cp, superficie, equipements')
+  .in('statut', ['actif'])
+  .in('cp', config.depts.map(d => d + '%'))  // approximation par département
+  .limit(6);
+
+// Fallback si aucun résultat : montrer les villes cibles
+const hasEspaces = espaces && espaces.length > 0;
+
+const breadcrumbLd = JSON.stringify({{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {{ "@type": "ListItem", "position": 1, "name": "Accueil", "item": "https://mobss.fr/" }},
+    {{ "@type": "ListItem", "position": 2, "name": "Espaces", "item": "https://mobss.fr/explorez" }},
+    {{ "@type": "ListItem", "position": 3, "name": config.label, "item": `https://mobss.fr/espaces-${{region}}` }},
+  ]
+}});
+---
+
+<BaseLayout
+  title={{`Espaces pour exercer en ${{config.label}} | Kinés, médecins, coachs — MOB'SS`}}
+  description={{`Trouvez un espace gratuit pour exercer en ${{config.label}} — cabinet médical, salle de sport, gymnase. ${{config.stat}} ${{config.statLabel.toLowerCase()}}. Sans loyer, sans bail.`}}
+  currentPage="explorez"
+>
+  <script type="application/ld+json" set:html={{breadcrumbLd}} />
+
+  <!-- Hero régional -->
+  <section class="section" style="background:linear-gradient(135deg,var(--color-primary),var(--color-primary-dark));color:#fff;padding:72px 0 56px;">
+    <div class="container" style="max-width:820px;text-align:center;">
+      <span class="section__eyebrow" style="background:rgba(255,255,255,0.18);color:#fff;">Espaces disponibles</span>
+      <h1 style="color:#fff;margin-top:12px;">Exercer en {{config.label}}<br/>sans loyer ni bail</h1>
+      <p style="color:rgba(255,255,255,0.88);font-size:1.05rem;line-height:1.7;max-width:640px;margin:16px auto 28px;">
+        {{config.description}}
+        MOB'SS connecte les praticiens libéraux sans local avec les collectivités et
+        entreprises de {{config.label}} qui mettent leurs espaces à disposition gracieusement.
+      </p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+        <a href={{`/explorez?loc=${{config.villes[0]}}`}} class="btn btn--cream btn--lg">Rechercher un espace →</a>
+        <a href="/inscription?role=praticien" class="btn btn--lg" style="background:rgba(255,255,255,0.15);color:#fff;border:1.5px solid rgba(255,255,255,0.5);">
+          M'inscrire gratuitement
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stat régionale -->
+  <section class="section" style="background:var(--color-bg-soft);padding:48px 0;">
+    <div class="container" style="text-align:center;max-width:680px;">
+      <p style="font-size:3rem;font-weight:800;color:var(--color-primary);font-family:var(--font-display);line-height:1;">
+        {{config.stat}}
+      </p>
+      <p style="font-size:1.05rem;color:var(--color-text-soft);margin-top:8px;">
+        {{config.statLabel}}
+      </p>
+      <p style="font-size:0.9rem;color:var(--color-text-soft);margin-top:16px;line-height:1.7;">
+        MOB'SS ne part pas d'une intuition — les déserts médicaux en {{config.label}} sont documentés
+        par les ARS régionales et les rapports de la DREES. Nos données confirment qu'il existe
+        des espaces disponibles. Il manque uniquement la mise en relation.
+      </p>
+    </div>
+  </section>
+
+  <!-- Villes couvertes -->
+  <section class="section" style="padding:64px 0;">
+    <div class="container">
+      <header class="section__header" style="text-align:center;margin-bottom:40px;">
+        <span class="section__eyebrow">Zone couverte</span>
+        <h2>MOB'SS couvre toute la {{config.label}}</h2>
+        <p class="section__lead">
+          Des espaces sont disponibles ou en cours de référencement dans ces villes.
+          Inscrivez-vous pour être alerté dès qu'un espace correspond à votre recherche.
+        </p>
+      </header>
+      <div style="display:flex;flex-wrap:wrap;gap:12px;justify-content:center;">
+        {{config.villes.map(ville => (
+          <a
+            href={{`/explorez?loc=${{ville}}`}}
+            style="background:#fff;border:1px solid var(--color-border);border-radius:20px;padding:8px 18px;font-size:0.9rem;color:var(--color-text);text-decoration:none;transition:border-color .15s,color .15s;"
+            onmouseover="this.style.borderColor='var(--color-primary)';this.style.color='var(--color-primary)'"
+            onmouseout="this.style.borderColor='var(--color-border)';this.style.color='var(--color-text)'"
+          >
+            {{ville}}
+          </a>
+        ))}}
+      </div>
+    </div>
+  </section>
+
+  <!-- Espaces disponibles (SSR depuis Supabase) -->
+  {{hasEspaces ? (
+    <section class="section" style="background:var(--color-bg-soft);padding:64px 0;">
+      <div class="container">
+        <header class="section__header" style="margin-bottom:36px;">
+          <span class="section__eyebrow">Espaces disponibles</span>
+          <h2>Espaces référencés en {{config.label}}</h2>
+        </header>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;">
+          {{espaces!.map(e => (
+            <a href={{`/annonce/${{e.id}}`}} style="display:block;background:#fff;border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:20px;text-decoration:none;transition:box-shadow .15s;">
+              <strong style="color:var(--color-text);font-size:0.95rem;">{{e.titre}}</strong>
+              <p style="color:var(--color-text-soft);font-size:0.82rem;margin:4px 0 0;">{{e.ville}} — {{e.type}}</p>
+            </a>
+          ))}}
+        </div>
+        <div style="text-align:center;margin-top:32px;">
+          <a href={{`/explorez?loc=${{config.villes[0]}}`}} class="btn btn--outline">Voir tous les espaces →</a>
+        </div>
+      </div>
+    </section>
+  ) : (
+    <section class="section" style="padding:64px 0;text-align:center;">
+      <div class="container" style="max-width:560px;">
+        <h2>Soyez parmi les premiers en {{config.label}}</h2>
+        <p style="color:var(--color-text-soft);line-height:1.7;margin:16px 0 28px;">
+          La plateforme est en cours de déploiement dans la région. Inscrivez-vous maintenant —
+          vous serez alerté dès qu'un espace est disponible près de chez vous.
+        </p>
+        <a href="/inscription?role=praticien" class="btn btn--primary btn--lg">M'inscrire et être alerté →</a>
+      </div>
+    </section>
+  )}}
+
+  <!-- Pour les hôtes -->
+  <section class="section" style="background:var(--color-bg-soft);padding:64px 0;">
+    <div class="container" style="max-width:700px;text-align:center;">
+      <span class="section__eyebrow">Vous avez un espace en {{config.label}} ?</span>
+      <h2>Mettez-le à disposition des praticiens</h2>
+      <p style="color:var(--color-text-soft);line-height:1.7;margin:16px 0 28px;">
+        Collectivités, mairies, entreprises de {{config.label}} — vos salles, gymnases et locaux
+        inoccupés peuvent contribuer à l'accès aux soins dans votre territoire.
+        Gratuit, sans contrainte administrative.
+      </p>
+      <a href="/hotes" class="btn btn--cream btn--lg">Proposer mon espace →</a>
+    </div>
+  </section>
+
+  <CTASection
+    title={{`Exercez en ${{config.label}} dès cette semaine.`}}
+    subtitle="Inscription gratuite · Sans engagement · Alertes disponibilité"
+    primaryLabel="Je m'inscris →"
+    primaryHref="/inscription?role=praticien"
+    secondaryLabel="Proposer un espace"
+    secondaryHref="/hotes"
+  />
+
+</BaseLayout>

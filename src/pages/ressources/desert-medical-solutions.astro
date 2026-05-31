@@ -1,0 +1,212 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import CTASection from '../../components/CTASection.astro';
+
+const articleLd = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Désert médical : 5 solutions concrètes pour les territoires sous-dotés",
+  "description": "44 % des Français estiment vivre dans un désert médical. Quelles solutions existent réellement pour les collectivités et les praticiens itinérants ?",
+  "author": { "@type": "Organization", "name": "MOB'SS" },
+  "publisher": { "@type": "Organization", "name": "MOB'SS", "url": "https://mobss.fr" },
+  "datePublished": "2026-05-01",
+  "url": "https://mobss.fr/ressources/desert-medical-solutions",
+  "mainEntityOfPage": "https://mobss.fr/ressources/desert-medical-solutions"
+});
+
+const breadcrumbLd = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Accueil", "item": "https://mobss.fr/" },
+    { "@type": "ListItem", "position": 2, "name": "Ressources", "item": "https://mobss.fr/ressources" },
+    { "@type": "ListItem", "position": 3, "name": "Désert médical : 5 solutions", "item": "https://mobss.fr/ressources/desert-medical-solutions" },
+  ]
+});
+---
+
+<BaseLayout
+  title="Désert médical : 5 solutions concrètes pour les territoires sous-dotés — MOB'SS"
+  description="44 % des Français estiment vivre dans un désert médical. Solutions pour collectivités et praticiens : télémédecine, espaces partagés, maisons de santé, praticiens itinérants."
+  currentPage="ressources"
+>
+  <script type="application/ld+json" set:html={articleLd} />
+  <script type="application/ld+json" set:html={breadcrumbLd} />
+
+  <article class="article-layout">
+    <div class="container article-layout__inner">
+
+      <!-- En-tête -->
+      <header class="article-header">
+        <nav aria-label="Fil d'Ariane">
+          <ol class="breadcrumb" style="font-size:0.82rem;list-style:none;display:flex;gap:6px;flex-wrap:wrap;padding:0;margin:0 0 24px;">
+            <li><a href="/" style="color:var(--color-text-soft);text-decoration:none;">Accueil</a></li>
+            <li style="color:var(--color-border);">/</li>
+            <li><a href="/ressources" style="color:var(--color-text-soft);text-decoration:none;">Ressources</a></li>
+            <li style="color:var(--color-border);">/</li>
+            <li style="color:var(--color-text);">Désert médical : 5 solutions</li>
+          </ol>
+        </nav>
+        <span class="section__eyebrow">Déserts médicaux</span>
+        <h1 style="margin-top:12px;">Désert médical : 5 solutions concrètes<br/>pour les territoires sous-dotés</h1>
+        <div style="display:flex;gap:16px;margin-top:16px;font-size:0.82rem;color:var(--color-text-soft);flex-wrap:wrap;">
+          <span>📅 1er mai 2026</span>
+          <span>⏱ 6 min de lecture</span>
+          <span>✍️ Équipe MOB'SS</span>
+        </div>
+      </header>
+
+      <!-- Corps -->
+      <div class="article-body">
+
+        <p class="article-lead">
+          En 2025, <strong>44 % des Français estiment vivre dans un désert médical</strong>
+          (Croix-Rouge / CRÉDOC). Ce chiffre ne cesse de progresser depuis 10 ans. Pourtant,
+          des solutions existent — certaines innovantes, d'autres structurelles. Tour d'horizon
+          de ce qui fonctionne réellement.
+        </p>
+
+        <h2>1. Les praticiens itinérants et la médecine mobile</h2>
+        <p>
+          La médecine itinérante consiste à envoyer des professionnels de santé là où les patients
+          se trouvent, plutôt que l'inverse. Kinésithérapeutes, médecins généralistes, infirmiers :
+          de plus en plus de praticiens libéraux sans local fixe choisissent d'exercer de manière
+          nomade, en tournant entre plusieurs villes ou communes.
+        </p>
+        <p>
+          Le principal frein ? <strong>L'absence d'espaces pour consulter</strong>. Un kiné
+          itinérant ne peut pas travailler dans un couloir. C'est exactement ce que MOB'SS résout :
+          en connectant ces praticiens aux espaces inutilisés des collectivités locales.
+        </p>
+
+        <h2>2. Les espaces de santé partagés dans les collectivités</h2>
+        <p>
+          Des milliers de salles polyvalentes, gymnases, locaux administratifs restent vides
+          plusieurs jours par semaine dans les communes françaises. Ces espaces peuvent accueillir
+          des consultations sans aucun travaux, pour peu qu'il y ait une table, des chaises, et
+          une connexion wifi.
+        </p>
+        <p>
+          La <strong>salle de sport mise à disposition par une collectivité</strong> le mercredi
+          matin pour un kiné, la salle de réunion municipale utilisée par un médecin remplaçant
+          deux jours par semaine — ces usages se multiplient partout en France. MOB'SS
+          formalise et facilite ces mises à disposition gracieuses.
+        </p>
+        <div class="article-callout">
+          <strong>Chiffre clé :</strong> 64 % des médecins iraient exercer en désert médical
+          si un espace était disponible (MACSF, 2023). Le problème n'est pas la volonté — c'est
+          l'infrastructure.
+        </div>
+
+        <h2>3. Les Maisons de Santé Pluriprofessionnelles (MSP)</h2>
+        <p>
+          Les MSP regroupent plusieurs professionnels de santé sous un même toit. Elles sont
+          financées par les collectivités et l'État (via les ARS), et permettent de mutualiser
+          les coûts immobiliers pour les praticiens. En 2024, la France comptait plus de 3 200 MSP.
+        </p>
+        <p>
+          Avantage : structure pérenne, pluridisciplinarité, coordination des soins.
+          Limite : délais de création de 3 à 5 ans, investissements initiaux lourds pour les
+          communes. Les MSP ne peuvent pas être la seule réponse aux déserts médicaux — d'où
+          l'importance des solutions souples comme MOB'SS en complément.
+        </p>
+
+        <h2>4. La télémédecine et les cabines de téléconsultation</h2>
+        <p>
+          La télémédecine (téléconsultation, téléexpertise) permet de traiter certains actes
+          à distance. Des cabines de téléconsultation s'installent dans les pharmacies et
+          mairies. Ces solutions sont particulièrement adaptées au suivi de pathologies
+          chroniques stables.
+        </p>
+        <p>
+          Limite importante : la télémédecine ne peut pas remplacer l'examen physique pour
+          les kinés, ostéopathes, coachs sportifs en rééducation. Pour les actes nécessitant
+          un contact physique, <strong>la présence sur site reste indispensable</strong>.
+        </p>
+
+        <h2>5. Les contrats incitatifs ARS et les aides à l'installation</h2>
+        <p>
+          Les Agences Régionales de Santé proposent des contrats de début d'exercice (CAIM),
+          de stabilisation (COSCOM) et de transition (COTRAM) pour attirer les médecins en
+          zones sous-dotées. Ces aides financières peuvent atteindre 50 000 € sur 3 ans.
+        </p>
+        <p>
+          Ces dispositifs ciblent principalement les médecins généralistes. Pour les autres
+          professions de santé et du sport, les aides restent rares — ce qui renforce l'intérêt
+          des solutions d'espaces mutualisés comme MOB'SS qui réduisent directement le coût
+          d'installation.
+        </p>
+
+        <h2>La solution MOB'SS : combiner les leviers</h2>
+        <p>
+          MOB'SS s'inscrit dans la catégorie des <strong>solutions à déploiement rapide</strong>
+          (moins de 5 minutes pour déposer un espace, accessible immédiatement après inscription).
+          Elle ne remplace pas les MSP ou les contrats ARS — elle les complète en offrant une
+          flexibilité immédiate aux praticiens libéraux sans local et aux collectivités qui
+          cherchent à agir dès maintenant.
+        </p>
+
+        <!-- Liens internes -->
+        <div class="article-related">
+          <h3>À lire aussi</h3>
+          <ul>
+            <li><a href="/le-probleme">Le désert médical en France : analyse complète</a></li>
+            <li><a href="/notre-solution">Comment MOB'SS s'attaque au problème</a></li>
+            <li><a href="/ressources/praticien-liberal-sans-local">Praticien libéral sans local : stratégies de développement</a></li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </article>
+
+  <CTASection
+    title="Agissez maintenant."
+    subtitle="Inscription gratuite · Sans engagement · Impact immédiat"
+    primaryLabel="Je cherche un espace →"
+    primaryHref="/inscription?role=praticien"
+    secondaryLabel="Je propose un espace"
+    secondaryHref="/hotes"
+  />
+
+</BaseLayout>
+
+<style>
+  .article-layout { padding: 56px 0; }
+  .article-layout__inner { max-width: 760px; }
+  .article-header { margin-bottom: 48px; }
+  .article-body { font-size: 1rem; line-height: 1.8; color: var(--color-text); }
+  .article-body h2 {
+    font-size: clamp(1.2rem, 2.5vw, 1.5rem);
+    margin: 40px 0 14px;
+    color: var(--color-text);
+  }
+  .article-body p { margin: 0 0 18px; }
+  .article-lead {
+    font-size: 1.1rem;
+    line-height: 1.75;
+    color: var(--color-text-soft);
+    border-left: 3px solid var(--color-primary);
+    padding-left: 18px;
+    margin-bottom: 32px;
+  }
+  .article-callout {
+    background: rgba(200,66,79,0.06);
+    border-left: 3px solid var(--color-primary);
+    padding: 16px 20px;
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    margin: 24px 0;
+    font-size: 0.92rem;
+    color: var(--color-text);
+    line-height: 1.65;
+  }
+  .article-related {
+    background: var(--color-bg-soft);
+    border-radius: var(--radius-lg);
+    padding: 24px 28px;
+    margin-top: 40px;
+  }
+  .article-related h3 { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-text-soft); margin: 0 0 12px; }
+  .article-related ul { padding-left: 18px; margin: 0; display: flex; flex-direction: column; gap: 8px; }
+  .article-related a { color: var(--color-primary); font-size: 0.9rem; }
+</style>
