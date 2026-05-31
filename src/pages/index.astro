@@ -57,7 +57,7 @@ import steps from '../data/steps.json';
   <!-- SEARCH CARD -->
   <div class="container">
     <div class="search-card" style="margin-top:-60px;position:relative;z-index:5;">
-      <h2 style="font-size:clamp(1.15rem,2.5vw,1.45rem);margin-bottom:20px;">Trouvez le lieu idéal pour exercer votre activité.</h2>
+      <p class="search-card__label">Trouvez le lieu idéal pour exercer votre activité.</p>
       <form class="search-form" id="home-search-form" action="/explorez" method="get">
         <div class="search-fields-row">
           <div class="search-field">
@@ -438,6 +438,13 @@ import steps from '../data/steps.json';
 
 <style>
   /* Recherche — inputs sur une ligne, bouton en dessous centré */
+  .search-card__label {
+    font-size: clamp(1.05rem, 2.2vw, 1.35rem);
+    font-weight: 600;
+    color: var(--color-text);
+    margin-bottom: 20px;
+    font-family: var(--font-display);
+  }
   .search-fields-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
