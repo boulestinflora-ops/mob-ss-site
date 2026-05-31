@@ -1037,20 +1037,37 @@ import steps from '../data/steps.json';
 </style>
 
 <script is:inline>
-  document.addEventListener('DOMContentLoaded', () => {
-    const counters = document.querySelectorAll('[data-count]');
-    counters.forEach(el => {
-      const target = parseInt(el.dataset.count, 10);
-      const duration = 1400;
-      const step = Math.ceil(target / (duration / 16));
-      let current = 0;
-      const timer = setInterval(() => {
-        current = Math.min(current + step, target);
-        el.textContent = current.toLocaleString('fr-FR');
-        if (current >= target) clearInterval(timer);
-      }, 16);
-    });
-  });
+  // Compteur animé — démarre uniquement quand la section est visible (IntersectionObserver)
+  // Évite l'animation hors-viewport lors des chargements lents.
+  function animateCounter(el) {
+    const target   = parseInt(el.dataset.count, 10);
+    const duration = 1400;
+    const step     = Math.ceil(target / (duration / 16));
+    let current    = 0;
+    const reduced  = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduced) { el.textContent = target.toLocaleString('fr-FR'); return; }
+    const timer = setInterval(() => {
+      current = Math.min(current + step, target);
+      el.textContent = current.toLocaleString('fr-FR');
+      if (current >= target) clearInterval(timer);
+    }, 16);
+  }
+
+  const counters = document.querySelectorAll('[data-count]');
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          animateCounter(entry.target);
+          observer.unobserve(entry.target);  // déclenche une seule fois
+        }
+      });
+    }, { threshold: 0.3 });
+    counters.forEach(el => io.observe(el));
+  } else {
+    // Fallback navigateurs anciens
+    counters.forEach(animateCounter);
+  }
 
   const searchInput = document.getElementById('hero-search');
   if (searchInput) {
