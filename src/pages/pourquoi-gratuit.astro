@@ -1,0 +1,549 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CTASection from '../components/CTASection.astro';
+
+const faqLd = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Pourquoi MOB'SS est-il gratuit pour les praticiens ?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Les espaces sont mis à disposition gracieusement par des collectivités et entreprises. MOB'SS n'est que l'intermédiaire — nous ne touchons aucune commission sur les consultations." }
+    },
+    {
+      "@type": "Question",
+      "name": "Est-ce que ça va rester gratuit ?",
+      "acceptedAnswer": { "@type": "Answer", "text": "L'accès aux espaces restera gratuit. MOB'SS développera à terme des fonctionnalités premium optionnelles (visibilité avancée, statistiques, outils de gestion) — jamais obligatoires pour exercer." }
+    },
+    {
+      "@type": "Question",
+      "name": "Pourquoi les collectivités mettent leurs espaces à disposition gratuitement ?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Leurs salles sont déjà payées par les contribuables. Les mettre à disposition d'un kiné le mardi matin ne leur coûte rien — et leur apporte un impact territorial mesurable pour leurs habitants." }
+    },
+    {
+      "@type": "Question",
+      "name": "Il n'y a vraiment aucun frais caché ?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Aucun. Inscription gratuite, accès aux espaces gratuit, envoi de demandes gratuit. Certains espaces proposés par des entreprises peuvent avoir une participation symbolique — elle est toujours affichée avant de postuler." }
+    },
+    {
+      "@type": "Question",
+      "name": "Comment MOB'SS gagne-t-il de l'argent ?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Pour l'instant, MOB'SS est en phase bêta et fonctionne sans revenus. Le modèle à terme : abonnements optionnels pour les hôtes (tableau de bord avancé, exports, visibilité renforcée) et pour les praticiens (profil mis en avant, alertes, statistiques)." }
+    }
+  ]
+});
+
+const breadcrumbLd = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Accueil", "item": "https://mobss.fr/" },
+    { "@type": "ListItem", "position": 2, "name": "Pourquoi c'est gratuit ?", "item": "https://mobss.fr/pourquoi-gratuit" }
+  ]
+});
+---
+
+<BaseLayout
+  title="Pourquoi MOB'SS est-il gratuit ? Modèle économique transparent — MOB'SS"
+  description="Aucun frais caché, aucune commission. MOB'SS connecte praticiens et collectivités gratuitement. Voici pourquoi et comment notre modèle fonctionne."
+  currentPage=""
+>
+  <script type="application/ld+json" set:html={faqLd} />
+  <script type="application/ld+json" set:html={breadcrumbLd} />
+
+  <!-- HERO ────────────────────────────────────────────────────────────────── -->
+  <section class="pg-hero">
+    <div class="container pg-hero__inner">
+      <nav aria-label="Fil d'Ariane">
+        <ol class="breadcrumb" style="font-size:0.82rem;list-style:none;display:flex;gap:6px;flex-wrap:wrap;padding:0;margin:0 0 24px;">
+          <li><a href="/" style="color:var(--color-text-soft);text-decoration:none;">Accueil</a></li>
+          <li style="color:var(--color-border);">/</li>
+          <li style="color:var(--color-text);">Pourquoi c'est gratuit ?</li>
+        </ol>
+      </nav>
+      <span class="section__eyebrow">Transparence totale</span>
+      <h1>Pourquoi MOB'SS est-il vraiment gratuit ?</h1>
+      <p class="pg-hero__lead">
+        La première question que tout le monde se pose — et avec raison. Voici une réponse
+        complète et honnête sur notre modèle, ce qui est gratuit, ce qui ne le sera peut-être
+        pas un jour, et pourquoi les collectivités jouent le jeu.
+      </p>
+      <div class="pg-hero__badges">
+        <span class="pg-badge pg-badge--green">✓ 0 € pour exercer</span>
+        <span class="pg-badge">✓ 0 commission sur vos consultations</span>
+        <span class="pg-badge">✓ Aucun frais caché</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- LE CIRCUIT DE VALEUR ─────────────────────────────────────────────────── -->
+  <section class="section section--white" style="padding:72px 0;">
+    <div class="container" style="max-width:900px;">
+
+      <header class="section__header" style="margin-bottom:48px;">
+        <span class="section__eyebrow">Le circuit de valeur</span>
+        <h2>Trois acteurs. Chacun y gagne quelque chose.</h2>
+        <p class="section__lead" style="max-width:560px;margin:12px auto 0;">
+          MOB'SS n'est pas une application qui offre un service gratuit pour vous vendre ensuite.
+          La gratuité découle directement de la nature du modèle.
+        </p>
+      </header>
+
+      <div class="value-grid">
+
+        <div class="value-card">
+          <div class="value-card__icon" aria-hidden="true">🏥</div>
+          <h3 class="value-card__title">Le praticien</h3>
+          <p class="value-card__desc">
+            Il trouve un espace pour consulter sans payer de loyer. Son seul investissement :
+            son temps et ses compétences. Il développe sa patientèle sans charges fixes,
+            exactement là où les patients en ont besoin.
+          </p>
+          <div class="value-card__gain">
+            <strong>Ce qu'il gagne :</strong> espace gratuit, patientèle locale, flexibilité
+          </div>
+        </div>
+
+        <div class="value-card value-card--highlight">
+          <div class="value-card__icon" aria-hidden="true">🏛️</div>
+          <h3 class="value-card__title">La collectivité</h3>
+          <p class="value-card__desc">
+            Sa salle polyvalente, son gymnase, son local administratif — déjà payés par les
+            contribuables — accueillent des consultations au lieu de rester vides. Elle répond
+            à l'enjeu de santé de ses administrés sans dépenser un euro supplémentaire.
+          </p>
+          <div class="value-card__gain">
+            <strong>Ce qu'elle gagne :</strong> impact territorial, valorisation des actifs, rapport d'activité
+          </div>
+        </div>
+
+        <div class="value-card">
+          <div class="value-card__icon" aria-hidden="true">🔗</div>
+          <h3 class="value-card__title">MOB'SS</h3>
+          <p class="value-card__desc">
+            Nous construisons le réseau. Plus il y a de praticiens et de collectivités,
+            plus la valeur de la plateforme grandit pour tout le monde. En phase bêta,
+            tout est gratuit pour valider l'utilité du service.
+          </p>
+          <div class="value-card__gain">
+            <strong>Ce qu'on construit :</strong> un réseau national de santé accessible
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- MODÈLE ÉCONOMIQUE — TRANSPARENT ─────────────────────────────────────── -->
+  <section class="section section--cream" style="padding:64px 0;">
+    <div class="container" style="max-width:780px;">
+      <header class="section__header" style="margin-bottom:36px;">
+        <span class="section__eyebrow">Notre modèle économique</span>
+        <h2>Ce qui est gratuit. Ce qui ne le sera peut-être pas.</h2>
+      </header>
+
+      <div class="model-table">
+        <div class="model-row model-row--header">
+          <span>Fonctionnalité</span>
+          <span>Aujourd'hui</span>
+          <span>À terme</span>
+        </div>
+
+        <div class="model-row">
+          <span>Inscription praticien</span>
+          <span class="model-tag model-tag--free">Gratuit</span>
+          <span class="model-tag model-tag--free">Toujours gratuit</span>
+        </div>
+        <div class="model-row">
+          <span>Accès aux espaces disponibles</span>
+          <span class="model-tag model-tag--free">Gratuit</span>
+          <span class="model-tag model-tag--free">Toujours gratuit</span>
+        </div>
+        <div class="model-row">
+          <span>Envoi de demandes aux hôtes</span>
+          <span class="model-tag model-tag--free">Gratuit</span>
+          <span class="model-tag model-tag--free">Toujours gratuit</span>
+        </div>
+        <div class="model-row">
+          <span>Profil public praticien</span>
+          <span class="model-tag model-tag--free">Gratuit</span>
+          <span class="model-tag model-tag--free">Toujours gratuit</span>
+        </div>
+        <div class="model-row model-row--divider">
+          <span>Visibilité renforcée (profil mis en avant)</span>
+          <span class="model-tag model-tag--free">Gratuit bêta</span>
+          <span class="model-tag model-tag--premium">Premium optionnel</span>
+        </div>
+        <div class="model-row">
+          <span>Alertes personnalisées nouveaux espaces</span>
+          <span class="model-tag model-tag--free">Gratuit bêta</span>
+          <span class="model-tag model-tag--premium">Premium optionnel</span>
+        </div>
+        <div class="model-row">
+          <span>Tableau de bord hôte avancé + exports</span>
+          <span class="model-tag model-tag--free">Gratuit bêta</span>
+          <span class="model-tag model-tag--premium">Premium optionnel</span>
+        </div>
+        <div class="model-row">
+          <span>Commission sur vos consultations</span>
+          <span class="model-tag model-tag--never">Jamais</span>
+          <span class="model-tag model-tag--never">Jamais</span>
+        </div>
+      </div>
+
+      <div class="model-callout">
+        <strong>Notre engagement :</strong> l'accès aux espaces et l'envoi de demandes resteront
+        toujours gratuits. Les fonctionnalités premium éventuelles seront <em>optionnelles</em> et
+        clairement identifiées. Jamais de frais sur vos consultations, jamais de commission
+        sur votre activité libérale.
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ ─────────────────────────────────────────────────────────────────── -->
+  <section class="section section--white" style="padding:64px 0;">
+    <div class="container" style="max-width:720px;">
+      <header class="section__header" style="margin-bottom:40px;">
+        <span class="section__eyebrow">Questions fréquentes</span>
+        <h2>Les objections les plus courantes</h2>
+      </header>
+
+      <div class="faq-list">
+
+        <details class="faq-item" open>
+          <summary class="faq-item__q">
+            "Si c'est gratuit, c'est moi le produit ?"
+            <svg class="faq-item__chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+          </summary>
+          <div class="faq-item__a">
+            <p>
+              Non. Nous ne vendons pas vos données, nous ne les transmettons pas à des tiers,
+              nous ne faisons pas de publicité ciblée. Vos informations professionnelles (nom,
+              spécialité, zone d'exercice) sont visibles sur votre profil public uniquement
+              parce que vous l'avez choisi. Lisez notre
+              <a href="/confidentialite">politique de confidentialité</a> — elle est courte et lisible.
+            </p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-item__q">
+            Pourquoi une mairie accepterait de donner sa salle gratuitement ?
+            <svg class="faq-item__chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+          </summary>
+          <div class="faq-item__a">
+            <p>
+              Parce que la salle existe déjà et coûte déjà de l'argent à la commune — qu'elle
+              soit utilisée ou non. L'accueillir un praticien le mardi matin ne crée aucun coût
+              supplémentaire. En revanche, cela apporte un bénéfice concret : des consultations
+              pour les administrés, un impact valorisable dans les rapports d'activité et les
+              Plans Locaux de Santé (PLS). C'est une mise à disposition <strong>gracieuse</strong>
+              — le cadre juridique français le permet simplement via une convention d'utilisation.
+            </p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-item__q">
+            Est-ce que ça va rester gratuit dans 2 ans ?
+            <svg class="faq-item__chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+          </summary>
+          <div class="faq-item__a">
+            <p>
+              L'accès aux espaces, l'inscription et les demandes : <strong>toujours gratuits</strong>.
+              C'est la colonne vertébrale du service — sans ça, MOB'SS n'a pas de raison d'être.
+              Des fonctionnalités avancées pourront être payantes — comme la visibilité renforcée
+              ou les exports de données pour les hôtes. Mais elles ne seront jamais nécessaires
+              pour simplement trouver un espace et exercer.
+            </p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-item__q">
+            Il n'y a vraiment aucun frais caché ?
+            <svg class="faq-item__chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+          </summary>
+          <div class="faq-item__a">
+            <p>
+              Aucun sur la plateforme MOB'SS. Certains <em>espaces</em> proposés par des
+              entreprises privées peuvent avoir une participation symbolique aux charges
+              (électricité, ménage). Si c'est le cas, c'est affiché explicitement sur la
+              fiche de l'annonce avant que vous envoyiez votre demande — jamais de surprise
+              après coup.
+            </p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-item__q">
+            Comment MOB'SS va survivre financièrement ?
+            <svg class="faq-item__chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+          </summary>
+          <div class="faq-item__a">
+            <p>
+              Aujourd'hui, MOB'SS est en phase bêta et se développe sans revenus — comme
+              toute startup en phase de lancement. Le modèle à terme repose sur des abonnements
+              <strong>optionnels</strong> pour les hôtes qui souhaitent des outils de gestion
+              avancés (tableaux de bord, exports, rapports d'impact pour les conseils municipaux)
+              et pour les praticiens qui souhaitent une mise en avant dans les résultats de
+              recherche. Ce sont des fonctionnalités qui apportent de la valeur au-delà du
+              service de base — pas des barrières à l'accès.
+            </p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-item__q">
+            MOB'SS prend-il une commission sur mes consultations ?
+            <svg class="faq-item__chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+          </summary>
+          <div class="faq-item__a">
+            <p>
+              <strong>Non, jamais.</strong> Vous exercez en libéral. Vos honoraires sont
+              entièrement les vôtres. MOB'SS ne s'interpose pas dans votre relation avec
+              vos patients, ne connaît pas le montant de vos consultations et n'a aucun
+              accès à votre facturation. Nous sommes une plateforme de mise en relation
+              d'espaces — rien de plus.
+            </p>
+          </div>
+        </details>
+
+      </div>
+
+      <!-- Lien vers FAQ générale -->
+      <p style="text-align:center;margin-top:32px;font-size:0.9rem;color:var(--color-text-soft);">
+        D'autres questions ?
+        <a href="/comment-ca-marche#faq" style="color:var(--color-primary);">Consultez la FAQ complète</a>
+        ou <a href="/contact" style="color:var(--color-primary);">contactez-nous directement</a>.
+      </p>
+
+    </div>
+  </section>
+
+  <!-- RÉASSURANCE FINALE ───────────────────────────────────────────────────── -->
+  <section class="section section--cream" style="padding:56px 0;border-top:1px solid var(--color-border);">
+    <div class="container" style="max-width:720px;text-align:center;">
+      <blockquote class="pg-final-quote">
+        "On ne construit pas la confiance avec des promesses.
+        On la construit avec de la transparence — et en faisant ce qu'on dit."
+      </blockquote>
+      <p style="color:var(--color-text-soft);font-size:0.88rem;margin-top:12px;">L'équipe MOB'SS</p>
+
+      <div class="pg-final-links">
+        <a href="/mentions-legales" class="pg-final-link">Mentions légales</a>
+        <span aria-hidden="true">·</span>
+        <a href="/confidentialite" class="pg-final-link">Politique de confidentialité</a>
+        <span aria-hidden="true">·</span>
+        <a href="/contact" class="pg-final-link">Nous écrire</a>
+      </div>
+    </div>
+  </section>
+
+  <CTASection
+    title="Convaincu ? Rejoignez MOB'SS gratuitement."
+    subtitle="Inscription en 2 minutes · Sans engagement · Zéro loyer"
+    primaryLabel="Je m'inscris comme praticien →"
+    primaryHref="/inscription?role=praticien"
+    secondaryLabel="Je propose un espace"
+    secondaryHref="/hotes"
+  />
+
+</BaseLayout>
+
+<style>
+  /* ── Hero ────────────────────────────────────────────────────────────────── */
+  .pg-hero {
+    background: var(--color-bg-soft);
+    border-bottom: 1px solid var(--color-border);
+    padding: 64px 0 56px;
+  }
+  .pg-hero__inner { max-width: 780px; }
+  .pg-hero h1 { margin-top: 12px; }
+  .pg-hero__lead {
+    font-size: 1.05rem;
+    color: var(--color-text-soft);
+    line-height: 1.75;
+    margin: 16px 0 24px;
+    max-width: 600px;
+  }
+  .pg-hero__badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .pg-badge {
+    font-size: 0.82rem;
+    font-weight: 600;
+    padding: 5px 12px;
+    border-radius: var(--radius-pill);
+    background: rgba(200,66,79,0.08);
+    color: var(--color-primary);
+    border: 1px solid rgba(200,66,79,0.18);
+  }
+  .pg-badge--green {
+    background: rgba(34,139,34,0.08);
+    color: #1a6b1a;
+    border-color: rgba(34,139,34,0.2);
+  }
+
+  /* ── Circuit de valeur ───────────────────────────────────────────────────── */
+  .value-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  .value-card {
+    background: var(--color-bg-soft);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: 28px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .value-card--highlight {
+    border-color: var(--color-primary);
+    box-shadow: 0 4px 16px rgba(200,66,79,0.08);
+    background: #fff;
+  }
+  .value-card__icon { font-size: 2rem; }
+  .value-card__title { font-size: 1.05rem; margin: 0; }
+  .value-card__desc {
+    font-size: 0.9rem;
+    color: var(--color-text-soft);
+    line-height: 1.65;
+    flex-grow: 1;
+    margin: 0;
+  }
+  .value-card__gain {
+    font-size: 0.82rem;
+    background: rgba(200,66,79,0.05);
+    border-left: 3px solid var(--color-primary);
+    padding: 8px 12px;
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    line-height: 1.5;
+    color: var(--color-text);
+  }
+
+  /* ── Tableau modèle économique ───────────────────────────────────────────── */
+  .model-table {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    margin-bottom: 24px;
+  }
+  .model-row {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 16px;
+    padding: 12px 20px;
+    align-items: center;
+    border-bottom: 1px solid var(--color-border);
+    font-size: 0.9rem;
+  }
+  .model-row:last-child { border-bottom: none; }
+  .model-row--header {
+    background: var(--color-bg-soft);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--color-text-soft);
+  }
+  .model-row--divider {
+    border-top: 2px solid var(--color-border);
+  }
+  .model-tag {
+    font-size: 0.78rem;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: var(--radius-pill);
+    white-space: nowrap;
+  }
+  .model-tag--free   { background: rgba(34,139,34,0.1); color: #1a6b1a; }
+  .model-tag--premium{ background: rgba(200,66,79,0.08); color: var(--color-primary); }
+  .model-tag--never  { background: rgba(31,21,24,0.06); color: var(--color-text-soft); text-decoration: line-through; }
+
+  .model-callout {
+    background: rgba(200,66,79,0.05);
+    border-left: 3px solid var(--color-primary);
+    padding: 16px 20px;
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    font-size: 0.9rem;
+    line-height: 1.65;
+    color: var(--color-text);
+  }
+
+  /* ── FAQ ─────────────────────────────────────────────────────────────────── */
+  .faq-list { display: flex; flex-direction: column; gap: 0; }
+  .faq-item {
+    border-bottom: 1px solid var(--color-border);
+  }
+  .faq-item:first-child { border-top: 1px solid var(--color-border); }
+  .faq-item__q {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 18px 4px;
+    font-size: 0.97rem;
+    font-weight: 600;
+    color: var(--color-text);
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+  }
+  .faq-item__q::-webkit-details-marker { display: none; }
+  .faq-item__chevron {
+    flex-shrink: 0;
+    color: var(--color-primary);
+    transition: transform 0.2s ease;
+  }
+  details[open] .faq-item__chevron { transform: rotate(180deg); }
+  .faq-item__a {
+    padding: 0 4px 20px;
+    font-size: 0.92rem;
+    color: var(--color-text-soft);
+    line-height: 1.75;
+  }
+  .faq-item__a p { margin: 0 0 10px; }
+  .faq-item__a p:last-child { margin: 0; }
+  .faq-item__a a { color: var(--color-primary); }
+
+  /* ── Citation finale ─────────────────────────────────────────────────────── */
+  .pg-final-quote {
+    font-size: clamp(1rem, 2.5vw, 1.2rem);
+    font-style: italic;
+    color: var(--color-text);
+    line-height: 1.65;
+    border-left: 3px solid var(--color-primary);
+    padding-left: 20px;
+    margin: 0 auto;
+    max-width: 560px;
+    text-align: left;
+  }
+  .pg-final-links {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 24px;
+    font-size: 0.82rem;
+    color: var(--color-text-soft);
+  }
+  .pg-final-link { color: var(--color-text-soft); text-decoration: underline; }
+  .pg-final-link:hover { color: var(--color-primary); }
+
+  /* ── Responsive ──────────────────────────────────────────────────────────── */
+  @media (max-width: 768px) {
+    .value-grid { grid-template-columns: 1fr; }
+    .model-row {
+      grid-template-columns: 1fr;
+      gap: 6px;
+    }
+    .model-row--header { display: none; }
+    .model-tag { display: inline-flex; }
+  }
+</style>
