@@ -1,0 +1,648 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CTASection from '../components/CTASection.astro';
+
+const breadcrumbLd = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Accueil", "item": "https://mobss.fr/" },
+    { "@type": "ListItem", "position": 2, "name": "Proposer un espace", "item": "https://mobss.fr/hotes" }
+  ]
+});
+---
+
+<BaseLayout
+  title="Proposer un espace | MOB'SS — Collectivités & Entreprises"
+  description="Vos salles inutilisées deviennent des ressources de santé pour votre territoire. Gratuit, sans contrainte administrative, avec un impact mesurable. MOB'SS accompagne les collectivités et entreprises qui agissent."
+  currentPage="hotes"
+>
+  <script type="application/ld+json" set:html={breadcrumbLd} />
+
+  <!-- ─────────────────────────────────────────────
+       HERO HÔTE
+  ───────────────────────────────────────────── -->
+  <section class="hotes-hero">
+    <div class="container hotes-hero__inner">
+      <div class="hotes-hero__content">
+        <span class="section__eyebrow">Pour les collectivités &amp; entreprises</span>
+        <h1>Vos espaces inoccupés deviennent des ressources de santé</h1>
+        <p class="hotes-hero__lead">
+          44 % des Français estiment vivre dans un désert médical. Pourtant, les collectivités
+          disposent de salles polyvalentes, gymnases et locaux administratifs vides plusieurs
+          jours par semaine. MOB'SS fait le lien — sans loyer, sans contrainte, avec un impact
+          territorial concret.
+        </p>
+        <div class="hotes-hero__ctas">
+          <a href="/deposer-annonce" class="btn btn--cream btn--lg">Proposer mon espace →</a>
+          <a href="#comment-ca-marche" class="btn btn--outline btn--lg">Voir comment ça marche</a>
+        </div>
+        <div class="hotes-hero__trust">
+          <span>✓ Gratuit pour les collectivités</span>
+          <span>✓ Zéro contrainte administrative</span>
+          <span>✓ Impact mesurable &amp; traçable</span>
+        </div>
+      </div>
+      <div class="hotes-hero__visual" aria-hidden="true">
+        <div class="hotes-hero__stat-card">
+          <span class="hotes-hero__stat-number">6M</span>
+          <span class="hotes-hero__stat-label">Français sans médecin traitant</span>
+        </div>
+        <div class="hotes-hero__stat-card hotes-hero__stat-card--accent">
+          <span class="hotes-hero__stat-number">30 %</span>
+          <span class="hotes-hero__stat-label">des locaux publics inutilisés ≥ 3 j/semaine</span>
+        </div>
+        <div class="hotes-hero__stat-card">
+          <span class="hotes-hero__stat-number">5 min</span>
+          <span class="hotes-hero__stat-label">pour déposer votre premier espace</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────────────────────────────────────────
+       LE DÉFI DE VOTRE TERRITOIRE
+  ───────────────────────────────────────────── -->
+  <section class="section hotes-defi">
+    <div class="container" style="max-width:780px;text-align:center;">
+      <span class="section__eyebrow">Le constat</span>
+      <h2>Votre territoire a les ressources.<br>Il manque le lien.</h2>
+      <p style="color:var(--color-text-soft);font-size:1.05rem;line-height:1.75;margin-top:16px;">
+        Un directeur de médiathèque ou un élu local voit chaque semaine des salles polyvalentes
+        fermées à clé tandis que des professionnels de santé cherchent désespérément un espace
+        pour consulter leurs patients. Le problème n'est pas un manque de volonté — c'est un
+        manque de <strong>mise en relation</strong>.
+      </p>
+      <p style="color:var(--color-text-soft);font-size:1.05rem;line-height:1.75;margin-top:12px;">
+        MOB'SS crée cette connexion. Vous ouvrez un espace. Un praticien l'utilise. Vos habitants
+        accèdent à un soin. Votre collectivité porte un acte de responsabilité territoriale concret.
+      </p>
+    </div>
+  </section>
+
+  <!-- ─────────────────────────────────────────────
+       3 PILIERS DE VALEUR
+  ───────────────────────────────────────────── -->
+  <section class="section hotes-piliers">
+    <div class="container">
+      <div class="section__header" style="text-align:center;margin-bottom:48px;">
+        <span class="section__eyebrow">Pourquoi rejoindre MOB'SS</span>
+        <h2>Trois raisons de proposer votre espace</h2>
+      </div>
+      <div class="hotes-piliers__grid">
+
+        <div class="hotes-pilier">
+          <div class="hotes-pilier__icon" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+          </div>
+          <h3>Responsabilité sociale &amp; territoriale</h3>
+          <p>
+            Mettre un espace à disposition d'un kiné ou d'un médecin itinérant, c'est un acte de
+            politique publique locale. Vous contribuez directement à l'accès aux soins de vos
+            administrés — sans budget dédié, sans projet complexe.
+          </p>
+          <ul class="hotes-pilier__list">
+            <li>Répond aux obligations RSE des entreprises publiques</li>
+            <li>S'inscrit dans les Plans Locaux de Santé</li>
+            <li>Valorisable dans vos rapports d'activité annuels</li>
+          </ul>
+        </div>
+
+        <div class="hotes-pilier hotes-pilier--featured">
+          <div class="hotes-pilier__badge">Levier prioritaire</div>
+          <div class="hotes-pilier__icon" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <rect x="3" y="3" width="18" height="18" rx="2"/>
+              <path d="M3 9h18M9 21V9"/>
+            </svg>
+          </div>
+          <h3>Valorisation de vos actifs inutilisés</h3>
+          <p>
+            Votre salle de réunion vide le mercredi matin, votre gymnase disponible hors créneaux
+            scolaires, vos locaux administratifs sous-occupés — ils ont une valeur sociale que
+            vous n'exploitez pas encore.
+          </p>
+          <ul class="hotes-pilier__list">
+            <li>Pas de travaux, pas de mise aux normes requise</li>
+            <li>Vous définissez vous-même les créneaux disponibles</li>
+            <li>Zéro loyer ni facturation — contribution sociale directe</li>
+          </ul>
+        </div>
+
+        <div class="hotes-pilier">
+          <div class="hotes-pilier__icon" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <line x1="18" y1="20" x2="18" y2="10"/>
+              <line x1="12" y1="20" x2="12" y2="4"/>
+              <line x1="6"  y1="20" x2="6"  y2="14"/>
+            </svg>
+          </div>
+          <h3>Impact territorial mesurable</h3>
+          <p>
+            MOB'SS vous donne accès à un tableau de bord hôte : nombre de créneaux occupés,
+            spécialités accueillies, estimations de consultations facilitées — des données
+            concrètes pour vos bilans et vos élus.
+          </p>
+          <ul class="hotes-pilier__list">
+            <li>Tableau de bord en temps réel</li>
+            <li>Export PDF pour vos rapports d'activité</li>
+            <li>Données agrégées à l'échelle de votre territoire</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────────────────────────────────────────
+       COMMENT ÇA MARCHE
+  ───────────────────────────────────────────── -->
+  <section class="section hotes-process" id="comment-ca-marche">
+    <div class="container">
+      <div class="section__header" style="text-align:center;margin-bottom:48px;">
+        <span class="section__eyebrow">Le processus</span>
+        <h2>En 3 étapes, votre espace est actif</h2>
+      </div>
+      <div class="hotes-process__steps">
+
+        <div class="hotes-step">
+          <div class="hotes-step__number" aria-hidden="true">1</div>
+          <div class="hotes-step__content">
+            <h3>Déposez votre espace en 5 minutes</h3>
+            <p>
+              Décrivez votre local, ajoutez quelques photos, indiquez vos créneaux disponibles.
+              Pas de dossier administratif. Pas de validation préalable. Vous êtes en ligne
+              immédiatement.
+            </p>
+            <span class="hotes-step__tag">5 min · 0 €</span>
+          </div>
+        </div>
+
+        <div class="hotes-step__connector" aria-hidden="true">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+        </div>
+
+        <div class="hotes-step">
+          <div class="hotes-step__number" aria-hidden="true">2</div>
+          <div class="hotes-step__content">
+            <h3>Un praticien fait une demande</h3>
+            <p>
+              MOB'SS lui présente votre espace. Il vous envoie une demande avec son profil,
+              sa spécialité et ses besoins. Vous recevez une notification et validez (ou refusez)
+              en un clic depuis votre tableau de bord.
+            </p>
+            <span class="hotes-step__tag">Contrôle total · Notifications email</span>
+          </div>
+        </div>
+
+        <div class="hotes-step__connector" aria-hidden="true">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+        </div>
+
+        <div class="hotes-step">
+          <div class="hotes-step__number" aria-hidden="true">3</div>
+          <div class="hotes-step__content">
+            <h3>Mesurez votre impact territorial</h3>
+            <p>
+              Chaque utilisation est tracée. Votre tableau de bord vous montre combien de
+              consultations ont été facilitées, quelles spécialités ont été accueillies, et
+              l'impact estimé sur votre bassin de population.
+            </p>
+            <span class="hotes-step__tag">Tableau de bord · Export rapport</span>
+          </div>
+        </div>
+
+      </div>
+      <div style="text-align:center;margin-top:40px;">
+        <a href="/deposer-annonce" class="btn btn--cream btn--lg">Déposer mon premier espace →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────────────────────────────────────────
+       TYPES D'ESPACES ACCEPTÉS
+  ───────────────────────────────────────────── -->
+  <section class="section hotes-types">
+    <div class="container">
+      <div class="section__header" style="text-align:center;margin-bottom:36px;">
+        <span class="section__eyebrow">Ce que vous pouvez proposer</span>
+        <h2>Tous les espaces ont de la valeur</h2>
+      </div>
+      <div class="hotes-types__grid">
+        {[
+          { icon: '🏛️', label: 'Salles des fêtes &amp; polyvalentes', who: 'Mairies, EPCI' },
+          { icon: '🏃', label: 'Gymnases &amp; salles de sport', who: 'Collectivités, associations' },
+          { icon: '🏢', label: 'Locaux administratifs', who: 'Mairies, services déconcentrés' },
+          { icon: '🏥', label: 'Cabinets médicaux vacants', who: 'Communes, MSP' },
+          { icon: '🏫', label: 'Infirmeries scolaires', who: 'Établissements scolaires' },
+          { icon: '🏗️', label: 'Espaces de coworking', who: 'Entreprises, tiers-lieux' },
+        ].map(type => (
+          <div class="hotes-type-card">
+            <span class="hotes-type-card__icon" aria-hidden="true" set:html={type.icon} />
+            <strong set:html={type.label} />
+            <span class="hotes-type-card__who" set:html={type.who} />
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────────────────────────────────────────
+       FAQ HÔTES
+  ───────────────────────────────────────────── -->
+  <section class="section hotes-faq">
+    <div class="container" style="max-width:760px;">
+      <div class="section__header" style="text-align:center;margin-bottom:40px;">
+        <span class="section__eyebrow">Questions fréquentes</span>
+        <h2>Ce que les collectivités nous demandent</h2>
+      </div>
+      <div class="hotes-faq__list">
+        {[
+          {
+            q: "Est-ce vraiment gratuit pour les collectivités ?",
+            a: "Oui, totalement. MOB'SS est gratuit pour les structures publiques et associatives. Nous monétisons via des services premium optionnels destinés aux grandes entreprises privées. Votre engagement public ne vous coûte rien."
+          },
+          {
+            q: "Qui décide d'accepter ou de refuser les demandes ?",
+            a: "Vous. Chaque demande de praticien passe par votre validation. Vous voyez le profil complet du praticien, sa spécialité, ses documents vérifiés (RPPS, assurance) avant de décider. Vous gardez le contrôle total de votre espace."
+          },
+          {
+            q: "Faut-il adapter nos locaux pour les accueillir ?",
+            a: "Non. La plupart des espaces n'ont pas besoin de travaux. Les praticiens s'adaptent à vos locaux. Un espace avec une table, des chaises et une connexion wifi suffit pour beaucoup de consultations. Indiquez honnêtement ce que vous avez — les praticiens feront leur choix."
+          },
+          {
+            q: "Quelle est la responsabilité juridique de la collectivité ?",
+            a: "MOB'SS propose un cadre de mise en relation. La collectivité met son espace à disposition à titre gracieux. Les praticiens sont couverts par leur propre assurance professionnelle. Nous vous fournissons un modèle de convention d'utilisation simple à signer."
+          },
+          {
+            q: "Comment ça se passe si un praticien n'utilise pas l'espace comme prévu ?",
+            a: "Vous pouvez retirer ou suspendre votre annonce à tout moment, sans préavis. Si un praticien pose problème, notre équipe modération intervient. Votre espace vous appartient — vous décidez à tout moment."
+          },
+          {
+            q: "Peut-on intégrer ça dans un Plan Local de Santé ?",
+            a: "Absolument. MOB'SS peut générer un rapport d'impact annuel (consultations facilitées, spécialités accueillies, estimations de population couverte) directement exploitable dans vos PLS, vos rapports RSE ou vos bilans d'élus."
+          },
+        ].map(item => (
+          <details class="hotes-faq__item">
+            <summary class="hotes-faq__question">{item.q}</summary>
+            <p class="hotes-faq__answer">{item.a}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────────────────────────────────────────
+       CTA FINAL
+  ───────────────────────────────────────────── -->
+  <CTASection
+    title="Rejoignez les collectivités qui agissent."
+    subtitle="Gratuit · Sans contrainte administrative · Impact mesurable"
+    primaryLabel="Proposer mon espace →"
+    primaryHref="/deposer-annonce"
+    secondaryLabel="Nous contacter"
+    secondaryHref="/contact"
+    showContact={false}
+  />
+
+</BaseLayout>
+
+<style>
+  /* ── Hero hôte ── */
+  .hotes-hero {
+    background: linear-gradient(135deg, #fdf6e3 0%, #fff8f0 100%);
+    padding: 80px 0 72px;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .hotes-hero__inner {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 56px;
+    align-items: center;
+  }
+  .hotes-hero__content .section__eyebrow {
+    margin-bottom: 16px;
+  }
+  .hotes-hero__content h1 {
+    font-size: clamp(1.9rem, 3.5vw, 2.8rem);
+    line-height: 1.15;
+    margin-bottom: 20px;
+    color: var(--color-text);
+  }
+  .hotes-hero__lead {
+    color: var(--color-text-soft);
+    font-size: 1.05rem;
+    line-height: 1.7;
+    margin-bottom: 28px;
+    max-width: 560px;
+  }
+  .hotes-hero__ctas {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+  .hotes-hero__trust {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    font-size: 0.82rem;
+    color: var(--color-text-soft);
+  }
+  .hotes-hero__trust span {
+    color: var(--color-primary);
+    font-weight: 600;
+  }
+
+  /* Stats visuelles */
+  .hotes-hero__visual {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .hotes-hero__stat-card {
+    background: #fff;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: 20px 24px;
+    box-shadow: 0 4px 12px rgba(31,21,24,0.06);
+  }
+  .hotes-hero__stat-card--accent {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+  }
+  .hotes-hero__stat-card--accent .hotes-hero__stat-number,
+  .hotes-hero__stat-card--accent .hotes-hero__stat-label {
+    color: #fff;
+  }
+  .hotes-hero__stat-number {
+    display: block;
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--color-primary);
+    font-family: var(--font-display);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .hotes-hero__stat-label {
+    font-size: 0.82rem;
+    color: var(--color-text-soft);
+    line-height: 1.4;
+  }
+
+  /* ── Défi ── */
+  .hotes-defi {
+    background: var(--color-bg-soft);
+  }
+
+  /* ── Piliers ── */
+  .hotes-piliers__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  .hotes-pilier {
+    background: #fff;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: 32px 28px;
+    position: relative;
+  }
+  .hotes-pilier--featured {
+    border-color: var(--color-primary);
+    box-shadow: 0 8px 24px rgba(200,66,79,0.12);
+  }
+  .hotes-pilier__badge {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--color-primary);
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+  .hotes-pilier__icon {
+    width: 52px;
+    height: 52px;
+    background: var(--color-bg-soft);
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 18px;
+    color: var(--color-primary);
+  }
+  .hotes-pilier--featured .hotes-pilier__icon {
+    background: rgba(200,66,79,0.08);
+  }
+  .hotes-pilier h3 {
+    font-size: 1.05rem;
+    margin-bottom: 10px;
+    color: var(--color-text);
+  }
+  .hotes-pilier p {
+    font-size: 0.9rem;
+    color: var(--color-text-soft);
+    line-height: 1.65;
+    margin-bottom: 16px;
+  }
+  .hotes-pilier__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .hotes-pilier__list li {
+    font-size: 0.82rem;
+    color: var(--color-text-soft);
+    padding-left: 18px;
+    position: relative;
+  }
+  .hotes-pilier__list li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    color: var(--color-primary);
+    font-weight: 700;
+  }
+
+  /* ── Process ── */
+  .hotes-process {
+    background: var(--color-bg-soft);
+  }
+  .hotes-process__steps {
+    max-width: 640px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+  .hotes-step {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+    background: #fff;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: 28px 28px;
+    width: 100%;
+  }
+  .hotes-step__number {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-display);
+  }
+  .hotes-step__content h3 {
+    font-size: 1rem;
+    margin-bottom: 6px;
+    color: var(--color-text);
+  }
+  .hotes-step__content p {
+    font-size: 0.9rem;
+    color: var(--color-text-soft);
+    line-height: 1.65;
+    margin-bottom: 10px;
+  }
+  .hotes-step__tag {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    background: rgba(200,66,79,0.08);
+    padding: 3px 10px;
+    border-radius: 20px;
+  }
+  .hotes-step__connector {
+    padding: 4px 0;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+
+  /* ── Types ── */
+  .hotes-types__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  .hotes-type-card {
+    background: #fff;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  .hotes-type-card:hover {
+    border-color: var(--color-primary);
+    box-shadow: 0 4px 12px rgba(200,66,79,0.08);
+  }
+  .hotes-type-card__icon {
+    font-size: 1.6rem;
+    line-height: 1;
+  }
+  .hotes-type-card strong {
+    font-size: 0.9rem;
+    color: var(--color-text);
+  }
+  .hotes-type-card__who {
+    font-size: 0.78rem;
+    color: var(--color-text-soft);
+  }
+
+  /* ── FAQ ── */
+  .hotes-faq {
+    background: var(--color-bg-soft);
+  }
+  .hotes-faq__list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .hotes-faq__item {
+    background: #fff;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+  }
+  .hotes-faq__item[open] {
+    border-color: var(--color-primary);
+  }
+  .hotes-faq__question {
+    list-style: none;
+    padding: 18px 22px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    user-select: none;
+  }
+  .hotes-faq__question::-webkit-details-marker { display: none; }
+  .hotes-faq__question::after {
+    content: '+';
+    font-size: 1.2rem;
+    font-weight: 400;
+    color: var(--color-primary);
+    flex-shrink: 0;
+    transition: transform .2s;
+  }
+  .hotes-faq__item[open] .hotes-faq__question::after {
+    content: '−';
+  }
+  .hotes-faq__question:hover {
+    color: var(--color-primary);
+  }
+  .hotes-faq__answer {
+    padding: 0 22px 20px;
+    font-size: 0.9rem;
+    color: var(--color-text-soft);
+    line-height: 1.7;
+    margin: 0;
+    border-top: 1px solid var(--color-border);
+    padding-top: 14px;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 1024px) {
+    .hotes-hero__inner { grid-template-columns: 1fr; gap: 40px; }
+    .hotes-hero__visual { flex-direction: row; flex-wrap: wrap; }
+    .hotes-hero__stat-card { flex: 1; min-width: 140px; }
+    .hotes-piliers__grid { grid-template-columns: 1fr; }
+    .hotes-types__grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 768px) {
+    .hotes-hero { padding: 56px 0 48px; }
+    .hotes-hero__ctas { flex-direction: column; }
+    .hotes-hero__trust { flex-direction: column; gap: 8px; }
+    .hotes-types__grid { grid-template-columns: 1fr; }
+    .hotes-step { flex-direction: column; gap: 16px; }
+  }
+</style>
