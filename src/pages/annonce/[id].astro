@@ -94,13 +94,32 @@ const adresseComplete = [annonce.adresse, annonce.cp, annonce.ville].filter(Bool
   currentPage="explorez"
 >
 
-  <!-- Fil d'Ariane -->
-  <div class="container" style="padding-top:24px;">
-    <p style="color:var(--color-text-soft);font-size:0.9rem;">
-      <a href="/explorez" style="color:var(--color-text-soft);">Explorez</a> →
-      <a href={`/explorez?type=${encodeURIComponent(annonce.type)}`} style="color:var(--color-text-soft);">{typeLabel}</a> →
-      <span>{annonce.ville}</span>
-    </p>
+  <!-- Fil d'Ariane — nav sémantique + JSON-LD -->
+  {(() => {
+    const bcLd = JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Accueil",  "item": "https://mobss.fr/" },
+        { "@type": "ListItem", "position": 2, "name": "Espaces",  "item": "https://mobss.fr/explorez" },
+        { "@type": "ListItem", "position": 3, "name": typeLabel,  "item": `https://mobss.fr/explorez?type=${encodeURIComponent(annonce.type)}` },
+        { "@type": "ListItem", "position": 4, "name": annonce.titre, "item": `https://mobss.fr/annonce/${annonce.id}` },
+      ]
+    });
+    return <script type="application/ld+json" set:html={bcLd} />;
+  })()}
+  <div class="container" style="padding-top:20px;">
+    <nav aria-label="Fil d'Ariane">
+      <ol class="breadcrumb">
+        <li class="breadcrumb__item"><a href="/">Accueil</a></li>
+        <li class="breadcrumb__sep" aria-hidden="true">/</li>
+        <li class="breadcrumb__item"><a href="/explorez">Espaces</a></li>
+        <li class="breadcrumb__sep" aria-hidden="true">/</li>
+        <li class="breadcrumb__item"><a href={`/explorez?type=${encodeURIComponent(annonce.type)}`}>{typeLabel}</a></li>
+        <li class="breadcrumb__sep" aria-hidden="true">/</li>
+        <li class="breadcrumb__item breadcrumb__item--current" aria-current="page">{annonce.ville}</li>
+      </ol>
+    </nav>
   </div>
 
   <section class="section" style="padding-top:24px;">
@@ -295,6 +314,28 @@ const adresseComplete = [annonce.adresse, annonce.cp, annonce.ville].filter(Bool
       </div>
     </div>
   </section>
+
+<style>
+  /* Breadcrumb */
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: 0.85rem;
+  }
+  .breadcrumb__item a {
+    color: var(--color-text-soft);
+    text-decoration: none;
+    transition: color .12s;
+  }
+  .breadcrumb__item a:hover { color: var(--color-primary); }
+  .breadcrumb__sep { color: var(--color-border); }
+  .breadcrumb__item--current { color: var(--color-text); font-weight: 500; }
+</style>
 
 </BaseLayout>
 

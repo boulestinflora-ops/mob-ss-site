@@ -395,6 +395,23 @@ import steps from '../data/steps.json';
           <span class="stat-secondary-item__source">Croix-Rouge / CRÉDOC, 2025</span>
         </div>
       </div>
+
+      <!-- Maillage éditorial — liens contextuels vers les pages de fond -->
+      <div class="editorial-nav" aria-label="Approfondissez le sujet">
+        <span class="editorial-nav__label">Pour aller plus loin&nbsp;:</span>
+        <a href="/le-probleme" class="editorial-nav__link">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Le désert médical en chiffres
+        </a>
+        <a href="/notre-solution" class="editorial-nav__link">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+          Comment MOB'SS y répond
+        </a>
+        <a href="/notre-impact" class="editorial-nav__link">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          Notre impact territorial
+        </a>
+      </div>
     </div>
   </section>
 
@@ -1040,6 +1057,40 @@ import steps from '../data/steps.json';
     .ambassador-inner { flex-direction: column; align-items: flex-start; gap: 24px; }
     .journey-timeline { flex-direction: column; gap: 0; }
     .journey-step { display: flex; }
+  }
+
+  /* Maillage éditorial contextuel — fin de section stats */
+  .editorial-nav {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid var(--color-border);
+    font-size: 0.85rem;
+  }
+  .editorial-nav__label {
+    color: var(--color-text-soft);
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .editorial-nav__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--color-primary);
+    text-decoration: none;
+    font-weight: 500;
+    padding: 4px 10px;
+    border: 1px solid rgba(200,66,79,0.25);
+    border-radius: 20px;
+    transition: background .12s, border-color .12s;
+    white-space: nowrap;
+  }
+  .editorial-nav__link:hover {
+    background: rgba(200,66,79,0.06);
+    border-color: var(--color-primary);
   }
 </style>
 
