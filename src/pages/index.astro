@@ -30,7 +30,7 @@ import steps from '../data/steps.json';
       </p>
       <div class="hero__cta">
         <a href="/inscription?role=praticien" class="btn btn--cream btn--lg">Je veux exercer</a>
-        <a href="/inscription?role=collectivite" class="btn btn--hero-host btn--lg">
+        <a href="/inscription?role=collectivite" class="btn btn--hero-host">
           Je propose un espace →
         </a>
       </div>
@@ -974,19 +974,42 @@ import steps from '../data/steps.json';
     text-align: center;
   }
 
+  /* ── Tablette 768px–1024px ──────────────────────────────── */
+  @media (max-width: 1024px) {
+    .explication-grid {
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+    .explication-arrow {
+      transform: rotate(90deg);
+      justify-content: center;
+    }
+    .stats-visual {
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+    .cta-final-grid {
+      grid-template-columns: 1fr;
+    }
+    .search-fields-row {
+      grid-template-columns: 1fr;
+    }
+  }
+
   /* Responsive */
   @media (max-width: 768px) {
     .hero { padding: 64px 0 48px; }
     .hero__title { font-size: clamp(2rem, 8vw, 2.8rem); }
     .hero__sub { font-size: 1rem; }
-    .hero__ctas { flex-direction: column; align-items: stretch; }
+    .hero__cta { flex-direction: column; align-items: stretch; }
     .btn-primary, .btn-secondary { text-align: center; }
     .stats-grid { grid-template-columns: 1fr 1fr; gap: 16px; }
     .stat-card { padding: 20px 16px; }
     .problems-grid { grid-template-columns: 1fr; gap: 20px; }
     .solution-grid { grid-template-columns: 1fr; }
     .solution-visual { display: none; }
-    .explication-blocks { flex-direction: column; }
+    .explication-grid { grid-template-columns: 1fr; gap: 16px; }
+    .explication-arrow { transform: rotate(90deg); justify-content: center; }
     .testimonials-grid { grid-template-columns: 1fr; }
     .ambassador-inner { flex-direction: column; align-items: flex-start; gap: 24px; }
     .journey-timeline { flex-direction: column; gap: 0; }
