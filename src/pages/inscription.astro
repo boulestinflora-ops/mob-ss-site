@@ -22,6 +22,14 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         </div>
       </nav>
 
+      <!-- ── BARRE PROGRESSION MOBILE ─────────────────────────────── -->
+      <div class="insc-mobile-progress" aria-hidden="true">
+        <div class="insc-mobile-progress__track">
+          <div class="insc-mobile-progress__fill" id="mobile-progress-fill" style="width:50%"></div>
+        </div>
+        <p class="insc-mobile-progress__label" id="mobile-progress-label">Étape 1 sur 2 — Mon profil</p>
+      </div>
+
       <!-- ── ÉTAPE 1 : RÔLE ─────────────────────────────────────── -->
       <div id="step-1" class="form-card insc-card">
         <h1 class="insc-card__title">Je suis…</h1>
@@ -267,6 +275,34 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     background: var(--color-primary);
     color: #fff;
   }
+  /* ── Mobile-only progress bar ── */
+  .insc-mobile-progress {
+    display: none;  /* hidden on desktop — shown via media query below */
+    margin-bottom: 24px;
+  }
+  .insc-mobile-progress__track {
+    height: 4px;
+    background: var(--color-border, #e5e0d8);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .insc-mobile-progress__fill {
+    height: 100%;
+    background: var(--color-primary);
+    border-radius: 4px;
+    transition: width 0.35s ease;
+  }
+  .insc-mobile-progress__label {
+    font-size: 0.78rem;
+    color: var(--color-text-soft);
+    margin: 6px 0 0;
+    text-align: center;
+  }
+  @media (max-width: 480px) {
+    .insc-mobile-progress { display: block; }
+    .insc-stepper { display: none; }  /* masquer le stepper visuel sur très petit écran */
+  }
+
   .insc-step__line {
     flex: 1;
     height: 2px;
@@ -531,6 +567,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     stepper1.classList.add('is-done');
     stepper2.classList.add('is-active');
     stepperLine.classList.add('is-done');
+    // Barre de progression mobile
+    const mFill  = document.getElementById('mobile-progress-fill') as HTMLElement | null;
+    const mLabel = document.getElementById('mobile-progress-label') as HTMLElement | null;
+    if (mFill)  mFill.style.width  = '100%';
+    if (mLabel) mLabel.textContent = 'Étape 2 sur 2 — Mes coordonnées';
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
@@ -541,6 +582,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     stepper1.classList.add('is-active');
     stepper2.classList.remove('is-active');
     stepperLine.classList.remove('is-done');
+    // Barre de progression mobile
+    const mFillBack  = document.getElementById('mobile-progress-fill') as HTMLElement | null;
+    const mLabelBack = document.getElementById('mobile-progress-label') as HTMLElement | null;
+    if (mFillBack)  mFillBack.style.width  = '50%';
+    if (mLabelBack) mLabelBack.textContent = 'Étape 1 sur 2 — Mon profil';
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 

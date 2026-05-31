@@ -1139,6 +1139,35 @@ import steps from '../data/steps.json';
     });
   }
 
+  // ── Live stats — chargement depuis Supabase ────────────────────────────────
+  (async function loadLiveStats() {
+    try {
+      // Import dynamique pour ne pas bloquer le LCP
+      const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
+      const supa = createClient(
+        'https://wzfccfnguekwlfhgpvqf.supabase.co',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind6ZmNjZm5ndWVrd2xmaGdwdnFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ0MDE2MjksImV4cCI6MjA1OTk3NzYyOX0.G8OWFWQnPqMW8KFJ4TFiCjRMhvDiRR7kEiFfCDEYQaI'
+      );
+      // 3 requêtes en parallèle
+      const [{ count: espaces }, { count: praticiens }, { count: communes }] = await Promise.all([
+        supa.from('annonces').select('*', { count: 'exact', head: true }).eq('status', 'publie'),
+        supa.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'praticien'),
+        supa.from('profiles').select('ville', { count: 'exact', head: true }).eq('role', 'collectivite'),
+      ]);
+      const fmt = (n) => (n ?? 0).toLocaleString('fr-FR');
+      const setEl = (id, val, fallback) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = val > 0 ? fmt(val) : fallback;
+      };
+      setEl('stat-espaces',    espaces,    '—');
+      setEl('stat-praticiens', praticiens, '—');
+      setEl('stat-communes',   communes,   '—');
+    } catch(e) {
+      // En cas d'erreur réseau, on garde le "—" existant — pas d'UX dégradée
+      console.debug('Stats non chargées :', e);
+    }
+  })();
+
   // Validation search card — au moins un champ requis avant soumission
   const homeForm = document.getElementById('home-search-form');
   if (homeForm) {

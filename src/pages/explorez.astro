@@ -201,13 +201,41 @@ const SPACE_TYPES = [
     </div>
   </div>
 
-  <!-- Note démo (visible uniquement quand aucune annonce réelle n'est publiée) -->
-  <!-- Aucun espace -->
-  <div id="empty-state" class="container" style="display:none;text-align:center;padding:60px 24px;">
-    <div style="font-size:3rem;margin-bottom:16px;">🏟️</div>
-    <h3>La plateforme démarre !</h3>
-    <p style="color:var(--color-text-soft);margin-bottom:24px;">Aucun espace disponible pour le moment.<br/>Vous êtes gestionnaire d'espace ?</p>
-    <a href="/deposer-annonce" class="btn btn--primary">Déposer votre espace →</a>
+  <!-- État vide — base beta (aucun espace publié ou aucun résultat global) -->
+  <div id="empty-state" class="container empty-state-beta" style="display:none;">
+    <div class="empty-state-beta__icon" aria-hidden="true">🌱</div>
+    <h3 class="empty-state-beta__title">La plateforme est en cours de lancement !</h3>
+    <p class="empty-state-beta__lead">
+      MOB'SS est en version bêta. Les premiers espaces arrivent progressivement —
+      soyez parmi les premiers à en profiter.
+    </p>
+    <!-- Formulaire alerte par email -->
+    <div class="empty-notify-box" id="empty-notify-box">
+      <p class="empty-notify-box__label">Être notifié dès qu'un espace est disponible près de chez vous :</p>
+      <form class="empty-notify-form" id="empty-notify-form" novalidate>
+        <input
+          type="email"
+          id="empty-notify-email"
+          class="empty-notify-form__input"
+          placeholder="votre@email.fr"
+          autocomplete="email"
+          required
+        />
+        <button type="submit" class="btn btn--primary">Me prévenir →</button>
+      </form>
+      <p class="empty-notify-form__success" id="empty-notify-success" style="display:none;">
+        ✓ Nous vous préviendrons dès qu'un espace sera disponible dans votre zone.
+      </p>
+    </div>
+    <div class="empty-state-beta__actions">
+      <a href="/hotes" class="btn btn--outline">Vous avez un espace à proposer ? →</a>
+      <a href="/ressources" class="btn btn--ghost">En savoir plus sur MOB'SS</a>
+    </div>
+    <!-- Réassurance -->
+    <p class="empty-state-beta__reassurance">
+      64&nbsp;% des médecins iraient exercer en désert médical si un espace était disponible.
+      <em>Votre inscription aide à construire ce réseau.</em>
+    </p>
   </div>
 
   <!-- Erreur chargement -->
@@ -358,6 +386,30 @@ const SPACE_TYPES = [
         }
       }, 600);
     }
+  });
+</script>
+
+<script is:inline>
+  // ── Empty state : formulaire "être notifié" ──────────────────────────────────
+  document.addEventListener('DOMContentLoaded', function () {
+    const form    = document.getElementById('empty-notify-form');
+    const success = document.getElementById('empty-notify-success');
+    if (!form) return;
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      const email = document.getElementById('empty-notify-email').value.trim();
+      if (!email || !email.includes('@')) {
+        document.getElementById('empty-notify-email').focus();
+        return;
+      }
+      // Stockage local simple (pas de DB nécessaire en beta)
+      const saved = JSON.parse(localStorage.getItem('mobss_notify_emails') || '[]');
+      if (!saved.includes(email)) saved.push(email);
+      localStorage.setItem('mobss_notify_emails', JSON.stringify(saved));
+      // UX feedback immédiat
+      form.style.display   = 'none';
+      if (success) success.style.display = 'block';
+    });
   });
 </script>
 
@@ -611,5 +663,90 @@ initExplorez();
     font-size: 0.78rem;
     color: var(--color-text-soft);
     margin-top: 4px;
+  }
+
+  /* ── Empty state beta ──────────────────────────────────────────────────────── */
+  .empty-state-beta {
+    text-align: center;
+    padding: 64px 24px 48px;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  .empty-state-beta__icon { font-size: 3.5rem; margin-bottom: 16px; }
+  .empty-state-beta__title {
+    font-size: clamp(1.2rem, 3vw, 1.5rem);
+    margin: 0 0 12px;
+    color: var(--color-text);
+  }
+  .empty-state-beta__lead {
+    color: var(--color-text-soft);
+    line-height: 1.7;
+    margin: 0 0 28px;
+    font-size: 0.97rem;
+  }
+  .empty-notify-box {
+    background: var(--color-bg-soft);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: 24px 28px;
+    margin-bottom: 24px;
+  }
+  .empty-notify-box__label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text);
+    margin: 0 0 14px;
+  }
+  .empty-notify-form {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .empty-notify-form__input {
+    flex: 1;
+    min-width: 220px;
+    padding: 10px 14px;
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--radius-pill);
+    font-family: inherit;
+    font-size: 0.9rem;
+    background: var(--color-bg);
+    color: var(--color-text);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .empty-notify-form__input:focus { border-color: var(--color-primary); }
+  .empty-notify-form__success {
+    margin-top: 12px;
+    color: #2e7d32;
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+  .empty-state-beta__actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 24px;
+  }
+  .btn--ghost {
+    background: none;
+    border: none;
+    color: var(--color-text-soft);
+    font-size: 0.88rem;
+    padding: 10px 16px;
+    cursor: pointer;
+    text-decoration: underline;
+    font-family: inherit;
+  }
+  .btn--ghost:hover { color: var(--color-primary); }
+  .empty-state-beta__reassurance {
+    font-size: 0.82rem;
+    color: var(--color-text-soft);
+    max-width: 420px;
+    margin: 0 auto;
+    line-height: 1.6;
+    font-style: italic;
   }
 </style>

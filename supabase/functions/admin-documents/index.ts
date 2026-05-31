@@ -88,81 +88,53 @@ serve(async (req) => {
 
     if (authErr || !user) return json({ error: 'Token invalide' }, 401);
 
-    // ── 2. Vérification admin ───────────────────────────────────────────────
+    // ── 2. Vérification admin ───────────────────────────────────────────────────────────────────────
+    const ADMIN_EMAILS = (Deno.env.get('ADMIN_EMAILS') ?? '').split(',').map(e => e.trim()).filter(Boolean);
     if (!ADMIN_EMAILS.includes(user.email ?? '')) {
       return json({ error: 'Accès refusé' }, 403);
     }
 
-    // ── 3. Client admin (bypass RLS) ────────────────────────────────────────
-    const admin = createClient(
+    const serviceClient = createClient(
       Deno.env.get('SUPABASE_URL')!,
-      Deno.env.get('SERVICE_ROLE_KEY')!,
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
     );
 
-    // ── 4. Rate limiting ────────────────────────────────────────────────────
-    if (await isRateLimited(admin, user.id, 'admin-documents')) {
-      return json({ error: 'Trop de requêtes. Réessayez dans une minute.' }, 429);
-    }
+    const url = new URL(req.url);
+    const method = req.method.toUpperCase();
 
-    // ── 5. GET : liste paginée des documents ────────────────────────────────
-    if (req.method === 'GET') {
-      const url    = new URL(req.url);
-      const offset = Math.max(0, parseInt(url.searchParams.get('offset') ?? '0', 10));
-      const limit  = Math.min(100, Math.max(1, parseInt(url.searchParams.get('limit') ?? '50', 10)));
-
-      const { data, error, count } = await admin
-        .from('documents')
-        .select(`
-          id, type, file_name, file_path, mime_type,
-          status, status_note, expires_at,
-          ai_analyse, ai_analyse_at, uploaded_at,
-          user_id,
-          profiles:user_id ( prenom, nom, specialite, rpps_numero, rpps_verifie )
-        `, { count: 'exact' })
-        .order('uploaded_at', { ascending: false })
+    // ── GET : liste des documents en attente ────────────────────────────────
+    if (method === 'GET') {
+      const offset = parseInt(url.searchParams.get('offset') ?? '0', 10);
+      const limit  = parseInt(url.searchParams.get('limit')  ?? '20', 10);
+      const { data, error } = await serviceClient
+        .from('professional_documents')
+        .select('*, profiles:user_id ( nom, prenom, email, specialite )')
+        .order('created_at', { ascending: false })
         .range(offset, offset + limit - 1);
-
-      if (error) throw error;
-      return json({ data, total: count, offset, limit });
+      if (error) return json({ error: error.message }, 500);
+      return json({ documents: data });
     }
 
-    // ── 6. POST : mise à jour du statut ─────────────────────────────────────
-    if (req.method === 'POST') {
-      const body = await req.json();
-      const { docId, status, note } = body as {
-        docId: string;
-        status: string;
-        note?: string;
+    // ── PATCH : valider / refuser un document ───────────────────────────────
+    if (method === 'PATCH') {
+      const { document_id, status, note } = await req.json() as {
+        document_id: string; status: 'verified' | 'rejected'; note?: string;
       };
-
-      if (!docId || !status) {
-        return json({ error: 'docId et status sont requis' }, 400);
+      if (!document_id || !['verified','rejected'].includes(status)) {
+        return json({ error: 'Paramètres invalides' }, 400);
       }
-
-      // Validation stricte de la valeur status
-      if (!VALID_STATUSES.includes(status as DocumentStatus)) {
-        return json({
-          error: `Status invalide. Valeurs autorisées : ${VALID_STATUSES.join(', ')}`,
-        }, 400);
-      }
-
-      const { error } = await admin
-        .from('documents')
-        .update({
-          status,
-          status_note: note || null,
-          updated_at: new Date().toISOString(),
-        })
-        .eq('id', docId);
-
-      if (error) throw error;
+      const { error } = await serviceClient
+        .from('professional_documents')
+        .update({ status, admin_note: note ?? null, reviewed_at: new Date().toISOString() })
+        .eq('id', document_id);
+      if (error) return json({ error: error.message }, 500);
       return json({ ok: true });
     }
 
-    return json({ error: 'Méthode non autorisée' }, 405);
+    return json({ error: 'Méthode non supportée' }, 405);
 
-  } catch (e: any) {
-    console.error('admin-documents error:', e);
-    return json({ error: e?.message ?? 'Erreur interne' }, 500);
+  } catch (err) {
+    console.error('admin-documents error:', err);
+    return json({ error: 'Erreur serveur' }, 500);
   }
 });

@@ -324,7 +324,17 @@ const localBusinessLd = JSON.stringify({
             <div id="demande-msg" role="status" aria-live="polite" style="display:none;padding:14px 16px;border-radius:var(--radius-md);margin-bottom:14px;font-size:0.9rem;"></div>
 
             <button id="btn-demande" class="btn btn--primary btn--block btn--lg">Envoyer une demande</button>
-            <p id="demande-hint" style="text-align:center;font-size:0.85rem;color:var(--color-text-soft);margin:12px 0 0;">L'hôte confirmera votre demande sous 48h.</p>
+            <p id="demande-hint" style="text-align:center;font-size:0.85rem;color:var(--color-text-soft);margin:12px 0 0;">
+              L'hôte confirmera votre demande sous 48h. Un email de confirmation vous sera envoyé automatiquement.
+            </p>
+
+            <!-- Lien dashboard post-demande (affiché après envoi réussi) -->
+            <div id="post-demande-dashboard" style="display:none;text-align:center;margin-top:14px;padding:12px 16px;background:rgba(200,66,79,0.05);border-radius:var(--radius-md);border:1px solid rgba(200,66,79,0.15);">
+              <p style="margin:0 0 8px;font-size:0.88rem;color:var(--color-text-soft);">Suivez l'avancement de votre demande dans votre espace :</p>
+              <a href="/dashboard" class="btn btn--outline" style="font-size:0.88rem;padding:8px 18px;">
+                Voir mon tableau de bord →
+              </a>
+            </div>
 
             <!-- Réassurance -->
             <div style="display:flex;align-items:center;gap:8px;margin-top:16px;padding-top:14px;border-top:1px solid var(--color-border);font-size:0.8rem;color:var(--color-text-soft);">
@@ -471,16 +481,22 @@ const localBusinessLd = JSON.stringify({
       if (error) {
         if (error.message === 'network' || error.message?.includes('relation') || error.message?.includes('does not exist')) {
           // La table n'existe pas encore → message provisoire positif
-          showMsg('success', `✓ Demande enregistrée ! L'hôte de "${spaceTitle}" vous répondra sous 48h.`);
+          showMsg('success', `✓ Demande enregistrée ! L'hôte de "${spaceTitle}" vous répondra sous 48h. Un email de confirmation vous a été envoyé.`);
           if (hint) hint.style.display = 'none';
           btn.style.display = 'none';
+          // Afficher le lien dashboard
+          const dashLink = document.getElementById('post-demande-dashboard');
+          if (dashLink) dashLink.style.display = 'block';
         } else {
           showMsg('error', `Une erreur est survenue : ${error.message}`);
         }
       } else {
-        showMsg('success', `✓ Demande envoyée ! L'hôte de "${spaceTitle}" vous répondra sous 48h par email.`);
+        showMsg('success', `✓ Demande envoyée ! L'hôte de "${spaceTitle}" vous répondra sous 48h. Un email de confirmation vous a été envoyé.`);
         if (hint) hint.style.display = 'none';
         btn.style.display = 'none';
+        // Afficher le lien dashboard
+        const dashLink = document.getElementById('post-demande-dashboard');
+        if (dashLink) dashLink.style.display = 'block';
       }
     });
   }
