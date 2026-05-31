@@ -2,20 +2,18 @@
 const { currentPage = '' } = Astro.props;
 
 const navLinks = [
-  { href: '/', label: 'Accueil', key: 'accueil' },
   { href: '/explorez', label: 'Espaces', key: 'explorez' },
-  { href: '/contact', label: 'Contact', key: 'contact' }
+  { href: '/contact',  label: 'Contact',  key: 'contact'  }
 ];
 
-const commentLinks = [
+const aproposLinks = [
   { href: '/comment-ca-marche', label: 'Comment ça marche', desc: 'Le fonctionnement pas à pas', icon: '⚙️' },
-  { href: '/le-probleme', label: 'Le problème', desc: 'Le paradoxe des territoires français', icon: '📊' },
-  { href: '/notre-solution', label: 'La solution', desc: "Comment MOB'SS fait le lien", icon: '🔗' },
-  { href: '/notre-impact', label: 'Notre impact', desc: "Ce que MOB'SS change concrètement", icon: '🎯' },
+  { href: '/le-probleme',       label: 'Le problème',        desc: 'Le paradoxe des territoires français', icon: '📊' },
+  { href: '/notre-solution',    label: 'La solution',        desc: "Comment MOB'SS fait le lien", icon: '🔗' },
+  { href: '/notre-impact',      label: 'Notre impact',       desc: "Ce que MOB'SS change concrètement", icon: '🎯' },
 ];
 
-const isCommentActive = ['comment','probleme','solution','impact'].includes(currentPage);
-// Annuaire et Remplacements sont visibles pour tous (état actif géré par JS)
+const isAproposActive = ['comment','probleme','solution','impact'].includes(currentPage);
 ---
 
 <header class="site-header">
@@ -23,7 +21,7 @@ const isCommentActive = ['comment','probleme','solution','impact'].includes(curr
 
     <!-- Logo (SVG inliné — les polices de la page s'appliquent) -->
     <a class="brand" href="/" aria-label="MOB'SS Accueil">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 58" height="66" width="auto" aria-hidden="true" style="display:block;flex-shrink:0;">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 58" height="62" width="auto" aria-hidden="true" style="display:block;flex-shrink:0;">
         <!-- Badge icône -->
         <rect x="0" y="5" width="50" height="50" rx="11" fill="#9C2E3A"/>
         <rect x="0" y="0" width="50" height="50" rx="11" fill="#C8424F"/>
@@ -50,20 +48,20 @@ const isCommentActive = ['comment','probleme','solution','impact'].includes(curr
         </a>
       ))}
 
-      <!-- Dropdown "Comment ça marche" -->
-      <div class="nav-dropdown" id="nav-comment-dropdown">
+      <!-- Dropdown "À propos" (contenu éditorial) -->
+      <div class="nav-dropdown" id="nav-apropos-dropdown">
         <button
           type="button"
-          class={`nav-dropdown__trigger${isCommentActive ? ' is-active' : ''}`}
+          class={`nav-dropdown__trigger${isAproposActive ? ' is-active' : ''}`}
           aria-expanded="false"
           aria-haspopup="true"
-          id="nav-comment-btn"
+          id="nav-apropos-btn"
         >
-          Comment ça marche
+          À propos
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
         </button>
-        <div class="nav-dropdown__panel" id="nav-comment-panel" role="menu">
-          {commentLinks.map(link => (
+        <div class="nav-dropdown__panel" id="nav-apropos-panel" role="menu">
+          {aproposLinks.map(link => (
             <a href={link.href} class={`nav-dropdown__item${currentPage === link.key ? ' is-active' : ''}`} role="menuitem">
               <span class="nav-dropdown__item-icon" aria-hidden="true">{link.icon}</span>
               <span class="nav-dropdown__item-text">
@@ -75,10 +73,6 @@ const isCommentActive = ['comment','probleme','solution','impact'].includes(curr
         </div>
       </div>
 
-      <!-- Annuaire et Remplacements — visibles pour tous, le JS gère uniquement l'état actif -->
-      <a href="/annuaire" id="nav-annuaire" style="white-space:nowrap;">Annuaire</a>
-      <a href="/remplacements" id="nav-remplacements" style="white-space:nowrap;">Remplacements</a>
-
       <!-- Actions mobile -->
       <div class="nav__mobile-actions">
         <div id="nav-loggedout-mobile" style="display:flex;flex-direction:column;gap:8px;">
@@ -87,6 +81,8 @@ const isCommentActive = ['comment','probleme','solution','impact'].includes(curr
         </div>
         <div id="nav-loggedin-mobile" style="display:none;flex-direction:column;gap:8px;">
           <a href="/dashboard" class="btn btn--outline">Mon espace</a>
+          <a href="/annuaire" class="btn btn--outline">Annuaire</a>
+          <a href="/remplacements" class="btn btn--outline">Remplacements</a>
           <button type="button" id="logout-mobile" class="btn btn--outline">Se déconnecter</button>
         </div>
         <a href="/deposer-annonce" id="nav-deposer-mobile" class="btn btn--cream" style="margin-top:4px;">Déposer un espace</a>
@@ -124,6 +120,16 @@ const isCommentActive = ['comment','probleme','solution','impact'].includes(curr
               Mon profil
             </a>
             <hr style="border:none;border-top:1px solid var(--color-border);margin:4px 0;" />
+            <!-- Accès praticiens — visible uniquement dans le menu utilisateur -->
+            <a href="/annuaire" id="nav-annuaire" role="menuitem">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/><path d="M21 21v-2a4 4 0 0 0-3-3.87"/></svg>
+              Annuaire
+            </a>
+            <a href="/remplacements" id="nav-remplacements" role="menuitem">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg>
+              Remplacements
+            </a>
+            <hr style="border:none;border-top:1px solid var(--color-border);margin:4px 0;" />
             <button type="button" id="logout-btn" role="menuitem" style="width:100%;text-align:left;display:flex;align-items:center;gap:8px;padding:8px 14px;color:var(--color-text-soft);background:none;border:none;font-family:inherit;font-size:0.9rem;cursor:pointer;border-radius:var(--radius-sm);">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
               Se déconnecter
@@ -136,7 +142,7 @@ const isCommentActive = ['comment','probleme','solution','impact'].includes(curr
 </header>
 
 <style>
-  /* ── Nav dropdown "Comment ça marche" ── */
+  /* ── Nav dropdown "À propos" ── */
   .nav-dropdown {
     position: relative;
   }
@@ -285,7 +291,7 @@ const isCommentActive = ['comment','probleme','solution','impact'].includes(curr
     position: absolute;
     top: calc(100% + 8px);
     right: 0;
-    min-width: 210px;
+    min-width: 220px;
     background: #fff;
     border: 1px solid var(--color-border);
     border-radius: var(--radius-md);
@@ -351,24 +357,24 @@ const isCommentActive = ['comment','probleme','solution','impact'].includes(curr
     }
   });
 
-  // Dropdown "Comment ça marche"
-  const commentBtn   = document.getElementById('nav-comment-btn');
-  const commentPanel = document.getElementById('nav-comment-panel');
-  commentBtn?.addEventListener('click', (e) => {
+  // Dropdown "À propos"
+  const aproposBtn   = document.getElementById('nav-apropos-btn');
+  const aproposPanel = document.getElementById('nav-apropos-panel');
+  aproposBtn?.addEventListener('click', (e) => {
     e.stopPropagation();
-    const open = commentPanel?.classList.toggle('is-open');
-    commentBtn.setAttribute('aria-expanded', String(open));
+    const open = aproposPanel?.classList.toggle('is-open');
+    aproposBtn.setAttribute('aria-expanded', String(open));
   });
   document.addEventListener('click', (e) => {
-    if (!document.getElementById('nav-comment-dropdown')?.contains(e.target as Node)) {
-      commentPanel?.classList.remove('is-open');
-      commentBtn?.setAttribute('aria-expanded', 'false');
+    if (!document.getElementById('nav-apropos-dropdown')?.contains(e.target as Node)) {
+      aproposPanel?.classList.remove('is-open');
+      aproposBtn?.setAttribute('aria-expanded', 'false');
     }
   });
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
-      commentPanel?.classList.remove('is-open');
-      commentBtn?.setAttribute('aria-expanded', 'false');
+      aproposPanel?.classList.remove('is-open');
+      aproposBtn?.setAttribute('aria-expanded', 'false');
     }
   });
 
@@ -411,12 +417,10 @@ const isCommentActive = ['comment','probleme','solution','impact'].includes(curr
         if (avatar) avatar.textContent = initiales;
         if (nameEl) nameEl.textContent = prenom;
 
-        // Active state sur Annuaire / Remplacements selon l'URL courante
+        // Active state sur Annuaire / Remplacements dans le user-menu
         const path = window.location.pathname;
         if (path.startsWith('/annuaire'))      document.getElementById('nav-annuaire')?.classList.add('is-active');
         if (path.startsWith('/remplacements')) document.getElementById('nav-remplacements')?.classList.add('is-active');
-
-
       }
     } catch (e) {
       console.warn('Profil header non chargé', e);
