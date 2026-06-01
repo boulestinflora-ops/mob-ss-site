@@ -7,6 +7,22 @@ import Icon from '../components/Icon.astro';
 
 import audiences from '../data/audiences.json';
 import steps from '../data/steps.json';
+
+// QR code généré au build-time pour éviter la dépendance externe api.qrserver.com
+let qrDataUrl: string = '';
+try {
+  const qrRes = await fetch(
+    'https://api.qrserver.com/v1/create-qr-code/?size=128x128&data=https%3A%2F%2Fmobss.vercel.app%2Finscription&bgcolor=faf7f2&color=1a1a2e&margin=2&qzone=1'
+  );
+  if (qrRes.ok) {
+    const buf = await qrRes.arrayBuffer();
+    const b64 = Buffer.from(buf).toString('base64');
+    qrDataUrl = `data:image/png;base64,${b64}`;
+  }
+} catch (e) {
+  // Fallback silencieux — l'image externe sera utilisée si le build échoue
+}
+const qrSrc = qrDataUrl || 'https://api.qrserver.com/v1/create-qr-code/?size=128x128&data=https%3A%2F%2Fmobss.vercel.app%2Finscription&bgcolor=faf7f2&color=1a1a2e&margin=2&qzone=1';
 ---
 
 <BaseLayout
@@ -444,7 +460,7 @@ import steps from '../data/steps.json';
           <p class="ambassador-qr-label">Scanner pour partager</p>
           <div class="ambassador-qr-img-wrap">
             <img
-              src="https://api.qrserver.com/v1/create-qr-code/?size=128x128&data=https%3A%2F%2Fmobss.vercel.app%2Finscription&bgcolor=faf7f2&color=1a1a2e&margin=2&qzone=1"
+              src={qrSrc}
               alt="QR code — s'inscrire sur MOB'SS"
               width="128"
               height="128"
