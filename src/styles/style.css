@@ -1,55 +1,24 @@
 /* =================================================================================
-   MOB'SS — Convention CSS du projet
-   ==================================================================================
-   style.css (ce fichier) => styles PARTAGES entre 2+ pages :
-     - Variables CSS, reset, typographie, layout .container
-     - Composants réutilisables : .btn, .card, .grid, Header, Footer
-     - États globaux : focus-visible, skip-link, animations partagées
-
-   <style> dans les .astro => styles SPECIFIQUES à une seule page :
-     - Sections uniques à une page (.journey-step, .testimonial-card, etc.)
-     - Variantes contextuelles non réutilisées ailleurs
-     - Éviter de les dupliquer dans style.css si elles ne servent qu'à 1 page
-
-   Règles de qualité :
-     - Commentaires CSS : utiliser uniquement les balises slash-étoile (jamais // ni HTML)
-     - Pas de propriétés dupliquées dans le même bloc
-     - Pas de !important sauf exception documentée en ligne
-     - Linter : stylelint "src/styles/**/*.css" (voir .stylelintrc.json)
-   ================================================================================== */
-
-/* =========================================================
-   MOB'SS — Feuille de style globale (v4 — WCAG AA + display font)
-   Palette : bordeaux #B53040 • crème #F2E5B8 • blanc
+   MOB'SS - Feuille de style globale (v4 - WCAG AA)
+   Palette : bordeaux #B53040 - creme #F2E5B8 - blanc
    Police  : Space Grotesk (titres) + DM Sans (corps)
-   Contrastes WCAG AA vérifié : primary sur blanc = 5.2:1 ✓
 
-   CONVENTION CSS (9.2) :
-   ┌─ style.css (ici)    ─ Styles globaux, composants multi-pages,
-   │                       design tokens, layout, responsive.
-   │                       Règle : si utilisé par ≥ 2 pages → ici.
-   └─ <style> dans .astro ─ Styles spécifiques à UNE seule page.
-                            Règle : si 0 réutilisation prévue → dans
-                            le fichier .astro concerné.
-   Linter : stylelint configuré dans .stylelintrc.json
-            → npm run lint:css pour vérifier style.css
-   ========================================================= */
+   Convention :
+   - style.css : styles partages entre 2+ pages (composants, layout, tokens)
+   - <style> dans .astro : styles specifiques a une seule page
 
-/* ─────────────────────────────────────────────────────────────────────────
-   TABLE DES MATIÈRES  —  Ctrl+F le numéro ou le titre pour naviguer
-   ─────────────────────────────────────────────────────────────────────────
-    1. DESIGN TOKENS        :root — palette, ombres, polices, espacements
-    2. RESET & BASE         reset, accessibilité, skip-link, typographie
-    3. MISE EN PAGE         .container, .section, grilles génériques
-    4. NAVIGATION           site-header, brand, nav, menu mobile
-    5. COMPOSANTS UI        boutons, hero, cards, filtres, formulaires, onglets
-    6. PAGES                explorez, annonce, dashboard, FAQ, footer, misc
-    7. VISITE GUIDÉE        tour interactif, spotlight, tooltip, FAB
-    8. UTILITAIRES          helpers, banners, cookie, mentions légales
-    9. RESPONSIVE           breakpoints 1024 → 375px
-   10. MICRO-INTERACTIONS   hover, animations, skeleton loading
-   ─────────────────────────────────────────────────────────────────────────
-*/
+   TABLE DES MATIERES (Ctrl+F le numero) :
+   1. DESIGN TOKENS    :root - palette, ombres, polices
+   2. RESET & BASE     reset, accessibilite, typographie
+   3. MISE EN PAGE     .container, .section, grilles
+   4. NAVIGATION       site-header, nav, menu mobile
+   5. COMPOSANTS UI    boutons, hero, cards, formulaires
+   6. PAGES            explorez, annonce, dashboard, footer
+   7. VISITE GUIDEE    tour interactif, tooltip, FAB
+   8. UTILITAIRES      banners, cookie, mentions legales
+   9. RESPONSIVE       breakpoints 1024 -> 375px
+   10. MICRO-INTERACTIONS hover, animations
+   ================================================================================= */
 
 
 
