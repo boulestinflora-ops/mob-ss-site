@@ -79,11 +79,55 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
         <div>
           <h2 style="font-size:1.25rem;border-bottom:1px solid var(--color-border);padding-bottom:8px;margin-bottom:16px;">5. Durée de conservation</h2>
-          <ul style="margin:0 0 0 20px;color:var(--color-text-soft);">
-            <li>Compte actif : pendant toute la durée d'utilisation, puis 3 ans après la dernière activité</li>
-            <li>Messages de contact : 3 ans</li>
-            <li>Cookies de session : jusqu'à déconnexion ou expiration (max 7 jours)</li>
-          </ul>
+          <table style="width:100%;border-collapse:collapse;font-size:0.9rem;margin-bottom:12px;">
+            <thead>
+              <tr style="background:var(--color-bg-soft);">
+                <th style="padding:10px 14px;text-align:left;border:1px solid var(--color-border);">Catégorie de données</th>
+                <th style="padding:10px 14px;text-align:left;border:1px solid var(--color-border);">Durée de conservation</th>
+                <th style="padding:10px 14px;text-align:left;border:1px solid var(--color-border);">Justification</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="padding:9px 14px;border:1px solid var(--color-border);">Compte utilisateur (email, profil)</td>
+                <td style="padding:9px 14px;border:1px solid var(--color-border);">Durée du compte + 3 ans après inactivité</td>
+                <td style="padding:9px 14px;border:1px solid var(--color-border);color:var(--color-text-soft);">Exécution du contrat / prescription légale</td>
+              </tr>
+              <tr style="background:var(--color-bg-soft);">
+                <td style="padding:9px 14px;border:1px solid var(--color-border);">Documents professionnels (diplôme, RC Pro)</td>
+                <td style="padding:9px 14px;border:1px solid var(--color-border);">Durée du compte + 1 an après clôture</td>
+                <td style="padding:9px 14px;border:1px solid var(--color-border);color:var(--color-text-soft);">Vérification identité professionnelle</td>
+              </tr>
+              <tr>
+                <td style="padding:9px 14px;border:1px solid var(--color-border);">Demandes d&apos;espaces (date, horaires)</td>
+                <td style="padding:9px 14px;border:1px solid var(--color-border);">3 ans</td>
+                <td style="padding:9px 14px;border:1px solid var(--color-border);color:var(--color-text-soft);">Gestion des litiges éventuels</td>
+              </tr>
+              <tr style="background:var(--color-bg-soft);">
+                <td style="padding:9px 14px;border:1px solid var(--color-border);">Messages de contact</td>
+                <td style="padding:9px 14px;border:1px solid var(--color-border);">3 ans</td>
+                <td style="padding:9px 14px;border:1px solid var(--color-border);color:var(--color-text-soft);">Suivi des demandes / litige</td>
+              </tr>
+              <tr>
+                <td style="padding:9px 14px;border:1px solid var(--color-border);">Logs techniques (IP, navigateur)</td>
+                <td style="padding:9px 14px;border:1px solid var(--color-border);">12 mois (Vercel / Supabase)</td>
+                <td style="padding:9px 14px;border:1px solid var(--color-border);color:var(--color-text-soft);">Sécurité, détection d&apos;abus</td>
+              </tr>
+              <tr style="background:var(--color-bg-soft);">
+                <td style="padding:9px 14px;border:1px solid var(--color-border);">Cookies de session (auth)</td>
+                <td style="padding:9px 14px;border:1px solid var(--color-border);">Déconnexion ou 7 jours max</td>
+                <td style="padding:9px 14px;border:1px solid var(--color-border);color:var(--color-text-soft);">Session Supabase Auth</td>
+              </tr>
+              <tr>
+                <td style="padding:9px 14px;border:1px solid var(--color-border);">Données analytiques (PostHog)</td>
+                <td style="padding:9px 14px;border:1px solid var(--color-border);">2 ans (EU cloud)</td>
+                <td style="padding:9px 14px;border:1px solid var(--color-border);color:var(--color-text-soft);">Amélioration produit — données pseudonymisées</td>
+              </tr>
+            </tbody>
+          </table>
+          <p style="font-size:0.85rem;color:var(--color-text-soft);">
+            À l&apos;issue de ces délais, les données sont supprimées ou anonymisées de façon irréversible.
+          </p>
         </div>
 
         <div>
@@ -136,7 +180,81 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         </div>
 
         <div>
-          <h2 style="font-size:1.25rem;border-bottom:1px solid var(--color-border);padding-bottom:8px;margin-bottom:16px;">10. Évolution de cette politique</h2>
+          <h2 style="font-size:1.25rem;border-bottom:1px solid var(--color-border);padding-bottom:8px;margin-bottom:16px;">10. Délégué à la protection des données (DPO)</h2>
+          <p style="color:var(--color-text-soft);">
+            MOB&apos;SS n&apos;est pas tenu de désigner un délégué à la protection des données (DPO) au sens de
+            l&apos;article 37 du RGPD. En tant que petite structure ne traitant pas de données sensibles à grande
+            échelle et n&apos;effectuant pas de surveillance systématique, cette obligation ne s&apos;applique pas.
+          </p>
+          <p>
+            Pour toute question relative à la protection des données, le contact dédié est :<br/>
+            <strong>Flora Bouléstin — Responsable du traitement</strong><br/>
+            <a href="mailto:contact@mobss.fr">contact@mobss.fr</a>
+          </p>
+          <p style="font-size:0.85rem;color:var(--color-text-soft);">
+            Si MOB&apos;SS venait à traiter des données de santé ou à atteindre une échelle justifiant la
+            désignation d&apos;un DPO, cette politique sera mise à jour en conséquence.
+          </p>
+        </div>
+
+        <div>
+          <h2 style="font-size:1.25rem;border-bottom:1px solid var(--color-border);padding-bottom:8px;margin-bottom:16px;">11. Registre des traitements (synthèse)</h2>
+          <p style="color:var(--color-text-soft);margin-bottom:16px;">
+            Conformément à l&apos;article 30 du RGPD, MOB&apos;SS tient un registre interne de ses activités
+            de traitement. En voici une synthèse publique :
+          </p>
+          <table style="width:100%;border-collapse:collapse;font-size:0.88rem;">
+            <thead>
+              <tr style="background:var(--color-bg-soft);">
+                <th style="padding:10px 14px;text-align:left;border:1px solid var(--color-border);">Traitement</th>
+                <th style="padding:10px 14px;text-align:left;border:1px solid var(--color-border);">Finalité</th>
+                <th style="padding:10px 14px;text-align:left;border:1px solid var(--color-border);">Base légale</th>
+                <th style="padding:10px 14px;text-align:left;border:1px solid var(--color-border);">Destinataires</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="padding:9px 14px;border:1px solid var(--color-border);">Gestion des comptes utilisateurs</td>
+                <td style="padding:9px 14px;border:1px solid var(--color-border);">Authentification, profil praticien/hôte</td>
+                <td style="padding:9px 14px;border:1px solid var(--color-border);color:var(--color-text-soft);">Exécution du contrat</td>
+                <td style="padding:9px 14px;border:1px solid var(--color-border);color:var(--color-text-soft);">Supabase (hébergement)</td>
+              </tr>
+              <tr style="background:var(--color-bg-soft);">
+                <td style="padding:9px 14px;border:1px solid var(--color-border);">Mise en relation praticiens / hôtes</td>
+                <td style="padding:9px 14px;border:1px solid var(--color-border);">Transmission des demandes d&apos;espaces</td>
+                <td style="padding:9px 14px;border:1px solid var(--color-border);color:var(--color-text-soft);">Exécution du contrat</td>
+                <td style="padding:9px 14px;border:1px solid var(--color-border);color:var(--color-text-soft);">Hôte concerné uniquement</td>
+              </tr>
+              <tr>
+                <td style="padding:9px 14px;border:1px solid var(--color-border);">Vérification identité professionnelle</td>
+                <td style="padding:9px 14px;border:1px solid var(--color-border);">Validation diplôme et RC Pro via IA</td>
+                <td style="padding:9px 14px;border:1px solid var(--color-border);color:var(--color-text-soft);">Consentement explicite</td>
+                <td style="padding:9px 14px;border:1px solid var(--color-border);color:var(--color-text-soft);">Supabase Storage, Anthropic API (analyse IA)</td>
+              </tr>
+              <tr style="background:var(--color-bg-soft);">
+                <td style="padding:9px 14px;border:1px solid var(--color-border);">Annuaire praticiens</td>
+                <td style="padding:9px 14px;border:1px solid var(--color-border);">Visibilité publique optionnelle</td>
+                <td style="padding:9px 14px;border:1px solid var(--color-border);color:var(--color-text-soft);">Consentement (opt-in)</td>
+                <td style="padding:9px 14px;border:1px solid var(--color-border);color:var(--color-text-soft);">Public (nom, spécialité, ville)</td>
+              </tr>
+              <tr>
+                <td style="padding:9px 14px;border:1px solid var(--color-border);">Statistiques d&apos;usage</td>
+                <td style="padding:9px 14px;border:1px solid var(--color-border);">Amélioration du produit</td>
+                <td style="padding:9px 14px;border:1px solid var(--color-border);color:var(--color-text-soft);">Intérêt légitime</td>
+                <td style="padding:9px 14px;border:1px solid var(--color-border);color:var(--color-text-soft);">PostHog (EU cloud, pseudonymisé)</td>
+              </tr>
+              <tr style="background:var(--color-bg-soft);">
+                <td style="padding:9px 14px;border:1px solid var(--color-border);">Service client (formulaire contact)</td>
+                <td style="padding:9px 14px;border:1px solid var(--color-border);">Réponse aux demandes</td>
+                <td style="padding:9px 14px;border:1px solid var(--color-border);color:var(--color-text-soft);">Intérêt légitime / consentement</td>
+                <td style="padding:9px 14px;border:1px solid var(--color-border);color:var(--color-text-soft);">Équipe MOB&apos;SS uniquement</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div>
+          <h2 style="font-size:1.25rem;border-bottom:1px solid var(--color-border);padding-bottom:8px;margin-bottom:16px;">12. Évolution de cette politique</h2>
           <p style="color:var(--color-text-soft);">
             Cette politique sera mise à jour lors de la création formelle de la société ou en cas de changement
             significatif dans nos pratiques. La date de mise à jour figure en haut de page.
