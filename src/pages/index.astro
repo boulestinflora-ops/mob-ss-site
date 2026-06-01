@@ -1241,6 +1241,7 @@ import steps from '../data/steps.json';
 
   /* Responsive */
   @media (max-width: 768px) {
+    .ambassador-qr { display: none; }  /* inutilisable sur mobile */
     .hero { padding: 64px 0 48px; }
     .hero__title { font-size: clamp(2rem, 8vw, 2.8rem); }
     .hero__sub { font-size: 1rem; }
@@ -1251,6 +1252,7 @@ import steps from '../data/steps.json';
     .problems-grid { grid-template-columns: 1fr; gap: 20px; }
     .solution-grid { grid-template-columns: 1fr; }
     .solution-visual { display: none; }
+    .search-card { margin-top: -20px; }  /* évite le chevauchement hero sur mobile */
     .explication-grid { grid-template-columns: 1fr; gap: 16px; }
     .explication-arrow { transform: rotate(90deg); justify-content: center; }
     .testimonials-grid { grid-template-columns: 1fr; }
