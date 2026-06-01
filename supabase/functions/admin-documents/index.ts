@@ -9,7 +9,7 @@
 // POST → met à jour le statut d'un document
 //        body : { docId: string, status: 'verifie'|'refuse'|'fourni', note?: string }
 
-import { serve } from 'https://deno.land/std@0.177.0/http/server.ts';
+import { serve } from 'https://deno.land/std@0.224.0/http/server.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 // ── Config ────────────────────────────────────────────────────────────────────

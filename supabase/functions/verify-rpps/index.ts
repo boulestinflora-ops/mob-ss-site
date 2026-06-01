@@ -10,25 +10,33 @@
  * Rate limit : 10 appels / 60 s par utilisateur authentifié.
  */
 
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const ESANTE_API_KEY = Deno.env.get("ESANTE_API_KEY") ?? "";
-const FHIR_BASE      = "https://gateway.api.esante.gouv.fr/fhir/v2";
+const ESANTE_API_KEY = Deno.env.get("ESANTE_API_KEY");
+if (!ESANTE_API_KEY) {
+  console.error("ESANTE_API_KEY manquante — les vérifications RPPS sont désactivées.");
+}
+const FHIR_BASE = "https://gateway.api.esante.gouv.fr/fhir/v2";
 
 // Rate limiting : 10 vérifications / 60 secondes par utilisateur
 const RATE_LIMIT_MAX    = 10;
 const RATE_LIMIT_WINDOW = 60;  // secondes
 
-const CORS = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const ALLOWED_ORIGINS = ["https://mobss.fr", "https://mobss.vercel.app"];
 
-function json(data: unknown, status = 200) {
+function corsHeaders(origin: string | null) {
+  const allowed = origin && ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
+  return {
+    "Access-Control-Allow-Origin": allowed,
+    "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  };
+}
+
+function json(data: unknown, status = 200, origin: string | null = null) {
   return new Response(JSON.stringify(data), {
     status,
-    headers: { "Content-Type": "application/json", ...CORS },
+    headers: { "Content-Type": "application/json", ...corsHeaders(origin) },
   });
 }
 
@@ -55,11 +63,17 @@ async function isRateLimited(
 }
 
 serve(async (req) => {
-  if (req.method === "OPTIONS") return new Response("ok", { headers: CORS });
+  const origin = req.headers.get("origin");
+  if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders(origin) });
+
+  // ── Clé API obligatoire ───────────────────────────────────────────────────
+  if (!ESANTE_API_KEY) {
+    return json({ ok: false, error: "Service temporairement indisponible." }, 503, origin);
+  }
 
   // ── Authentification ──────────────────────────────────────────────────────
   const token = (req.headers.get("Authorization") ?? "").replace("Bearer ", "").trim();
-  if (!token) return json({ ok: false, error: "Non authentifié" }, 401);
+  if (!token) return json({ ok: false, error: "Non authentifié" }, 401, origin);
 
   const serviceClient = createClient(
     Deno.env.get("SUPABASE_URL")!,
@@ -72,18 +86,18 @@ serve(async (req) => {
   );
 
   const { data: { user }, error: authErr } = await anonClient.auth.getUser(token);
-  if (authErr || !user) return json({ ok: false, error: "Token invalide" }, 401);
+  if (authErr || !user) return json({ ok: false, error: "Token invalide" }, 401, origin);
 
   // ── Rate limiting ─────────────────────────────────────────────────────────
   if (await isRateLimited(serviceClient, user.id, "verify-rpps")) {
-    return json({ ok: false, error: "Trop de vérifications. Réessayez dans une minute." }, 429);
+    return json({ ok: false, error: "Trop de vérifications. Réessayez dans une minute." }, 429, origin);
   }
 
   try {
     const { rpps } = await req.json() as { rpps: string };
 
     if (!rpps || !/^\d{11}$/.test(rpps.trim())) {
-      return json({ ok: false, error: "Numéro RPPS invalide (11 chiffres requis)." }, 400);
+      return json({ ok: false, error: "Numéro RPPS invalide (11 chiffres requis)." }, 400, origin);
     }
 
     // ── Appel API RPPS ──────────────────────────────────────────────────────
@@ -93,13 +107,13 @@ serve(async (req) => {
     let rppsData: Record<string, unknown> = {};
     try {
       const resp = await fetch(apiUrl, {
-        headers: { Accept: 'application/json' },
+        headers: { Accept: 'application/json', "ESANTE-API-KEY": ESANTE_API_KEY! },
         signal: AbortSignal.timeout(5000),
       });
       if (resp.ok) {
         rppsData = await resp.json();
       } else if (resp.status === 404) {
-        return json({ ok: false, error: "Numéro RPPS non trouvé." }, 404);
+        return json({ ok: false, error: "Numéro RPPS non trouvé." }, 404, origin);
       } else {
         throw new Error(`RPPS API status ${resp.status}`);
       }
@@ -115,10 +129,10 @@ serve(async (req) => {
       .upsert({ user_id: user.id, rpps: rppsClean, result: rppsData, verified_at: new Date().toISOString() });
     if (insertErr) console.warn('RPPS insert warning:', insertErr);
 
-    return json({ ok: true, data: rppsData });
+    return json({ ok: true, data: rppsData }, 200, origin);
 
   } catch (err) {
     console.error('verify-rpps error:', err);
-    return json({ ok: false, error: 'Erreur serveur' }, 500);
+    return json({ ok: false, error: 'Erreur serveur' }, 500, origin);
   }
 });
