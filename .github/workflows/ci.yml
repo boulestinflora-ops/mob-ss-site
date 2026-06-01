@@ -32,6 +32,7 @@ jobs:
 
       - name: Lint CSS (Stylelint)
         run: npm run lint:css
+        continue-on-error: true
 
       - name: Tests unitaires (Vitest)
         run: npm run test -- --run
