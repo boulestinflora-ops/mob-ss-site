@@ -1,3 +1,23 @@
+/* =================================================================================
+   MOB'SS — Convention CSS du projet
+   ==================================================================================
+   style.css (ce fichier) → styles PARTAGÉS entre 2+ pages :
+     • Variables CSS, reset, typographie, layout .container
+     • Composants réutilisables : .btn, .card, .grid, Header, Footer
+     • États globaux : focus-visible, skip-link, animations partagées
+
+   <style> dans les .astro → styles SPÉCIFIQUES à une seule page :
+     • Sections uniques à une page (.journey-step, .testimonial-card, etc.)
+     • Variantes contextuelles non réutilisées ailleurs
+     • Éviter de les dupliquer dans style.css si elles ne servent qu'à 1 page
+
+   Règles de qualité :
+   • Commentaires CSS : /* ... */ uniquement (jamais // ni -->)
+   • Pas de propriétés dupliquées dans le même bloc
+   • Pas de !important sauf exception documentée en ligne
+   • Linter : stylelint "src/styles/**/*.css" (voir .stylelintrc.json)
+   ================================================================================== */
+
 /* =========================================================
    MOB'SS — Feuille de style globale (v4 — WCAG AA + display font)
    Palette : bordeaux #B53040 • crème #F2E5B8 • blanc
