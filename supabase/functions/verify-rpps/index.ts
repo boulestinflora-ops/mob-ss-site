@@ -12,10 +12,13 @@
 
 import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { logger } from "../_shared/logger.ts";
+
+const FN = "verify-rpps";
 
 const ESANTE_API_KEY = Deno.env.get("ESANTE_API_KEY");
 if (!ESANTE_API_KEY) {
-  console.error("ESANTE_API_KEY manquante — les vérifications RPPS sont désactivées.");
+  logger.error(FN, "ESANTE_API_KEY manquante — vérifications RPPS désactivées");
 }
 const FHIR_BASE = "https://gateway.api.esante.gouv.fr/fhir/v2";
 
@@ -118,8 +121,7 @@ serve(async (req) => {
         throw new Error(`RPPS API status ${resp.status}`);
       }
     } catch (fetchErr) {
-      console.error('RPPS fetch error:', fetchErr);
-      // Fallback gracieux : on considère le numéro valide (vérification manuelle en attente)
+      logger.error(FN, 'RPPS API fetch échouée — fallback gracieux', { error: String(fetchErr) });
       rppsData = { fallback: true };
     }
 
@@ -127,12 +129,13 @@ serve(async (req) => {
     const { error: insertErr } = await serviceClient
       .from('rpps_verifications')
       .upsert({ user_id: user.id, rpps: rppsClean, result: rppsData, verified_at: new Date().toISOString() });
-    if (insertErr) console.warn('RPPS insert warning:', insertErr);
+    if (insertErr) logger.warn(FN, 'Upsert rpps_verifications échoué', { error: insertErr.message });
 
+    logger.info(FN, 'Vérification RPPS réussie', { userId: user.id, fallback: !!rppsData.fallback });
     return json({ ok: true, data: rppsData }, 200, origin);
 
   } catch (err) {
-    console.error('verify-rpps error:', err);
+    logger.error(FN, 'Erreur inattendue', { error: String(err) });
     return json({ ok: false, error: 'Erreur serveur' }, 500, origin);
   }
 });
