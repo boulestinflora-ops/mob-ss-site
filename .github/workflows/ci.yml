@@ -27,6 +27,10 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Lint CSS (Stylelint)
+        run: npm run lint:css
+        continue-on-error: true  # Non-bloquant en phase bêta
+
       - name: Build Astro
         run: npm run build
         env:

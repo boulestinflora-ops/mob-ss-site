@@ -311,3 +311,18 @@ Voir `DEPLOIEMENT.md` pour le guide complet.
 | `style.css` | ~1800 lignes — CSS monolithique sans découpage par composant | Basse |
 | `explorez.astro` | 1150 lignes — JS inline difficile à tester unitairement | Basse |
 | Types Supabase | `any` utilisé pour les résultats de requêtes (pas de types générés) | Basse |
+
+
+## Convention CSS
+
+| Emplacement | Quoi y mettre |
+|---|---|
+| `src/styles/style.css` | Styles globaux, tokens, composants réutilisables (`.btn`, `.grid`, `.badge`…) |
+| `<style>` dans `.astro` | Styles **spécifiques à une page** non réutilisés ailleurs (`.journey-step`, `.testimonial-card`, `.nh-*`…) |
+
+**Règles :**
+- Un selector qui apparaît dans **1 seul fichier** → `<style>` scoped dans le `.astro`
+- Un selector réutilisé dans **2+ fichiers** → `style.css` avec section dédiée
+- Pas de duplication de propriété dans un même bloc CSS (détecté par Stylelint)
+- Linter : `npm run lint:css` (Stylelint, `stylelint-config-standard`)
+
