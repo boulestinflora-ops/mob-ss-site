@@ -154,6 +154,15 @@ const jsonLd = JSON.stringify({
   <!-- Scripts JavaScript globaux -->
   <script src="/scripts/script.js" is:inline></script>
 
+  <!-- Service Worker — cache offline homepage + assets statiques -->
+  <script is:inline>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('/sw.js').catch(function() {});
+      });
+    }
+  </script>
+
   <!-- PostHog — analytics privacy-first (EU cloud, ne charge pas si clé absente) -->
   {POSTHOG_KEY && (
     <script is:inline define:vars={{ POSTHOG_KEY, POSTHOG_HOST }}>
