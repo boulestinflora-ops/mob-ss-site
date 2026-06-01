@@ -87,18 +87,18 @@ import steps from '../data/steps.json';
 
   <!-- LIVE STATS — compteur en temps réel -->
   <div class="container">
-    <div class="live-stats" aria-label="Statistiques de la plateforme">
+    <div class="live-stats" aria-label="Statistiques de la plateforme" aria-live="polite" aria-atomic="false">
       <div class="live-stats__item">
         <span class="live-stats__dot" aria-hidden="true"></span>
-        <strong id="stat-espaces">—</strong>&nbsp;espaces disponibles
+        <strong id="stat-espaces" aria-atomic="true">—</strong>&nbsp;espaces disponibles
       </div>
       <div class="live-stats__sep" aria-hidden="true"></div>
       <div class="live-stats__item">
-        <strong id="stat-praticiens">—</strong>&nbsp;praticiens inscrits
+        <strong id="stat-praticiens" aria-atomic="true">—</strong>&nbsp;praticiens inscrits
       </div>
       <div class="live-stats__sep" aria-hidden="true"></div>
       <div class="live-stats__item">
-        <strong id="stat-communes">—</strong>&nbsp;communes partenaires
+        <strong id="stat-communes" aria-atomic="true">—</strong>&nbsp;communes partenaires
       </div>
     </div>
   </div>
@@ -302,7 +302,7 @@ import steps from '../data/steps.json';
       <div class="testimonials-grid">
 
         <div class="testimonial-card">
-          <div class="testimonial-card__stars" aria-label="5 étoiles">★★★★★</div>
+          <div class="testimonial-card__stars" aria-label="5 étoiles"><span aria-hidden="true">★★★★★</span></div>
           <blockquote class="testimonial-card__quote">
             "En deux jours j'avais trouvé un cabinet à Rouen pour mes consultations de kinésithérapie. Je n'aurais jamais cru que c'était aussi simple — et surtout aussi gratuit."
           </blockquote>
@@ -316,7 +316,7 @@ import steps from '../data/steps.json';
         </div>
 
         <div class="testimonial-card testimonial-card--highlight">
-          <div class="testimonial-card__stars" aria-label="5 étoiles">★★★★★</div>
+          <div class="testimonial-card__stars" aria-label="5 étoiles"><span aria-hidden="true">★★★★★</span></div>
           <blockquote class="testimonial-card__quote">
             "Notre salle polyvalente était vide 5 jours sur 7. Aujourd'hui elle accueille un sophrologue et un coach sportif. L'impact sur les habitants de la commune est concret."
           </blockquote>
@@ -330,7 +330,7 @@ import steps from '../data/steps.json';
         </div>
 
         <div class="testimonial-card">
-          <div class="testimonial-card__stars" aria-label="5 étoiles">★★★★★</div>
+          <div class="testimonial-card__stars" aria-label="5 étoiles"><span aria-hidden="true">★★★★★</span></div>
           <blockquote class="testimonial-card__quote">
             "Je me suis installé comme ostéopathe sans payer de loyer pendant les 4 premiers mois. Ça m'a permis de construire ma patientèle sereinement avant de signer un bail."
           </blockquote>

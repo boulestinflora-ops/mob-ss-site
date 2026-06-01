@@ -115,9 +115,26 @@ const jsonLd = JSON.stringify({
 
   <!-- Bandeau "site en cours de développement" -->
   <div class="dev-banner" role="status" aria-label="Avis de développement" aria-live="polite">
-    🚧&nbsp; Site en cours de création — MOB'SS est en développement, la société n'est pas encore créée.
-    <button type="button" class="dev-banner__close" aria-label="Fermer" onclick="this.parentElement.style.display='none'">✕</button>
+    <span aria-hidden="true">🚧</span>&nbsp; Site en cours de création — MOB'SS est en développement, la société n'est pas encore créée.
+    <button type="button" class="dev-banner__close" id="dev-banner-close" aria-label="Fermer le bandeau de développement">✕</button>
   </div>
+
+  <script is:inline>
+    (function() {
+      var btn = document.getElementById('dev-banner-close');
+      if (btn) {
+        var handler = function() {
+          var banner = btn.parentElement;
+          if (banner) banner.style.display = 'none';
+        };
+        btn.addEventListener('click', handler);
+        // Support clavier explicite (Enter + Espace) pour les lecteurs d'écran
+        btn.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handler(); }
+        });
+      }
+    })();
+  </script>
 
   <!-- En-tête (le menu en haut, identique sur toutes les pages) -->
   <Header currentPage={currentPage} />
