@@ -111,19 +111,79 @@ import steps from '../data/steps.json';
       </header>
       <div class="explication-grid">
         <div class="explication-block">
-          <div class="explication-icon" aria-hidden="true">🏢</div>
+          <div class="explication-icon" aria-hidden="true">
+            <svg viewBox="0 0 56 56" width="56" height="56" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Fond crème -->
+              <circle cx="28" cy="28" r="27" fill="#f7e5a2"/>
+              <!-- Toit -->
+              <path d="M8 24L28 10L48 24" stroke="#9C2E3A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <!-- Corps bâtiment -->
+              <rect x="11" y="24" width="34" height="22" rx="2" fill="white" stroke="#C8424F" stroke-width="1.5"/>
+              <!-- Fenêtres sombres (vides, inutilisées) -->
+              <rect x="15" y="29" width="8" height="7" rx="1.5" fill="#C8424F" opacity="0.18"/>
+              <rect x="26" y="29" width="8" height="7" rx="1.5" fill="#C8424F" opacity="0.18"/>
+              <rect x="37" y="29" width="5" height="7" rx="1.5" fill="#C8424F" opacity="0.18"/>
+              <!-- Porte -->
+              <rect x="22" y="38" width="12" height="8" rx="2" fill="#C8424F" opacity="0.55"/>
+              <!-- Point rouge "disponible" en haut à droite -->
+              <circle cx="46" cy="12" r="5" fill="#C8424F"/>
+              <line x1="46" y1="9" x2="46" y2="15" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+              <line x1="43" y1="12" x2="49" y2="12" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+          </div>
           <h3>Des espaces inutilisés partout</h3>
           <p>Bureaux, salles communales, cabinets partagés — en France, ces espaces sont inoccupés en moyenne <strong>65 % du temps</strong>. Des ressources disponibles, souvent à quelques minutes de chez vous.</p>
         </div>
         <div class="explication-arrow" aria-hidden="true">→</div>
         <div class="explication-block explication-block--highlight explication-block--center">
-          <div class="explication-icon" aria-hidden="true">🤝</div>
+          <div class="explication-icon" aria-hidden="true">
+            <svg viewBox="0 0 56 56" width="56" height="56" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Fond crème -->
+              <circle cx="28" cy="28" r="27" fill="#f7e5a2"/>
+              <!-- Nœud gauche : praticien -->
+              <circle cx="12" cy="30" r="8" fill="#C8424F"/>
+              <path d="M9 27.5 Q12 24.5 15 27.5" stroke="white" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+              <line x1="12" y1="28.5" x2="12" y2="34" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+              <line x1="9.5" y1="31" x2="14.5" y2="31" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+              <!-- Nœud droit : collectivité -->
+              <circle cx="44" cy="30" r="8" fill="#9C2E3A"/>
+              <path d="M41 30L44 25L47 30" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <rect x="41.5" y="30" width="5" height="5" rx="0.8" fill="white" opacity="0.6"/>
+              <!-- Chemin de connexion -->
+              <path d="M20 30 Q28 20 36 30" stroke="#C8424F" stroke-width="2" stroke-linecap="round" stroke-dasharray="3 2"/>
+              <!-- Badge M central -->
+              <circle cx="28" cy="28" r="7" fill="#C8424F"/>
+              <text x="28" y="32.5" font-family="'Space Grotesk Variable','Space Grotesk',sans-serif" font-size="9" font-weight="800" fill="white" text-anchor="middle">M</text>
+            </svg>
+          </div>
           <h3>MOB'SS fait le lien</h3>
           <p>La barrière numéro&nbsp;1 pour exercer là où on a besoin de vous&nbsp;? <strong>L'absence d'espace adapté sur place.</strong> MOB'SS connecte les lieux disponibles avec les professionnels qui en ont besoin — gratuitement.</p>
         </div>
         <div class="explication-arrow" aria-hidden="true">→</div>
         <div class="explication-block">
-          <div class="explication-icon" aria-hidden="true">🏃</div>
+          <div class="explication-icon" aria-hidden="true">
+            <svg viewBox="0 0 56 56" width="56" height="56" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Fond crème -->
+              <circle cx="28" cy="28" r="27" fill="#f7e5a2"/>
+              <!-- Tête -->
+              <circle cx="30" cy="14" r="5.5" fill="#C8424F"/>
+              <!-- Corps en mouvement (légèrement incliné) -->
+              <path d="M30 19.5 L27 30 L22 38" stroke="#C8424F" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <!-- Bras avant avec mallette -->
+              <path d="M29 23 L36 26" stroke="#C8424F" stroke-width="2" stroke-linecap="round"/>
+              <!-- Bras arrière -->
+              <path d="M29 24 L23 22" stroke="#9C2E3A" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
+              <!-- Jambe avant -->
+              <path d="M27 30 L32 38 L35 43" stroke="#C8424F" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <!-- Mallette médicale -->
+              <rect x="34" y="23" width="10" height="8" rx="2" fill="white" stroke="#C8424F" stroke-width="1.5"/>
+              <path d="M36 23 L36 21 Q38 19.5 40 21 L40 23" stroke="#C8424F" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+              <line x1="39" y1="25" x2="39" y2="29" stroke="#C8424F" stroke-width="1.2" stroke-linecap="round"/>
+              <line x1="37" y1="27" x2="41" y2="27" stroke="#C8424F" stroke-width="1.2" stroke-linecap="round"/>
+              <!-- Flèche direction -->
+              <path d="M43 16 L48 16 L45 13 M48 16 L45 19" stroke="#C8424F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
+            </svg>
+          </div>
           <h3>Exercez où vous êtes attendu</h3>
           <p>Kiné, coach sportif, ostéopathe, médecin — praticien libéral sans local fixe, MOB'SS vous connecte à des espaces conformes près de vos patients, <strong>sans bail ni loyer</strong>. Idéal pour un cabinet médical temporaire ou un remplacement ponctuel.</p>
         </div>
@@ -567,9 +627,18 @@ import steps from '../data/steps.json';
   .explication-block--center h3 { color: var(--color-primary); }
   .explication-block--highlight p { color: var(--color-text-soft); }
   .explication-icon {
-    font-size: 2.2rem;
-    margin-bottom: 14px;
+    margin-bottom: 16px;
     line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  .explication-icon svg {
+    filter: drop-shadow(0 3px 6px rgba(200,66,79,0.15));
+    transition: transform 0.2s ease;
+  }
+  .explication-block:hover .explication-icon svg {
+    transform: scale(1.06);
   }
   .explication-block h3 { font-size: 1.1rem; margin-bottom: 10px; }
   .explication-block p { color: var(--color-text-soft); font-size: 0.93rem; margin: 0; line-height: 1.55; }
