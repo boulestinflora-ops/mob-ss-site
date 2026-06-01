@@ -1,6 +1,6 @@
 # CI - MOB'SS
-# Verifie que le build Astro passe avant chaque merge sur main.
-# Declenche sur : push vers main, toute pull request vers main.
+# Vérifie lint, tests unitaires, type-check et build avant chaque merge sur main.
+# Déclenchement : push vers main, toute pull request vers main.
 
 name: CI
 
@@ -11,8 +11,8 @@ on:
     branches: [main]
 
 jobs:
-  build:
-    name: Build & type-check
+  ci:
+    name: Lint · Test · Type-check · Build
     runs-on: ubuntu-latest
 
     steps:
@@ -23,13 +23,23 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: npm
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Lint CSS (Stylelint)
         run: npm run lint:css
-        continue-on-error: true  # Non-bloquant en phase bêta
+
+      - name: Tests unitaires (Vitest)
+        run: npm run test -- --run
+
+      - name: Type-check (astro check)
+        run: npx astro check
+        env:
+          PUBLIC_SUPABASE_URL: ${{ secrets.PUBLIC_SUPABASE_URL }}
+          PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.PUBLIC_SUPABASE_ANON_KEY }}
+          PUBLIC_BETA_MODE: "true"
 
       - name: Build Astro
         run: npm run build
