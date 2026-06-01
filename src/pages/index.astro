@@ -22,10 +22,11 @@ import steps from '../data/steps.json';
         MOB'SS — <em>Mobilité Sport &amp; Santé</em>
       </p>
       <h1>Des espaces gratuits<br />pour exercer, partout.</h1>
+      <p class="hero__slogan">La santé n&apos;attend pas. Les espaces non plus.</p>
       <p class="lead">
         Des espaces conformes, vérifiés, mis à disposition
         <strong style="color:var(--color-cream);">gratuitement</strong>
-        par des collectivités et entreprises partenaires — dans les territoires qui manquent de professionnels.
+        par des mairies, communes et entreprises — dans les territoires qui manquent de professionnels.
         Zéro loyer. Zéro bail.
       </p>
       <div class="hero__cta">
@@ -270,7 +271,7 @@ import steps from '../data/steps.json';
           <div class="journey-step__content">
             <span class="journey-step__when">Sous 48h</span>
             <h3 class="journey-step__title">L'hôte confirme votre demande</h3>
-            <p class="journey-step__desc">Vous envoyez une demande en un clic. L'hôte — collectivité ou entreprise — reçoit votre profil et répond rapidement. Pas de négociation de loyer, c'est gratuit par principe.</p>
+            <p class="journey-step__desc">Vous envoyez une demande en un clic. L'hôte — mairie, commune ou entreprise — reçoit votre profil et répond rapidement. Pas de négociation de loyer, c'est gratuit par principe.</p>
           </div>
         </div>
 
@@ -389,7 +390,7 @@ import steps from '../data/steps.json';
         <div class="partner-sep" aria-hidden="true"></div>
 
         <div class="partner-badge partner-badge--more">
-          <span>+&nbsp;collectivités</span>
+          <span>+&nbsp;communes &amp; entreprises</span>
         </div>
 
       </div>
@@ -852,6 +853,17 @@ import steps from '../data/steps.json';
     opacity: 0.6;
   }
   .cta-final-card .btn { align-self: flex-start; }
+
+  /* Hero — slogan de marque */
+  .hero__slogan {
+    font-size: clamp(0.95rem, 2vw, 1.1rem);
+    font-weight: 600;
+    color: var(--color-cream);
+    letter-spacing: 0.01em;
+    margin: 14px 0 4px;
+    font-style: italic;
+    opacity: 0.92;
+  }
 
   /* Hero — lien "Pourquoi gratuit ?" */
   .hero__why-free {
