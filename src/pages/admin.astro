@@ -1,5 +1,8 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+
+// SSR obligatoire — la page admin ne doit pas être pré-rendue statiquement
+export const prerender = false;
 ---
 
 <BaseLayout
@@ -172,7 +175,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
   // ── URL de l'Edge Function ────────────────────────────────────────────────────
   // La fonction admin-documents tourne côté serveur avec service_role → bypass RLS
-  const ADMIN_EMAIL = import.meta.env.PUBLIC_ADMIN_EMAIL as string; // garde-fou côté client en plus
+  // Support liste CSV : PUBLIC_ADMIN_EMAIL="a@b.com,c@d.com"
+  const ADMIN_EMAILS: string[] = (import.meta.env.PUBLIC_ADMIN_EMAIL as string ?? '')
+    .split(',').map((e: string) => e.trim()).filter(Boolean);
   const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL as string;
   const EDGE_URL     = `${SUPABASE_URL}/functions/v1/admin-documents`;
 
