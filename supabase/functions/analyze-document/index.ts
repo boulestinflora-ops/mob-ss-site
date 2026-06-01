@@ -125,9 +125,31 @@ serve(async (req) => {
     if (!fileResp.ok) throw new Error("Téléchargement du fichier échoué.");
 
     const buffer  = await fileResp.arrayBuffer();
-    const bytes   = new Uint8Array(buffer);
-    const base64  = btoa(bytes.reduce((s, b) => s + String.fromCharCode(b), ""));
-    const mime    = fileResp.headers.get("content-type") || "application/pdf";
+
+    // ── Validation serveur : taille max 10 Mo ────────────────────────────────
+    const MAX_SIZE = 10 * 1024 * 1024; // 10 Mo
+    if (buffer.byteLength > MAX_SIZE) {
+      return json({ ok: false, error: "Fichier trop volumineux (max 10 Mo)." }, 422);
+    }
+
+    // ── Validation serveur : type MIME autorisé ───────────────────────────────
+    const ALLOWED_MIME = ["application/pdf", "image/jpeg", "image/png", "image/webp"];
+    const mime = fileResp.headers.get("content-type")?.split(";")[0].trim() || "application/pdf";
+    if (!ALLOWED_MIME.includes(mime)) {
+      return json({ ok: false, error: `Type de fichier non autorisé : ${mime}` }, 422);
+    }
+
+    // ── Vérification magic bytes (prévient le spoofing Content-Type) ──────────
+    const bytes = new Uint8Array(buffer);
+    const isPdf  = bytes[0] === 0x25 && bytes[1] === 0x50 && bytes[2] === 0x44 && bytes[3] === 0x46; // %PDF
+    const isJpeg = bytes[0] === 0xFF && bytes[1] === 0xD8;
+    const isPng  = bytes[0] === 0x89 && bytes[1] === 0x50 && bytes[2] === 0x4E && bytes[3] === 0x47; // PNG
+    const isWebp = bytes[8] === 0x57 && bytes[9] === 0x45 && bytes[10] === 0x42 && bytes[11] === 0x50; // WEBP
+    if (!isPdf && !isJpeg && !isPng && !isWebp) {
+      return json({ ok: false, error: "Contenu du fichier invalide (magic bytes non reconnus)." }, 422);
+    }
+
+    const base64  = btoa(bytes.reduce((s: string, b: number) => s + String.fromCharCode(b), ""));
 
     // ── 3. Analyse Claude ─────────────────────────────────────
     let analysis: Record<string, unknown> = { conforme: false, anomalies: ["Analyse non effectuée"] };

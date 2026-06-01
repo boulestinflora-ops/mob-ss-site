@@ -655,6 +655,14 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       const file = fileInput.files?.[0];
       if (!file) return;
 
+      // Validation type MIME
+      const ALLOWED_MIME = ['application/pdf', 'image/jpeg', 'image/png', 'image/webp'];
+      if (!ALLOWED_MIME.includes(file.type)) {
+        statusEl.style.display = 'block';
+        statusEl.className     = 'doc-status doc-status--error';
+        statusEl.textContent   = '⚠️ Format non accepté. Utilisez PDF, JPEG, PNG ou WebP.';
+        return;
+      }
       // Validation taille
       if (file.size > 10 * 1024 * 1024) {
         statusEl.style.display = 'block';
