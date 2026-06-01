@@ -1,0 +1,213 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const breadcrumbLd = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Accueil", "item": "https://mobss.fr/" },
+    { "@type": "ListItem", "position": 2, "name": "Déclaration d'accessibilité", "item": "https://mobss.fr/accessibilite" }
+  ]
+});
+
+const dateDeclaration = "1er juin 2026";
+const dateAudit = "Non réalisé à ce jour";
+---
+
+<BaseLayout
+  title="Déclaration d'accessibilité — MOB'SS"
+  description="Déclaration d'accessibilité RGAA de MOB'SS. Statut de conformité, non-conformances connues, contact et voies de recours."
+  currentPage=""
+>
+  <script type="application/ld+json" set:html={breadcrumbLd} />
+
+  <article class="legal-layout">
+    <div class="container legal-inner">
+
+      <nav aria-label="Fil d'Ariane">
+        <ol class="breadcrumb" style="font-size:0.82rem;list-style:none;display:flex;gap:6px;flex-wrap:wrap;padding:0;margin:0 0 24px;">
+          <li><a href="/" style="color:var(--color-text-soft);text-decoration:none;">Accueil</a></li>
+          <li style="color:var(--color-border);">/</li>
+          <li style="color:var(--color-text);">Déclaration d'accessibilité</li>
+        </ol>
+      </nav>
+
+      <h1>Déclaration d'accessibilité</h1>
+      <p style="color:var(--color-text-soft);font-size:0.9rem;margin-bottom:32px;">
+        Établie le {dateDeclaration} — MOB'SS, <a href="https://mobss.fr">mobss.fr</a>
+      </p>
+
+      <!-- ── Statut de conformité ── -->
+      <section aria-labelledby="statut-titre">
+        <h2 id="statut-titre">Statut de conformité</h2>
+        <div class="access-status access-status--partial">
+          <strong>MOB&apos;SS est partiellement conforme</strong> avec le référentiel général
+          d&apos;amélioration de l&apos;accessibilité (RGAA) version 4.1.
+          <br/>
+          Les non-conformances et les dérogations sont listées ci-dessous.
+        </div>
+        <p>
+          Le RGAA est fondé sur les critères de succès WCAG 2.1 niveaux A et AA.
+          MOB&apos;SS n&apos;a pas encore fait l&apos;objet d&apos;un audit RGAA complet par
+          un organisme tiers accrédité. La présente déclaration est établie par
+          auto-évaluation et reflète l&apos;état connu au {dateDeclaration}.
+        </p>
+      </section>
+
+      <!-- ── Résultats des tests ── -->
+      <section aria-labelledby="resultats-titre">
+        <h2 id="resultats-titre">Résultats des tests</h2>
+        <p>
+          Un audit RGAA formalisé (<strong>date : {dateAudit}</strong>) est prévu avant
+          toute intégration avec un partenaire institutionnel. En attendant, les points
+          suivants ont été identifiés par auto-évaluation :
+        </p>
+
+        <h3>Points conformes identifiés</h3>
+        <ul>
+          <li>Skip-link implémenté (<code>.skip-link</code> visible au focus)</li>
+          <li>Indicateurs de focus visibles sur tous les éléments interactifs (<code>focus-visible</code>, outline 3px bordeaux)</li>
+          <li>Attributs <code>aria-label</code> sur les éléments complexes (stats, sélecteurs de rôle)</li>
+          <li>Respect de <code>prefers-reduced-motion</code> pour les animations</li>
+          <li>Contrastes conformes AA : bordeaux #B53040 sur blanc = 5,2:1 ; texte secondaire #5A4B4E sur fond crème = 5,4:1</li>
+          <li>Boutons principaux à hauteur de zone de clic ≥ 48px</li>
+          <li>Balises <code>lang="fr"</code> sur <code>&lt;html&gt;</code></li>
+          <li>Titres de pages uniques et descriptifs</li>
+          <li>Liens d&apos;évitement (<em>skip-link</em>) accessibles au clavier</li>
+        </ul>
+
+        <h3>Non-conformances identifiées</h3>
+        <ul>
+          <li>
+            <strong>Critère 1.1</strong> — Certaines images décoratives (illustrations SVG, emojis)
+            peuvent ne pas être toutes marquées <code>aria-hidden</code> sur l&apos;ensemble des pages.
+            Des corrections sont appliquées progressivement.
+          </li>
+          <li>
+            <strong>Critère 4.1 / 4.2</strong> — Les vidéos ne sont pas présentes actuellement.
+            Si des contenus vidéo sont ajoutés, des sous-titres et descriptions textuelles seront fournis.
+          </li>
+          <li>
+            <strong>Critère 7.1</strong> — Certains scripts JavaScript (notamment les filtres
+            dynamiques sur /explorez) n&apos;ont pas encore de message d&apos;état ARIA complet
+            lors des mises à jour de résultats.
+          </li>
+          <li>
+            <strong>Critère 11.1</strong> — Les formulaires d&apos;inscription et de dépôt d&apos;annonce
+            utilisent des labels explicites. Des attributs <code>autocomplete</code> sont présents
+            sur les champs principaux. Des vérifications restent à effectuer sur les formulaires secondaires.
+          </li>
+          <li>
+            <strong>Audit tiers non réalisé</strong> — La conformité RGAA complète (106 critères)
+            n&apos;a pas été auditée par un organisme tiers. Une auto-évaluation ne peut pas
+            garantir une conformité totale.
+          </li>
+        </ul>
+
+        <h3>Dérogations pour charge disproportionnée</h3>
+        <p>
+          Aucune dérogation pour charge disproportionnée n&apos;est invoquée à ce stade.
+          MOB&apos;SS est une plateforme en version bêta et les corrections d&apos;accessibilité
+          sont intégrées au processus de développement continu.
+        </p>
+      </section>
+
+      <!-- ── Contenus non soumis ── -->
+      <section aria-labelledby="hors-champ-titre">
+        <h2 id="hors-champ-titre">Contenus non soumis à l&apos;obligation d&apos;accessibilité</h2>
+        <ul>
+          <li>Contenus publiés par des tiers (photos d&apos;espaces uploadées par les hôtes) non financés ni contrôlés directement par MOB&apos;SS</li>
+          <li>Cartes tierces (Leaflet / OpenStreetMap) intégrées dans /explorez</li>
+          <li>Documents PDF éventuellement générés ou téléversés par des utilisateurs</li>
+        </ul>
+      </section>
+
+      <!-- ── Établissement de la déclaration ── -->
+      <section aria-labelledby="etablissement-titre">
+        <h2 id="etablissement-titre">Établissement de cette déclaration</h2>
+        <p>
+          Cette déclaration a été établie le <strong>{dateDeclaration}</strong> par
+          auto-évaluation réalisée par l&apos;équipe MOB&apos;SS.
+        </p>
+        <p>
+          Technologies utilisées : HTML5, CSS3, JavaScript, Astro 4, Supabase.
+          Les tests ont été réalisés avec : navigateur Chrome 124 (Mac) + lecteur d&apos;écran
+          VoiceOver (macOS), et inspection des attributs ARIA via les DevTools.
+        </p>
+      </section>
+
+      <!-- ── Retour d'information et contact ── -->
+      <section aria-labelledby="contact-titre">
+        <h2 id="contact-titre">Retour d&apos;information et contact</h2>
+        <p>
+          Si vous rencontrez un défaut d&apos;accessibilité vous empêchant d&apos;accéder
+          à un contenu ou à une fonctionnalité, vous pouvez contacter l&apos;équipe MOB&apos;SS :
+        </p>
+        <ul>
+          <li>Par e-mail : <a href="mailto:contact@mobss.fr">contact@mobss.fr</a></li>
+          <li>Via le <a href="/contact">formulaire de contact</a></li>
+        </ul>
+        <p>
+          Nous nous engageons à répondre dans un délai de <strong>5 jours ouvrés</strong> et
+          à proposer une alternative d&apos;accès si la correction n&apos;est pas immédiatement possible.
+        </p>
+      </section>
+
+      <!-- ── Voies de recours ── -->
+      <section aria-labelledby="recours-titre">
+        <h2 id="recours-titre">Voies de recours</h2>
+        <p>
+          Si vous n&apos;obtenez pas de réponse satisfaisante, vous pouvez contacter le
+          <strong>Défenseur des droits</strong> :
+        </p>
+        <ul>
+          <li>
+            Via le
+            <a href="https://formulaire.defenseurdesdroits.fr" target="_blank" rel="noopener noreferrer">
+              formulaire en ligne du Défenseur des droits
+            </a>
+          </li>
+          <li>
+            Par courrier (gratuit, sans affranchissement) :
+            Défenseur des droits — Libre réponse 71120 — 75342 Paris CEDEX 07
+          </li>
+          <li>En contactant le délégué du Défenseur des droits dans votre région</li>
+        </ul>
+        <p style="font-size:0.85rem;color:var(--color-text-soft);margin-top:16px;">
+          Référence légale : loi n°2005-102 du 11 février 2005 pour l&apos;égalité des droits
+          et des chances, la participation et la citoyenneté des personnes handicapées —
+          article 47 modifié par la loi n°2018-771 du 5 septembre 2018.
+          Décret n°2019-768 du 24 juillet 2019. RGAA version 4.1.
+        </p>
+      </section>
+
+    </div>
+  </article>
+
+</BaseLayout>
+
+<style>
+  .legal-layout { padding: 56px 0 80px; }
+  .legal-inner { max-width: 760px; }
+  h1 { margin-bottom: 6px; }
+  h2 { font-size: 1.15rem; margin: 40px 0 14px; padding-bottom: 8px; border-bottom: 1px solid var(--color-border); }
+  h3 { font-size: 0.97rem; margin: 24px 0 10px; color: var(--color-text); }
+  p { line-height: 1.75; margin-bottom: 14px; }
+  ul { padding-left: 22px; margin-bottom: 16px; display: flex; flex-direction: column; gap: 8px; }
+  li { line-height: 1.65; font-size: 0.93rem; }
+  a { color: var(--color-primary); }
+  code { background: var(--color-bg-soft); padding: 1px 5px; border-radius: 3px; font-size: 0.88em; }
+  .access-status {
+    padding: 16px 20px;
+    border-radius: var(--radius-md);
+    margin-bottom: 16px;
+    font-size: 0.92rem;
+    line-height: 1.65;
+    border-left: 4px solid;
+  }
+  .access-status--partial {
+    background: rgba(200,150,0,0.07);
+    border-color: #b8860b;
+    color: var(--color-text);
+  }
+</style>
