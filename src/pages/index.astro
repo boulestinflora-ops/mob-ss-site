@@ -1191,25 +1191,52 @@ import steps from '../data/steps.json';
   }
 
   /* ── Tablette 768px–1024px ──────────────────────────────── */
-  @media (max-width: 1024px) {
+  /* ── Tablette large 1200px : explication-grid sans flèches séparées ────── */
+  @media (max-width: 1200px) {
     .explication-grid {
-      grid-template-columns: 1fr;
+      /* 3 contenus + 2 flèches de 40px → compressé. On passe en 3 vraies colonnes */
+      grid-template-columns: 1fr 24px 1fr 24px 1fr;
+    }
+  }
+
+  /* ── Tablette 1024px : grilles principales ────────────────────────────── */
+  @media (max-width: 1024px) {
+    /* explication : 3 blocs en ligne sans colonne flèche */
+    .explication-grid {
+      grid-template-columns: 1fr 1fr 1fr;
       gap: 16px;
     }
-    .explication-arrow {
-      transform: rotate(90deg);
-      justify-content: center;
-    }
+    .explication-arrow { display: none; }
+
+    /* stats-visual : 2 colonnes sur iPad avant de passer à 1 */
     .stats-visual {
-      grid-template-columns: 1fr;
+      grid-template-columns: repeat(2, 1fr);
       gap: 16px;
     }
+    /* 3ème stat prend toute la largeur */
+    .stats-visual .stat-visual-card:last-child {
+      grid-column: 1 / -1;
+    }
+
     .cta-final-grid {
       grid-template-columns: 1fr;
     }
     .search-fields-row {
       grid-template-columns: 1fr;
     }
+  }
+
+  /* ── Tablette 900px : explication en colonne + stats 1 col ─────────────── */
+  @media (max-width: 900px) {
+    .explication-grid { grid-template-columns: 1fr; }
+    .explication-arrow { display: block; transform: rotate(90deg); text-align: center; }
+    .stats-visual { grid-template-columns: 1fr; }
+    .stats-visual .stat-visual-card:last-child { grid-column: auto; }
+    .stats-secondary { flex-direction: column; gap: 20px; padding: 20px 16px; }
+    .stat-secondary-sep { display: none; }
+    .stat-secondary-item { flex: none; }
+    .platform-metrics { gap: 12px; }
+    .platform-metric { padding: 0 12px; min-width: 140px; }
   }
 
   /* Responsive */

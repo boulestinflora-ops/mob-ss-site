@@ -1377,10 +1377,28 @@ p  { margin: 0 0 1em; }
   /* Bouton déconnexion : masqué sur tablet, accessible via le menu */
   #logout-btn { display: none; }
 
+  .grid--3 { grid-template-columns: repeat(2, 1fr); }
   .grid--4 { grid-template-columns: repeat(2, 1fr); }
   .stat-grid { grid-template-columns: repeat(2, 1fr); }
   .listing-layout { grid-template-columns: 1fr; }
   .filters { position: static; }
+
+  /* Stats secondaires : alignement vertical sur tablette */
+  .stats-secondary {
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+    text-align: center;
+  }
+  .stat-secondary-sep { display: none; }
+
+  /* Ressources grid : 2 colonnes sur tablette */
+  .ressources-grid { grid-template-columns: repeat(2, 1fr); }
+
+  /* Partners strip */
+  .partners-strip { gap: 6px; }
+  .platform-metrics { gap: 12px; }
+  .platform-metric { padding: 0 16px; }
 
   /* Explorez */
   .explore-container { grid-template-columns: 1fr; }
