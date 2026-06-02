@@ -300,8 +300,49 @@ const breadcrumbLd = JSON.stringify({
   <!-- ─────────────────────────────────────────────
        CTA FINAL
   ───────────────────────────────────────────── -->
+  <!-- ─────────────────────────────────────────────
+       FORMULAIRE D'INTÉRÊT INSTITUTIONNEL
+  ───────────────────────────────────────────── -->
+  <section class="section hotes-interest" id="manifester-interet" style="background:var(--color-bg-soft);border-top:1px solid var(--color-border);">
+    <div class="container" style="max-width:680px;">
+      <div class="section__header" style="text-align:center;margin-bottom:36px;">
+        <span class="section__eyebrow">Vous représentez une institution ?</span>
+        <h2>Manifestez votre intérêt — sans engagement</h2>
+        <p class="section__lead">Collectivités, ARS, ANCT, ANAH, entreprises : laissez-nous votre contact et nous vous revenons avec un dossier de présentation adapté à votre contexte.</p>
+      </div>
+      <form class="hotes-interest-form" action="https://formspree.io/f/contact@mobss.fr" method="POST" data-demo="true">
+        <input type="hidden" name="_subject" value="Intérêt institutionnel — MOB'SS" />
+        <div class="hotes-interest-form__row">
+          <div class="form-field">
+            <label for="interest-org" class="form-label">Organisation <span aria-hidden="true">*</span></label>
+            <input id="interest-org" name="organisation" type="text" class="form-input" placeholder="Mairie de…, EPCI, ARS, entreprise…" required />
+          </div>
+          <div class="form-field">
+            <label for="interest-role" class="form-label">Votre fonction <span aria-hidden="true">*</span></label>
+            <input id="interest-role" name="fonction" type="text" class="form-input" placeholder="DGS, DRH, Élu, Directeur…" required />
+          </div>
+        </div>
+        <div class="form-field">
+          <label for="interest-email" class="form-label">Email professionnel <span aria-hidden="true">*</span></label>
+          <input id="interest-email" name="email" type="email" class="form-input" placeholder="prenom.nom@mairie.fr" required />
+        </div>
+        <div class="form-field">
+          <label for="interest-message" class="form-label">Contexte (optionnel)</label>
+          <textarea id="interest-message" name="message" class="form-input" rows="3" placeholder="Ex : nous avons 2 salles disponibles 3j/semaine, territoire rural, 8 000 habitants…"></textarea>
+        </div>
+        <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:8px;">
+          <button type="submit" class="btn btn--primary btn--lg">Envoyer ma demande</button>
+          <p style="font-size:0.82rem;color:var(--color-text-soft);margin:0;">Réponse sous 48h · Aucun démarchage commercial · <a href="/pourquoi-gratuit" style="color:var(--color-primary);">Modèle économique →</a></p>
+        </div>
+      </form>
+      <div style="margin-top:28px;padding:16px 20px;background:#fff;border:1px solid var(--color-border);border-radius:var(--radius-md);font-size:0.85rem;color:var(--color-text-soft);">
+        <strong style="color:var(--color-text);">Partenariats institutionnels :</strong> MOB'SS travaille en lien avec les objectifs des contrats locaux de santé (CLS), des projets de territoire et des dispositifs ARS / ANCT / ANAH. Nous pouvons vous fournir un dossier de présentation adapté aux exigences de vos comités de marchés publics.
+      </div>
+    </div>
+  </section>
+
   <!-- Lien de réassurance pour les institutionnels -->
-  <div class="container" style="max-width:780px;text-align:center;padding:0 0 40px;">
+  <div class="container" style="max-width:780px;text-align:center;padding:24px 0 40px;">
     <p style="font-size:0.9rem;color:var(--color-text-soft);">
       Vous hésitez encore ?
       <a href="/pourquoi-gratuit" style="color:var(--color-primary);font-weight:600;">Découvrez pourquoi MOB&apos;SS est gratuit et comment notre modèle fonctionne →</a>
