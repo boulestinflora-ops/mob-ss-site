@@ -286,20 +286,6 @@
     });
   });
 
-  // ----- Connexion : login simulé sécurisé (jamais en GET) -----
-  const loginForm = document.getElementById('login-form');
-  if (loginForm) {
-    loginForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      // En vrai backend : POST vers /api/login, cookie HTTPOnly, jamais en URL
-      const emailInput = loginForm.querySelector('input[type="email"]');
-      const submitBtn = loginForm.querySelector('button[type="submit"]');
-      if (!emailInput.value) return;
-      submitBtn.textContent = 'Connexion…';
-      submitBtn.disabled = true;
-      setTimeout(() => { window.location.href = 'dashboard.html'; }, 600);
-    });
-  }
 
   // ----- Bandeau cookies RGPD -----
   const COOKIE_KEY = 'mobss_cookies_consent_v1';
