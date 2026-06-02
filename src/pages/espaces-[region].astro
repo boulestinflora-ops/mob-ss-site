@@ -43,7 +43,7 @@ const supabase = createClient(
 const { data: espaces } = await supabase
   .from('annonces')
   .select('id, titre, type_espace, ville, cp, superficie')
-  .eq('status', 'publie')
+  .eq('statut', 'actif')
   .limit(6);
 
 const hasEspaces = espaces && espaces.length > 0;

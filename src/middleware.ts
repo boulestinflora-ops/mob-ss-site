@@ -27,7 +27,7 @@ function buildCSP(nonce: string): string {
     "font-src 'self' data: https://fonts.gstatic.com",
     "img-src 'self' data: blob: https:",
     "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://eu.posthog.com",
-    "worker-src blob:",
+    "worker-src 'self' blob:",
     "frame-ancestors 'none'",
   ];
   return directives.join('; ') + ';';

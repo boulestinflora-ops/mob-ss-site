@@ -504,7 +504,7 @@ export function initExplorez(): void {
           jours_disponibles, lat, lng, photos,
           profiles:user_id ( role )
         `, { count: append ? undefined : 'exact' })
-        .eq('status', 'publie')
+        .eq('statut', 'actif')
         .order('created_at', { ascending: false })
         .range(_spacesOffset, _spacesOffset + PAGE_SIZE - 1)
         .abortSignal(signal);
