@@ -7,14 +7,15 @@ const navLinks = [
 ];
 
 const aproposLinks = [
-  { href: '/comment-ca-marche', label: 'Comment ça marche', desc: 'Le fonctionnement pas à pas', icon: '⚙️' },
-  { href: '/le-probleme',       label: 'Le problème',        desc: 'Le paradoxe des territoires français', icon: '📊' },
-  { href: '/notre-solution',    label: 'La solution',        desc: "Comment MOB'SS fait le lien", icon: '🔗' },
-  { href: '/notre-impact',      label: 'Notre impact',       desc: "Ce que MOB'SS change concrètement", icon: '🎯' },
-  { href: '/notre-histoire',    label: 'Notre histoire',     desc: "Qui nous sommes et pourquoi on existe", icon: '🏛️' },
+  { href: '/comment-ca-marche', label: 'Comment ça marche',  desc: 'Le fonctionnement pas à pas',                  icon: '⚙️' },
+  { href: '/le-probleme',       label: 'Le problème',         desc: 'Le paradoxe des territoires français',         icon: '📊' },
+  { href: '/notre-solution',    label: 'La solution',         desc: "Comment MOB'SS fait le lien",                  icon: '🔗' },
+  { href: '/notre-impact',      label: 'Notre impact',        desc: "Ce que MOB'SS change concrètement",            icon: '🎯' },
+  { href: '/pourquoi-gratuit',  label: 'Modèle économique',   desc: 'Transparent, sans frais cachés — pourquoi ?',  icon: '💡' },
+  { href: '/notre-histoire',    label: 'Notre histoire',      desc: "Qui nous sommes et pourquoi on existe",        icon: '🏛️' },
 ];
 
-const isAproposActive = ['comment','probleme','solution','impact','histoire'].includes(currentPage);
+const isAproposActive = ['comment','probleme','solution','impact','gratuit','histoire'].includes(currentPage);
 ---
 
 <header class="site-header">
