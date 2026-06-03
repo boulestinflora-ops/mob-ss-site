@@ -227,86 +227,102 @@ const qrSrc = qrDataUrl || 'https://api.qrserver.com/v1/create-qr-code/?size=128
     </div>
   </section>
 
-  <!-- 3 ÉTAPES -->
+  <!-- COMMENT ÇA MARCHE — onglets -->
   <section class="section section--cream">
     <div class="container">
       <header class="section__header">
-        <h2>Comment ça marche</h2>
+        <h2>Comment ça marche ?</h2>
         <p class="section__lead">
           Un parcours simple, que vous soyez professionnel ou gestionnaire d'espace.
         </p>
       </header>
-      <div class="steps">
-        {steps.map(step => <Step {...step} />)}
+
+      <!-- Onglets -->
+      <div style="display:flex;justify-content:center;gap:12px;margin-bottom:40px;flex-wrap:wrap;">
+        <button id="home-tab-prat" class="btn btn--primary home-ccm-tab" data-tab="home-prat" aria-selected="true">
+          Je veux intervenir
+        </button>
+        <button id="home-tab-hote" class="btn btn--outline home-ccm-tab" data-tab="home-hote" aria-selected="false">
+          Je mets un espace à disposition
+        </button>
       </div>
-      <div class="text-center mt-32" style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
-        <a href="/inscription?role=praticien" class="btn btn--primary btn--lg">Créer mon profil praticien →</a>
-        <a href="/comment-ca-marche" class="btn btn--ghost" style="font-size:0.95rem;">En savoir plus →</a>
+
+      <!-- Panneau praticien -->
+      <div id="home-prat" class="home-ccm-panel">
+        <ol class="home-steps">
+          <li class="home-step">
+            <div class="home-step__num">1</div>
+            <div>
+              <h3 class="home-step__title">Créez votre profil</h3>
+              <p class="home-step__desc">Spécialité, zone géographique, disponibilités. Deux minutes suffisent pour commencer. Vos documents professionnels peuvent être ajoutés à votre rythme.</p>
+            </div>
+          </li>
+          <li class="home-step">
+            <div class="home-step__num">2</div>
+            <div>
+              <h3 class="home-step__title">Trouvez l'espace qui correspond</h3>
+              <p class="home-step__desc">Filtrez par région, type d'espace et équipements. Chaque annonce est vérifiée et illustrée de photos réelles — vous savez exactement où vous mettez les pieds.</p>
+            </div>
+          </li>
+          <li class="home-step">
+            <div class="home-step__num">3</div>
+            <div>
+              <h3 class="home-step__title">Envoyez votre demande</h3>
+              <p class="home-step__desc">Un clic suffit. L'hôte reçoit votre profil et vous répond sous 48h. Pas de négociation, pas de loyer — c'est gratuit par principe.</p>
+            </div>
+          </li>
+          <li class="home-step">
+            <div class="home-step__num">4</div>
+            <div>
+              <h3 class="home-step__title">Intervenez</h3>
+              <p class="home-step__desc">L'espace est confirmé. Vos bénéficiaires vous attendent. Vous n'avez plus qu'à y aller.</p>
+            </div>
+          </li>
+        </ol>
+        <div class="text-center mt-32" style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
+          <a href="/inscription?role=praticien" class="btn btn--primary btn--lg">Je veux intervenir →</a>
+          <a href="/comment-ca-marche" class="btn btn--ghost" style="font-size:0.95rem;">En savoir plus →</a>
+        </div>
       </div>
-    </div>
-  </section>
 
-  <!-- TIMELINE — parcours concret post-inscription -->
-  <section class="section section--white journey-section">
-    <div class="container" style="max-width:900px;">
-      <header class="section__header" style="margin-bottom:48px;">
-        <span class="section__eyebrow">Ce qui se passe concrètement</span>
-        <h2>Votre première semaine avec MOB'SS</h2>
-        <p class="section__lead">Pas de rendez-vous, pas de dossier, pas d'attente. Voilà ce qui se passe vraiment après votre inscription.</p>
-      </header>
-
-      <div class="journey-timeline">
-
-        <div class="journey-step">
-          <div class="journey-step__marker">
-            <div class="journey-step__dot"></div>
-            <div class="journey-step__line"></div>
-          </div>
-          <div class="journey-step__content">
-            <span class="journey-step__when">Aujourd'hui</span>
-            <h3 class="journey-step__title">Vous créez votre profil en 2 minutes</h3>
-            <p class="journey-step__desc">Spécialité, zone géographique, disponibilités. Rien de plus pour commencer. Vos documents professionnels peuvent être ajoutés plus tard.</p>
-          </div>
+      <!-- Panneau hôte -->
+      <div id="home-hote" class="home-ccm-panel" style="display:none;">
+        <ol class="home-steps">
+          <li class="home-step">
+            <div class="home-step__num">1</div>
+            <div>
+              <h3 class="home-step__title">Déposez votre espace</h3>
+              <p class="home-step__desc">Décrivez votre local, ajoutez des photos, indiquez vos disponibilités. La mise en ligne prend quelques minutes.</p>
+            </div>
+          </li>
+          <li class="home-step">
+            <div class="home-step__num">2</div>
+            <div>
+              <h3 class="home-step__title">Recevez des demandes</h3>
+              <p class="home-step__desc">MOB'SS vous met en relation avec des professionnels du sport et de la santé correspondant à votre espace et votre territoire.</p>
+            </div>
+          </li>
+          <li class="home-step">
+            <div class="home-step__num">3</div>
+            <div>
+              <h3 class="home-step__title">Validez la demande</h3>
+              <p class="home-step__desc">Vous consultez le profil du professionnel et confirmez en un clic. Vous gardez le contrôle sur qui accède à votre espace.</p>
+            </div>
+          </li>
+          <li class="home-step">
+            <div class="home-step__num">4</div>
+            <div>
+              <h3 class="home-step__title">Accueillez le professionnel</h3>
+              <p class="home-step__desc">Le jour venu, vous ouvrez vos portes. Vos citoyens ou collaborateurs bénéficient d'un service de sport et de santé — directement sur votre territoire.</p>
+            </div>
+          </li>
+        </ol>
+        <div class="text-center mt-32" style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
+          <a href="/inscription?role=collectivite" class="btn btn--primary btn--lg">Je mets un espace à disposition →</a>
+          <a href="/comment-ca-marche" class="btn btn--ghost" style="font-size:0.95rem;">En savoir plus →</a>
         </div>
-
-        <div class="journey-step">
-          <div class="journey-step__marker">
-            <div class="journey-step__dot"></div>
-            <div class="journey-step__line"></div>
-          </div>
-          <div class="journey-step__content">
-            <span class="journey-step__when">Dans l'heure</span>
-            <h3 class="journey-step__title">Vous parcourez les espaces disponibles</h3>
-            <p class="journey-step__desc">Filtrez par région, équipements (table de massage, tapis, vestiaires…), superficie et jours. Chaque annonce est vérifiée et accompagnée de photos réelles.</p>
-          </div>
-        </div>
-
-        <div class="journey-step">
-          <div class="journey-step__marker">
-            <div class="journey-step__dot"></div>
-            <div class="journey-step__line"></div>
-          </div>
-          <div class="journey-step__content">
-            <span class="journey-step__when">Sous 48h</span>
-            <h3 class="journey-step__title">L'hôte confirme votre demande</h3>
-            <p class="journey-step__desc">Vous envoyez une demande en un clic. L'hôte — mairie, commune ou entreprise — reçoit votre profil et répond rapidement. Pas de négociation de loyer, c'est gratuit par principe.</p>
-          </div>
-        </div>
-
-        <div class="journey-step journey-step--last">
-          <div class="journey-step__marker">
-            <div class="journey-step__dot journey-step__dot--final"></div>
-          </div>
-          <div class="journey-step__content">
-            <span class="journey-step__when journey-step__when--final">Cette semaine</span>
-            <h3 class="journey-step__title">Vous exercez. C'est tout.</h3>
-            <p class="journey-step__desc">Un espace conforme, des patients qui vous attendent, zéro loyer, zéro bail, zéro charge fixe. Vous vous déplacez — MOB'SS a fait le reste.</p>
-            <a href="/inscription?role=praticien" class="btn btn--primary btn--lg journey-cta">Je m'inscris maintenant →</a>
-            <p class="journey-cta__note" aria-label="Sans engagement">Gratuit · Sans engagement · 2 minutes</p>
-          </div>
-        </div>
-
       </div>
+
     </div>
   </section>
 
@@ -502,6 +518,28 @@ const qrSrc = qrDataUrl || 'https://api.qrserver.com/v1/create-qr-code/?size=128
   </section>
 
   <script is:inline>
+  // ─── Onglets Comment ça marche (homepage) ────────────────────────────────────
+  (function () {
+    const tabs = document.querySelectorAll('.home-ccm-tab');
+    tabs.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        tabs.forEach(function (b) {
+          b.classList.remove('btn--primary');
+          b.classList.add('btn--outline');
+          b.setAttribute('aria-selected', 'false');
+        });
+        btn.classList.add('btn--primary');
+        btn.classList.remove('btn--outline');
+        btn.setAttribute('aria-selected', 'true');
+        document.querySelectorAll('.home-ccm-panel').forEach(function (p) {
+          p.style.display = p.id === btn.dataset.tab ? '' : 'none';
+        });
+      });
+    });
+  })();
+</script>
+
+<script is:inline>
     (function () {
       // Copy link button
       var btn = document.getElementById('copy-link-btn');
@@ -1137,98 +1175,50 @@ const qrSrc = qrDataUrl || 'https://api.qrserver.com/v1/create-qr-code/?size=128
     opacity: 0.7;
   }
 
-  /* ── Timeline parcours praticien ────────────────────────────── */
-  .journey-section { padding: 72px 0 64px; }
-  .journey-timeline {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
+  /* ── Comment ça marche — onglets homepage ──────────────── */
+  .home-steps {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
   }
-  
-  .journey-step {
+  .home-step {
     display: flex;
-    gap: 0;
-    position: relative;
+    gap: 16px;
+    background: #fff;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: 24px 20px;
   }
-  .journey-step__marker {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 40px;
-    flex-shrink: 0;
-  }
-  .journey-step__dot {
-    width: 16px;
-    height: 16px;
+  .home-step__num {
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
     background: var(--color-primary);
-    border: 3px solid var(--color-primary);
-    flex-shrink: 0;
-    position: relative;
-    z-index: 1;
-  }
-  .journey-step__dot--final {
-    background: var(--color-accent, #e8a045);
-    border-color: var(--color-accent, #e8a045);
-    width: 20px;
-    height: 20px;
-  }
-  .journey-step__line {
-    flex: 1;
-    width: 2px;
-    background: var(--color-border);
-    margin: 4px 0;
-    min-height: 32px;
-  }
-  .journey-step--last .journey-step__line {
-    display: none;
-  }
-  .journey-step__content {
-    padding: 0 0 40px 20px;
-    flex: 1;
-  }
-  .journey-step--last .journey-step__content {
-    padding-bottom: 0;
-  }
-  .journey-step__when {
-    display: inline-block;
-    font-size: 0.72rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: .08em;
-    color: var(--color-primary);
-    background: rgba(26,26,46,.07);
-    border-radius: 20px;
-    padding: 3px 10px;
-    margin-bottom: 8px;
-  }
-  .journey-step__when--final {
     color: #fff;
-    background: var(--color-accent, #e8a045);
+    font-weight: 800;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
   }
-  .journey-step__title {
-    font-size: 1.1rem;
+  .home-step__title {
+    font-size: 1rem;
     font-weight: 700;
     color: var(--color-text);
-    margin: 0 0 4px;
+    margin: 0 0 6px;
   }
-  .journey-step__desc {
-    font-size: 0.95rem;
+  .home-step__desc {
+    font-size: 0.92rem;
     color: var(--color-text-soft);
     margin: 0;
-    line-height: 1.5;
+    line-height: 1.55;
   }
-  .journey-cta {
-    margin-top: 40px;
-    display: block;
-    text-align: center;
-  }
-  .journey-cta__note {
-    margin-top: 10px;
-    text-align: center;
-    font-size: 0.78rem;
-    color: var(--color-text-soft);
-    letter-spacing: 0.03em;
+  @media (max-width: 768px) {
+    .home-steps { grid-template-columns: 1fr; }
   }
 
   /* ── Tablette 768px–1024px ──────────────────────────────── */
