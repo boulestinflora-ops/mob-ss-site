@@ -1,17 +1,22 @@
 [
   {
     "num": 1,
-    "title": "Créez votre profil en 2 minutes",
-    "description": "Nom, spécialité, zone géographique. Rien de plus pour commencer. Vous ajouterez vos documents professionnels à votre rythme."
+    "title": "Créez votre profil",
+    "description": "Spécialité, zone géographique, disponibilités. Deux minutes suffisent pour commencer. Vos documents professionnels peuvent être ajoutés à votre rythme."
   },
   {
     "num": 2,
-    "title": "Trouvez l'espace qui vous correspond",
-    "description": "Filtrez par activité, région, équipements. Chaque annonce montre photos, superficie, disponibilités et le profil de l'hôte — avant toute inscription."
+    "title": "Trouvez l'espace qui correspond",
+    "description": "Filtrez par région, type d'espace et équipements. Chaque annonce est vérifiée et illustrée de photos réelles — vous savez exactement où vous mettez les pieds."
   },
   {
     "num": 3,
-    "title": "Exercez dès cette semaine",
-    "description": "Envoyez votre demande, l'hôte confirme sous 48h. Zéro loyer, zéro charge fixe. Juste vous, votre pratique, et vos patients."
+    "title": "Envoyez votre demande",
+    "description": "Un clic suffit. L'hôte reçoit votre profil et vous répond sous 48h. Pas de négociation, pas de loyer — c'est gratuit par principe."
+  },
+  {
+    "num": 4,
+    "title": "Intervenez",
+    "description": "L'espace est confirmé. Vos bénéficiaires vous attendent. Vous n'avez plus qu'à y aller."
   }
 ]

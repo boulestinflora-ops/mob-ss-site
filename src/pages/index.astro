@@ -38,17 +38,16 @@ const qrSrc = qrDataUrl || 'https://api.qrserver.com/v1/create-qr-code/?size=128
         MOB'SS — <em>Mobilité Sport &amp; Santé</em>
       </p>
       <h1>Des espaces gratuits<br />pour exercer, partout.</h1>
-      <p class="hero__slogan">La santé n&apos;attend pas. Les espaces non plus.</p>
+      <p class="hero__slogan">Parce que l&apos;accès au sport et à la santé n&apos;attend pas.</p>
       <p class="lead">
-        Des espaces conformes, vérifiés, mis à disposition
-        <strong style="color:var(--color-cream);">gratuitement</strong>
-        par des mairies, communes et entreprises — dans les territoires qui manquent de professionnels.
-        Zéro loyer. Zéro bail.
+        Mairies, communes, entreprises —
+        <strong style="color:var(--color-cream);">leurs espaces disponibles</strong>
+        pour vos prochaines interventions.
       </p>
       <div class="hero__cta">
-        <a href="/inscription?role=praticien" class="btn btn--cream btn--lg">Je veux exercer</a>
+        <a href="/inscription?role=praticien" class="btn btn--cream btn--lg">Je veux intervenir</a>
         <span class="hero__cta-sep" aria-hidden="true">ou</span>
-        <a href="/hotes" class="btn btn--hero-host">Je propose un espace →</a>
+        <a href="/hotes" class="btn btn--hero-host">Je mets un espace à disposition</a>
       </div>
       <p class="hero__why-free">
         <a href="/pourquoi-gratuit">Pourquoi c'est vraiment gratuit ?</a>
@@ -56,7 +55,7 @@ const qrSrc = qrDataUrl || 'https://api.qrserver.com/v1/create-qr-code/?size=128
       <div class="hero__trust-strip" aria-label="Garanties MOB'SS">
         <span>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-          0 € de loyer
+          Gratuit pour les praticiens
         </span>
         <span>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
@@ -123,8 +122,13 @@ const qrSrc = qrDataUrl || 'https://api.qrserver.com/v1/create-qr-code/?size=128
   <section class="section section--cream" style="padding:80px 0 72px;">
     <div class="container" style="max-width:960px;">
       <header class="section__header" style="margin-bottom:40px;">
-        <span class="section__eyebrow">Le paradoxe français</span>
-        <h2>Des millions de Français sans accès aux soins.<br/>Des milliers de salles vides.<br/><em>Comment est-ce possible dans le même pays ?</em></h2>
+        <span class="section__eyebrow">Le constat</span>
+        <h2>Des territoires qui manquent de professionnels.<br/>Et les professionnels qui manquent de raisons d'y aller.</h2>
+        <p style="color:var(--color-text-soft);max-width:720px;margin:20px auto 0;line-height:1.7;">
+          En France, des millions de m² — gymnases, salles communales, bureaux d'entreprise — restent inoccupés une grande partie de la semaine. Dans ces mêmes territoires, l'accès au sport et à la santé est insuffisant.<br/><br/>
+          Le manque de professionnels est réel. Mais une partie d'entre eux n'interviennent pas dans ces zones faute de conditions concrètes : pas de local disponible, pas de visibilité sur les besoins, pas d'infrastructure pour se déplacer sereinement.<br/><br/>
+          <strong>Ce n'est pas une fatalité. C'est un problème de connexion.</strong>
+        </p>
       </header>
       <div class="explication-grid">
         <div class="explication-block">
@@ -148,8 +152,8 @@ const qrSrc = qrDataUrl || 'https://api.qrserver.com/v1/create-qr-code/?size=128
               <line x1="43" y1="12" x2="49" y2="12" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
             </svg>
           </div>
-          <h3>Des espaces inutilisés partout</h3>
-          <p>Bureaux, salles communales, cabinets partagés — en France, ces espaces sont inoccupés en moyenne <strong>65 % du temps</strong>. Des ressources disponibles, souvent à quelques minutes de chez vous.</p>
+          <h3>Des millions de m² qui dorment</h3>
+          <p>Gymnases, salles communales, bureaux d'entreprise — en France, ces espaces sont inoccupés en moyenne <strong>65 % du temps</strong>. Des ressources disponibles, souvent à quelques kilomètres de chez vous.</p>
         </div>
         <div class="explication-arrow" aria-hidden="true">→</div>
         <div class="explication-block explication-block--highlight explication-block--center">
@@ -173,8 +177,8 @@ const qrSrc = qrDataUrl || 'https://api.qrserver.com/v1/create-qr-code/?size=128
               <text x="28" y="32.5" font-size="9" font-weight="800" fill="white" text-anchor="middle">M</text>
             </svg>
           </div>
-          <h3>MOB'SS fait le lien</h3>
-          <p>La barrière numéro&nbsp;1 pour exercer là où on a besoin de vous&nbsp;? <strong>L'absence d'espace adapté sur place.</strong> MOB'SS connecte les lieux disponibles avec les professionnels qui en ont besoin — gratuitement.</p>
+          <h3>MOB'SS crée ces connexions</h3>
+          <p>La barrière numéro&nbsp;1 pour intervenir là où on a besoin de vous&nbsp;? <strong>L'absence d'espace adapté sur place.</strong> MOB'SS connecte les lieux disponibles avec les professionnels qui en ont besoin — gratuitement.</p>
         </div>
         <div class="explication-arrow" aria-hidden="true">→</div>
         <div class="explication-block">
@@ -201,8 +205,8 @@ const qrSrc = qrDataUrl || 'https://api.qrserver.com/v1/create-qr-code/?size=128
               <path d="M43 16 L48 16 L45 13 M48 16 L45 19" stroke="#C8424F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
             </svg>
           </div>
-          <h3>Exercez où vous êtes attendu</h3>
-          <p>Kiné, coach sportif, ostéopathe, médecin — praticien libéral sans local fixe, MOB'SS vous connecte à des espaces conformes près de vos patients, <strong>sans bail ni loyer</strong>. Idéal pour un cabinet médical temporaire ou un remplacement ponctuel.</p>
+          <h3>Les professionnels existent. Quelque chose les retient.</h3>
+          <p>Pas de local disponible sur place, pas de visibilité sur les besoins locaux, pas d'infrastructure pour intervenir sereinement — autant de freins concrets qui empêchent les professionnels de se déplacer <strong>là où on les attend</strong>.</p>
         </div>
       </div>
     </div>
@@ -212,10 +216,9 @@ const qrSrc = qrDataUrl || 'https://api.qrserver.com/v1/create-qr-code/?size=128
   <section class="section section--alt" style="padding-top:72px;padding-bottom:80px;">
     <div class="container">
       <header class="section__header">
-        <h2>Une plateforme, trois acteurs, un territoire en mouvement</h2>
+        <h2>Une plateforme. Trois acteurs. Un territoire en mouvement.</h2>
         <p class="section__lead">
-          Praticien sans espace fixe ou gestionnaire d'un local inoccupé —
-          il y a une place pour vous dans l'écosystème MOB'SS.
+          Que vous cherchiez un espace ou que vous en ayez un à proposer, MOB'SS est fait pour vous.
         </p>
       </header>
       <div class="grid grid--3">
@@ -230,8 +233,7 @@ const qrSrc = qrDataUrl || 'https://api.qrserver.com/v1/create-qr-code/?size=128
       <header class="section__header">
         <h2>Comment ça marche</h2>
         <p class="section__lead">
-          Exercez dans des conditions professionnelles, sans les contraintes d'un bail.
-          En trois étapes, depuis n'importe où.
+          Un parcours simple, que vous soyez professionnel ou gestionnaire d'espace.
         </p>
       </header>
       <div class="steps">
@@ -437,21 +439,46 @@ const qrSrc = qrDataUrl || 'https://api.qrserver.com/v1/create-qr-code/?size=128
     </div>
   </section>
 
+  <!-- LABELS INSTITUTIONNELS — confiance et alignement politique public -->
+  <section aria-label="Alignement avec les dispositifs publics" style="background:#fff;border-top:1px solid var(--color-border);padding:20px 0;">
+    <div class="container">
+      <p style="font-size:0.78rem;color:var(--color-text-soft);text-align:center;margin-bottom:14px;letter-spacing:.04em;text-transform:uppercase;font-weight:600;">Compatible avec les dispositifs</p>
+      <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:10px 16px;align-items:center;">
+        <span style="display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border:1px solid var(--color-border);border-radius:20px;font-size:0.8rem;color:var(--color-text-soft);background:var(--color-bg-soft);">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Contrats Locaux de Santé (CLS)
+        </span>
+        <span style="display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border:1px solid var(--color-border);border-radius:20px;font-size:0.8rem;color:var(--color-text-soft);background:var(--color-bg-soft);">
+          Projets de territoire ARS
+        </span>
+        <span style="display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border:1px solid var(--color-border);border-radius:20px;font-size:0.8rem;color:var(--color-text-soft);background:var(--color-bg-soft);">
+          Programme ANCT Territoires en transition
+        </span>
+        <span style="display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border:1px solid var(--color-border);border-radius:20px;font-size:0.8rem;color:var(--color-text-soft);background:var(--color-bg-soft);">
+          France Ruralités Revitalisation
+        </span>
+        <span style="display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border:1px solid var(--color-border);border-radius:20px;font-size:0.8rem;color:var(--color-text-soft);background:var(--color-bg-soft);">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+          RPPS vérifié — ANS esante.gouv.fr
+        </span>
+      </div>
+    </div>
+  </section>
+
   <!-- AMBASSADEURS — faire grandir la communauté -->
   <section class="section section--cream ambassador-section">
     <div class="container">
       <div class="ambassador-card">
         <div class="ambassador-text">
           <span class="section__eyebrow">Rejoignez le mouvement</span>
-          <h2 class="ambassador-title">Aidez-nous à faire grandir<br/>la communauté</h2>
+          <h2 class="ambassador-title">Rejoignez le mouvement</h2>
           <p class="ambassador-desc">
-            Vous connaissez un praticien qui cherche un espace ? Partagez MOB'SS autour de vous —
-            chaque recommandation aide un professionnel à exercer dans de meilleures conditions.
+            MOB'SS grandit grâce à ceux qui croient qu'un territoire en bonne santé, ça se construit ensemble. Vous connaissez un professionnel du sport ou de la santé qui cherche où intervenir ? Une collectivité avec des espaces disponibles ? Partagez MOB'SS — chaque connexion compte.
           </p>
           <div class="ambassador-actions">
             <button id="copy-link-btn" class="btn btn--primary ambassador-copy-btn" type="button">
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-              <span id="copy-link-label">Copier le lien</span>
+              <span id="copy-link-label">Partager MOB'SS</span>
             </button>
             <a href="/inscription" class="btn btn--outline ambassador-join-btn">S'inscrire maintenant</a>
           </div>
@@ -502,10 +529,9 @@ const qrSrc = qrDataUrl || 'https://api.qrserver.com/v1/create-qr-code/?size=128
     <div class="container">
       <header class="section__header">
         <span class="section__eyebrow">Pourquoi MOB'SS, et pourquoi maintenant</span>
-        <h2>Des données qui parlent.<br/>Une urgence réelle.</h2>
+        <h2>Pas une intuition.<br/>Un constat chiffré.</h2>
         <p class="section__lead">
-          MOB'SS ne part pas d'une intuition — elle part d'un constat chiffré issu de
-          quatre études nationales (IFOP/Qare 2025, Croix-Rouge/CRÉDOC 2025, MACSF 2023).
+          MOB'SS ne part pas d'une intuition — elle part d'un constat chiffré issu d'études nationales (Mutualité Française 2024, Croix-Rouge/CRÉDOC 2025, ONAPS, OMS).
         </p>
       </header>
 
@@ -517,9 +543,9 @@ const qrSrc = qrDataUrl || 'https://api.qrserver.com/v1/create-qr-code/?size=128
           <div class="stat-visual-card__source">Croix-Rouge / CRÉDOC, 2025</div>
         </div>
         <div class="stat-visual-card stat-visual-card--dark">
-          <div class="stat-visual-card__value">64 %</div>
-          <div class="stat-visual-card__label">des médecins iraient exercer en désert médical si un espace était disponible</div>
-          <div class="stat-visual-card__source">MACSF, 2023</div>
+          <div class="stat-visual-card__value">35 %</div>
+          <div class="stat-visual-card__label">des enfants en milieu rural pratiquent un sport plusieurs fois par semaine, contre 51 % en Île-de-France</div>
+          <div class="stat-visual-card__source">Mutualité Française, 2024</div>
         </div>
         <div class="stat-visual-card stat-visual-card--cream">
           <div class="stat-visual-card__value">0 €</div>
@@ -531,15 +557,15 @@ const qrSrc = qrDataUrl || 'https://api.qrserver.com/v1/create-qr-code/?size=128
       <!-- Stats secondaires -->
       <div class="stats-secondary">
         <div class="stat-secondary-item">
-          <span class="stat-secondary-item__value">76 %</span>
-          <span class="stat-secondary-item__label">des Français estiment que l'accès aux soins s'est dégradé en 10 ans</span>
-          <span class="stat-secondary-item__source">IFOP / Qare, avril 2025</span>
+          <span class="stat-secondary-item__value">119e</span>
+          <span class="stat-secondary-item__label">place de la France sur 146 pays pour l'activité physique des adolescents</span>
+          <span class="stat-secondary-item__source">OMS</span>
         </div>
         <div class="stat-secondary-sep"></div>
         <div class="stat-secondary-item">
-          <span class="stat-secondary-item__value">65 %</span>
-          <span class="stat-secondary-item__label">des surfaces de bureaux sont vides la majeure partie du temps</span>
-          <span class="stat-secondary-item__source">Données occupation bureaux, 2023</span>
+          <span class="stat-secondary-item__value">140 Md€</span>
+          <span class="stat-secondary-item__label">le coût social de l'inactivité physique en France chaque année</span>
+          <span class="stat-secondary-item__source">ONAPS</span>
         </div>
         <div class="stat-secondary-sep"></div>
         <div class="stat-secondary-item">
@@ -575,19 +601,19 @@ const qrSrc = qrDataUrl || 'https://api.qrserver.com/v1/create-qr-code/?size=128
 
         <!-- Praticien -->
         <div class="cta-final-card cta-final-card--praticien">
-          <span class="cta-final-card__eyebrow">Vous êtes professionnel de santé ou du sport</span>
-          <h2 class="cta-final-card__title">Exercez là où vos patients ont besoin de vous</h2>
-          <p class="cta-final-card__desc">Médecins, kinésithérapeutes, coachs, diététiciens… Trouvez des espaces conformes, réservez vos créneaux et développez votre patientèle — sans loyer, sans bail, sans contrainte géographique.</p>
-          <a href="/inscription?role=praticien" class="btn btn--cream btn--lg">Créer mon profil gratuitement →</a>
-          <p class="cta-final-card__sub">Inscription gratuite · Sans engagement · 2 min</p>
+          <span class="cta-final-card__eyebrow">Vous êtes professionnel du sport ou de la santé</span>
+          <h2 class="cta-final-card__title">Intervenez là où vous êtes attendu.</h2>
+          <p class="cta-final-card__desc">Kiné, coach sportif, ostéopathe, sophrologue, diététicien… Trouvez un espace adapté à votre pratique, intervenez quand vous le souhaitez — sans loyer, sans bail, sans contrainte géographique. Et faites la différence là où elle compte vraiment.</p>
+          <a href="/inscription?role=praticien" class="btn btn--cream btn--lg">Je veux intervenir →</a>
+          <p class="cta-final-card__sub">Gratuit · Sans engagement · 2 min</p>
         </div>
 
         <!-- Hôte -->
         <div class="cta-final-card cta-final-card--hote">
           <span class="cta-final-card__eyebrow">Vous avez un espace à proposer</span>
-          <h2 class="cta-final-card__title">Vos espaces inutilisés deviennent des ressources pour votre territoire</h2>
-          <p class="cta-final-card__desc">Collectivités, entreprises, bailleurs — vos salles de réunion, gymnases et locaux inoccupés peuvent accueillir des professionnels de santé et générer un impact social concret sur vos habitants.</p>
-          <a href="/inscription?role=collectivite" class="btn btn--primary btn--lg">Déposer un espace →</a>
+          <h2 class="cta-final-card__title">Vos espaces inutilisés deviennent des ressources pour votre territoire.</h2>
+          <p class="cta-final-card__desc">Collectivités, entreprises — en mettant vos locaux à disposition, vous ne proposez pas juste un espace. Vous créez une opportunité concrète pour vos citoyens ou vos collaborateurs d'accéder au sport et à la santé. Un geste de solidarité territoriale, sans investissement supplémentaire.</p>
+          <a href="/inscription?role=collectivite" class="btn btn--primary btn--lg">Je mets un espace à disposition →</a>
           <p class="cta-final-card__sub">Gratuit · Accompagnement inclus</p>
         </div>
 

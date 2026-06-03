@@ -2,24 +2,24 @@
   {
     "tag": "Praticiens",
     "variant": "is-pro",
-    "title": "Exercez là où vos patients ont besoin de vous",
-    "description": "Kinés, ostéos, coachs, sophrologues… accédez à des espaces vérifiés, adaptés à votre pratique, sans loyer ni bail. Concentrez-vous sur ce qui compte : vos patients.",
-    "ctaLabel": "Trouver un espace →",
+    "title": "Intervenez là où vous êtes attendu",
+    "description": "Kiné, coach sportif, ostéopathe, sophrologue, diététicien… Accédez à des espaces disponibles, vérifiés et adaptés à votre pratique — sans loyer, sans bail, sans contrainte géographique. Vous vous déplacez. On s'occupe du reste.",
+    "ctaLabel": "Je veux intervenir →",
     "ctaHref": "/explorez"
   },
   {
     "tag": "Collectivités",
     "variant": "is-collec",
-    "title": "Donnez une utilité sociale à vos locaux",
-    "description": "Gymnase vide trois jours sur sept. Salle communale inoccupée en semaine. Mettez ces espaces à disposition de praticiens locaux et luttez contre les déserts médicaux de votre territoire.",
-    "ctaLabel": "Proposer un espace →",
+    "title": "Dynamisez votre territoire. Attirez. Retenez.",
+    "description": "Une offre de sport et de santé accessible, c'est un territoire qui attire de nouveaux habitants, fidélise ceux qui y vivent et renforce son attractivité économique. En mettant vos espaces à disposition, vous créez une dynamique concrète — sans investissement supplémentaire.",
+    "ctaLabel": "Je mets un espace à disposition →",
     "ctaHref": "/inscription?role=collectivite"
   },
   {
     "tag": "Entreprises",
     "variant": "is-corp",
-    "title": "Transformez vos m² inutilisés en impact QVCT",
-    "description": "Vos salles de réunion, espaces de détente ou locaux inoccupés peuvent accueillir des professionnels de santé. Avantage fiscal mécénat + image employeur renforcée.",
+    "title": "Vos m² inutilisés deviennent un atout pour vos équipes.",
+    "description": "Salles de réunion, espaces disponibles en journée — en les ouvrant à des professionnels du sport et de la santé, vous améliorez le bien-être de vos collaborateurs, renforcez votre image employeur et contribuez concrètement à la vie du territoire.",
     "ctaLabel": "En savoir plus →",
     "ctaHref": "/inscription?role=entreprise"
   }
