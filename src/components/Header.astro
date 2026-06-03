@@ -2,8 +2,10 @@
 const { currentPage = '' } = Astro.props;
 
 const navLinks = [
-  { href: '/explorez', label: 'Espaces', key: 'explorez' },
-  { href: '/contact',  label: 'Contact',  key: 'contact'  }
+  { href: '/explorez',      label: 'Espaces',        key: 'explorez'      },
+  { href: '/annuaire',      label: 'Annuaire',        key: 'annuaire'      },
+  { href: '/remplacements', label: 'Remplacements',   key: 'remplacements' },
+  { href: '/contact',       label: 'Contact',         key: 'contact'       },
 ];
 
 const aproposLinks = [
@@ -23,7 +25,7 @@ const isAproposActive = ['comment','probleme','solution','impact','gratuit','his
 
     <!-- Logo (SVG inliné — les polices de la page s'appliquent) -->
     <a class="brand" href="/" aria-label="MOB'SS Accueil">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 58" height="62" width="auto" aria-hidden="true" style="display:block;flex-shrink:0;">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 58" height="62" aria-hidden="true" style="display:block;flex-shrink:0;width:auto;">
         <!-- Badge icône -->
         <rect x="0" y="5" width="50" height="50" rx="11" fill="#9C2E3A"/>
         <rect x="0" y="0" width="50" height="50" rx="11" fill="#C8424F"/>
