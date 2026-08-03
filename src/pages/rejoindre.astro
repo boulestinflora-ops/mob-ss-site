@@ -48,6 +48,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           <div class="field">
             <label for="join-email">Votre email professionnel *</label>
             <input id="join-email" type="email" required autocomplete="email" placeholder="vous@exemple.fr" />
+            <span id="err-join-email" style="display:block;font-size:0.82rem;color:#b91c1c;margin-top:4px;min-height:1em;"></span>
           </div>
 
           <div class="field">
@@ -67,11 +68,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
               <option>Ergothérapeute</option>
               <option>Autre</option>
             </select>
+            <span id="err-join-specialite" style="display:block;font-size:0.82rem;color:#b91c1c;margin-top:4px;min-height:1em;"></span>
           </div>
 
           <div class="field">
             <label for="join-ville">Votre ville *</label>
             <input id="join-ville" type="text" required autocomplete="address-level2" placeholder="Lyon, Paris, Bordeaux…" />
+            <span id="err-join-ville" style="display:block;font-size:0.82rem;color:#b91c1c;margin-top:4px;min-height:1em;"></span>
           </div>
 
           <button type="submit" id="join-btn" class="btn btn--primary btn--block btn--lg" style="margin-top:8px;">
@@ -147,6 +150,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
 <script>
   import { supabase } from '../lib/supabase';
+  import { validateEmail } from '../lib/forms';
 
   // ─── Compteur d'inscrits ──────────────────────────────────────────────────────
   supabase.from('profiles').select('id', { count: 'exact', head: true })
@@ -167,6 +171,36 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   const resendBtn   = document.getElementById('resend-btn') as HTMLButtonElement;
 
   let lastEmail = '';
+
+  // ─── Validation inline par champ ─────────────────────────────────────────────
+  function setErr(id: string, msg: string) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = msg;
+    const input = document.getElementById(id.replace('err-', '')) as HTMLInputElement | HTMLSelectElement | null;
+    if (input) {
+      if (msg) { input.style.borderColor = '#ef4444'; }
+      else      { input.style.borderColor = ''; }
+    }
+  }
+
+  // Validation au blur
+  const emailInput = document.getElementById('join-email') as HTMLInputElement;
+  const specInput  = document.getElementById('join-specialite') as HTMLSelectElement;
+  const villeInput = document.getElementById('join-ville') as HTMLInputElement;
+
+  emailInput?.addEventListener('blur', () => {
+    const v = emailInput.value.trim();
+    setErr('err-join-email', !v ? 'Email requis.' : !validateEmail(v) ? 'Format invalide (ex : vous@exemple.fr).' : '');
+  });
+  emailInput?.addEventListener('input', () => {
+    if (emailInput.value) setErr('err-join-email', validateEmail(emailInput.value.trim()) ? '' : 'Format invalide.');
+  });
+  specInput?.addEventListener('change', () => {
+    setErr('err-join-specialite', specInput.value ? '' : 'Veuillez sélectionner une spécialité.');
+  });
+  villeInput?.addEventListener('blur', () => {
+    setErr('err-join-ville', villeInput.value.trim() ? '' : 'Ville requise.');
+  });
 
   function showError(text: string) {
     msgBox.style.display  = 'block';
@@ -202,10 +236,21 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       const specialite = (document.getElementById('join-specialite') as HTMLSelectElement).value;
       const ville      = (document.getElementById('join-ville')      as HTMLInputElement).value.trim();
 
-      if (!email || !specialite || !ville) {
-        showError('Veuillez remplir les trois champs.');
-        return;
-      }
+      // Validation inline
+      let hasError = false;
+      if (!email || !validateEmail(email)) {
+        setErr('err-join-email', !email ? 'Email requis.' : 'Format invalide (ex : vous@exemple.fr).');
+        hasError = true;
+      } else { setErr('err-join-email', ''); }
+      if (!specialite) {
+        setErr('err-join-specialite', 'Veuillez sélectionner une spécialité.');
+        hasError = true;
+      } else { setErr('err-join-specialite', ''); }
+      if (!ville) {
+        setErr('err-join-ville', 'Ville requise.');
+        hasError = true;
+      } else { setErr('err-join-ville', ''); }
+      if (hasError) return;
 
       const btn = document.getElementById('join-btn') as HTMLButtonElement;
       btn.disabled    = true;

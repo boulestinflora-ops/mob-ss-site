@@ -213,6 +213,22 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             </button>
 
           </form>
+
+          <!-- ── État succès — affiché après inscription réussie ────────── -->
+          <div id="signup-success" style="display:none;text-align:center;padding:12px 0 4px;">
+            <div style="font-size:3rem;margin-bottom:14px;">📬</div>
+            <h3 style="margin-bottom:10px;font-size:1.2rem;">Vérifiez vos emails !</h3>
+            <p style="color:var(--color-text-soft);font-size:0.95rem;margin-bottom:6px;">
+              Un lien d'activation a été envoyé à <strong id="success-email"></strong>.
+            </p>
+            <p style="color:var(--color-text-soft);font-size:0.9rem;margin-bottom:20px;">
+              Cliquez sur ce lien pour activer votre compte et compléter votre profil.
+            </p>
+            <p style="font-size:0.85rem;color:var(--color-text-soft);">
+              Pas reçu ? Vérifiez vos spams ou
+              <button type="button" id="resend-email-btn" style="background:none;border:none;color:var(--color-primary);cursor:pointer;font-size:0.85rem;padding:0;text-decoration:underline;">renvoyez l'email</button>.
+            </p>
+          </div>
         </div>
 
         <button type="button" id="btn-back" class="btn insc-btn-back">
@@ -400,6 +416,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 <script>
   import { supabase } from '../lib/supabase';
   import { validateEmail, validatePassword } from '../lib/forms';
+
+  // ─── État pour resend ────────────────────────────────────────────────────────
+  let lastSignupEmail = '';
 
   // ─── Elements ────────────────────────────────────────────────────────────────
   const step1       = document.getElementById('step-1')!;
@@ -594,6 +613,26 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   btnBack.addEventListener('click', goToStep1);
   roleBadge.addEventListener('click', goToStep1);
 
+  // ─── Resend confirmation email ────────────────────────────────────────────
+  const resendEmailBtn = document.getElementById('resend-email-btn') as HTMLButtonElement | null;
+  if (resendEmailBtn) {
+    resendEmailBtn.addEventListener('click', async () => {
+      if (!lastSignupEmail) return;
+      resendEmailBtn.disabled    = true;
+      resendEmailBtn.textContent = 'Envoi…';
+      const { error } = await supabase.auth.resend({
+        type: 'signup',
+        email: lastSignupEmail,
+        options: { emailRedirectTo: `${window.location.origin}/completer-profil` },
+      });
+      resendEmailBtn.textContent = error ? 'Erreur — réessayez' : 'Renvoyé ✓';
+      setTimeout(() => {
+        resendEmailBtn.textContent = 'renvoyez l\'email';
+        resendEmailBtn.disabled    = false;
+      }, 3000);
+    });
+  }
+
   // ─── Global message ───────────────────────────────────────────────────────
   function showMsg(type: 'success' | 'error', html: string) {
     msgBox.style.display = 'block';
@@ -681,19 +720,15 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         return;
       }
 
-      // ── Succès — redirect selon le rôle ──────────────────────────────────
-      const redirectUrl = role === 'praticien'
-        ? '/completer-profil?welcome=1'
-        : '/dashboard?welcome=1';
-
-      showMsg('success',
-        `✓ Compte créé ! Un email de confirmation a été envoyé à <strong>${email}</strong>.<br>
-         Cliquez sur le lien dans l'email pour activer votre compte.<br>
-         <span style="font-size:0.88rem;opacity:0.8;">Redirection automatique dans 4 secondes…</span>`
-      );
-
-      form.reset();
-      setTimeout(() => { window.location.href = redirectUrl; }, 4000);
+      // ── Succès — afficher l'état de confirmation par email ───────────────
+      lastSignupEmail = email;
+      form.style.display = 'none';
+      msgBox.style.display = 'none';
+      const successDiv    = document.getElementById('signup-success')!;
+      const successEmailEl = document.getElementById('success-email')!;
+      successDiv.style.display    = 'block';
+      successEmailEl.textContent  = email;
+      successDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
     });
   }
 </script>

@@ -932,8 +932,8 @@ p  { margin: 0 0 1em; }
 
 /* ---------- Footer ---------- */
 .site-footer {
-  background: #2A1F22;
-  color: #E2D9D2;
+  background: var(--color-primary);
+  color: #fff;
   padding: 60px 0 30px;
 }
 .footer-grid {
@@ -945,14 +945,14 @@ p  { margin: 0 0 1em; }
 .site-footer h4 { color: #fff; font-family: var(--font-body); font-size: 0.95rem; margin-bottom: 16px; }
 .site-footer ul { list-style: none; padding: 0; margin: 0; }
 .site-footer ul li { margin-bottom: 8px; }
-.site-footer a { color: #E2D9D2; opacity: .8; }
-.site-footer a:hover { opacity: 1; color: var(--color-cream); }
+.site-footer a { color: rgba(255,255,255,0.8); }
+.site-footer a:hover { color: var(--color-cream); opacity: 1; }
 .footer-brand .brand__mark { background: var(--color-cream); color: var(--color-primary-dark); box-shadow: 0 4px 0 #C9B374; }
-.footer-brand p { color: rgba(226,217,210,.7); margin-top: 16px; max-width: 320px; }
+.footer-brand p { color: rgba(255,255,255,0.75); margin-top: 16px; max-width: 320px; }
 .footer-bottom {
   display: flex; justify-content: space-between; align-items: center;
-  padding-top: 24px; border-top: 1px solid rgba(255,255,255,.1);
-  font-size: 0.85rem; color: rgba(226,217,210,.6); flex-wrap: wrap; gap: 12px;
+  padding-top: 24px; border-top: 1px solid rgba(255,255,255,.2);
+  font-size: 0.85rem; color: rgba(255,255,255,0.6); flex-wrap: wrap; gap: 12px;
 }
 
 /* ---------- Cartes sur fond coloré (style prototype) ---------- */
