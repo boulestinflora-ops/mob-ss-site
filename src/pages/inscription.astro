@@ -419,6 +419,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
   // ─── État pour resend ────────────────────────────────────────────────────────
   let lastSignupEmail = '';
+  let lastSignupRole  = '';
 
   // ─── Elements ────────────────────────────────────────────────────────────────
   const step1       = document.getElementById('step-1')!;
@@ -620,10 +621,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       if (!lastSignupEmail) return;
       resendEmailBtn.disabled    = true;
       resendEmailBtn.textContent = 'Envoi…';
+      const resendRedirect = lastSignupRole === 'praticien'
+        ? `${window.location.origin}/completer-profil`
+        : `${window.location.origin}/dashboard`;
       const { error } = await supabase.auth.resend({
         type: 'signup',
         email: lastSignupEmail,
-        options: { emailRedirectTo: `${window.location.origin}/completer-profil` },
+        options: { emailRedirectTo: resendRedirect },
       });
       resendEmailBtn.textContent = error ? 'Erreur — réessayez' : 'Renvoyé ✓';
       setTimeout(() => {
@@ -694,12 +698,16 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       const specialite = role === 'praticien' ? inputAct.value || null : null;
       const organisation = (role === 'collectivite' || role === 'entreprise') ? inputOrga.value.trim() : null;
 
+      const redirectAfterConfirm = role === 'praticien'
+        ? `${window.location.origin}/completer-profil`
+        : `${window.location.origin}/dashboard`;
+
       const { data, error } = await supabase.auth.signUp({
         email,
         password: mdp,
         options: {
           data: { role, prenom, nom, telephone: tel, specialite, organisation },
-          emailRedirectTo: `${window.location.origin}/completer-profil`,
+          emailRedirectTo: redirectAfterConfirm,
         },
       });
 
@@ -722,6 +730,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
       // ── Succès — afficher l'état de confirmation par email ───────────────
       lastSignupEmail = email;
+      lastSignupRole  = role;
       form.style.display = 'none';
       msgBox.style.display = 'none';
       const successDiv    = document.getElementById('signup-success')!;

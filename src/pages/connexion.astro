@@ -31,15 +31,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
               <input id="mdp" name="password" type="password" required autocomplete="current-password" minlength="8" />
             </div>
 
-            <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:18px;font-size:0.9rem;">
-              <label class="option" style="display:flex;gap:6px;margin:0;align-items:center;">
-                <input type="checkbox" /> Se souvenir de moi
-              </label>
-              <div style="text-align:center;">
-                <button type="button" id="show-reset" style="background:none;border:none;color:var(--color-primary);font-size:0.9rem;cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:3px;">
-                  Mot de passe oublié&nbsp;?
-                </button>
-              </div>
+            <div style="text-align:center;margin-bottom:18px;font-size:0.9rem;">
+              <button type="button" id="show-reset" style="background:none;border:none;color:var(--color-primary);font-size:0.9rem;cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:3px;">
+                Mot de passe oublié&nbsp;?
+              </button>
             </div>
 
             <button type="submit" class="btn btn--primary btn--block btn--lg">Se connecter</button>
